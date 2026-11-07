@@ -19,7 +19,7 @@ import { CardGrid, LinkCard, Aside } from '@astrojs/starlight/components';
 ## list
 
 ```bash
-redmine queries list [flags]
+rdflow queries list [flags]
 ```
 
 | 标志 | 描述 |
@@ -31,14 +31,14 @@ redmine queries list [flags]
 每一行包含查询 ID、名称、可见性（`public` 或 `private`）以及作用域（`global` 或 `project <id>`）。
 
 ```bash
-redmine queries list
-redmine queries list -o json
+rdflow queries list
+rdflow queries list -o json
 ```
 
 ## get
 
 ```bash
-redmine queries get <id-or-name> [flags]
+rdflow queries get <id-or-name> [flags]
 ```
 
 别名：`show`、`view`。接受数字 ID 或查询名称。
@@ -54,13 +54,13 @@ redmine queries get <id-or-name> [flags]
 
 ```bash
 # 按 ID - 无需额外查询
-redmine issues list --query-id 12
+rdflow issues list --query-id 12
 
 # 按名称 - CLI 会先解析为 ID
-redmine issues list --query "我的未关闭工单"
+rdflow issues list --query "我的未关闭工单"
 
 # 与 --project 配合，避免项目级查询与全局查询同名时的歧义
-redmine issues list --project myproject --query "迭代待办"
+rdflow issues list --project myproject --query "迭代待办"
 ```
 
 自定义查询中的过滤条件由服务端应用。`--query-id` 仍可与 `--sort`、`--limit`、`--offset` 和 `--include` 等参数组合使用，以进一步控制返回结果。

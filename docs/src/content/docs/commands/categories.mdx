@@ -20,7 +20,7 @@ Commands that take `<id-or-name>` accept a numeric ID or a category name. A name
 ## list
 
 ```bash
-redmine categories list --project <identifier> [flags]
+rdflow categories list --project <identifier> [flags]
 ```
 
 Aliases: `ls`.
@@ -31,14 +31,14 @@ Aliases: `ls`.
 | `-o, --output` | Output format |
 
 ```bash
-redmine categories list --project myproject
-redmine categories list --project myproject -o json
+rdflow categories list --project myproject
+rdflow categories list --project myproject -o json
 ```
 
 ## get
 
 ```bash
-redmine categories get <id-or-name> [flags]
+rdflow categories get <id-or-name> [flags]
 ```
 
 Aliases: `show`, `view`. Shows the ID, project, name and default assignee.
@@ -49,14 +49,14 @@ Aliases: `show`, `view`. Shows the ID, project, name and default assignee.
 | `-o, --output` | Output format |
 
 ```bash
-redmine categories get 12
-redmine categories get "Backend" --project myproject -o json
+rdflow categories get 12
+rdflow categories get "Backend" --project myproject -o json
 ```
 
 ## create
 
 ```bash
-redmine categories create --name <name> [flags]
+rdflow categories create --name <name> [flags]
 ```
 
 Aliases: `new`.
@@ -69,14 +69,14 @@ Aliases: `new`.
 | `-o, --output` | Output format |
 
 ```bash
-redmine categories create --project myproject --name Backend
-redmine categories create --project myproject --name Backend --assignee me
+rdflow categories create --project myproject --name Backend
+rdflow categories create --project myproject --name Backend --assignee me
 ```
 
 ## update
 
 ```bash
-redmine categories update <id-or-name> [flags]
+rdflow categories update <id-or-name> [flags]
 ```
 
 Aliases: `edit`. Only the flags you pass are changed; at least one of `--name` or `--assignee` is required.
@@ -88,15 +88,15 @@ Aliases: `edit`. Only the flags you pass are changed; at least one of `--name` o
 | `--assignee` | New default assignee (user or group name, login, ID, `me`), or `none` to clear it |
 
 ```bash
-redmine categories update 12 --name "Back end"
-redmine categories update Backend --project myproject --assignee "Backend Team"
-redmine categories update 12 --assignee none
+rdflow categories update 12 --name "Back end"
+rdflow categories update Backend --project myproject --assignee "Backend Team"
+rdflow categories update 12 --assignee none
 ```
 
 ## delete
 
 ```bash
-redmine categories delete <id-or-name> [flags]
+rdflow categories delete <id-or-name> [flags]
 ```
 
 Aliases: `rm`. Asks for confirmation unless `--force` is given. Declining prints `Delete cancelled` and changes nothing.
@@ -110,8 +110,8 @@ Aliases: `rm`. Asks for confirmation unless `--force` is given. Declining prints
 Without `--reassign-to`, the category's issues are left without a category.
 
 ```bash
-redmine categories delete 12
-redmine categories delete Backend --project myproject --reassign-to Platform --force
+rdflow categories delete 12
+rdflow categories delete Backend --project myproject --reassign-to Platform --force
 ```
 
 <Aside type="caution" title="Reassign targets are validated">

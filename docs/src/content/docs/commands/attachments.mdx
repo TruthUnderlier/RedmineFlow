@@ -17,14 +17,14 @@ The `attachments` command (aliases `attachment`, `a`) surfaces Redmine's [Attach
 
 <Aside type="tip">
   Don't know the attachment ID? List an issue's attachments with
-  [`redmine issues get <id> --attachments`](/commands/issues/#get) - it prints each
+  [`rdflow issues get <id> --attachments`](/commands/issues/#get) - it prints each
   attachment's ID, filename, size, and content type.
 </Aside>
 
 ## get
 
 ```bash
-redmine attachments get <id> [flags]
+rdflow attachments get <id> [flags]
 ```
 
 Aliases: `show`, `view`, `metadata`. Fetches the attachment's ID, filename, size, content type, description, author, and creation time via `GET /attachments/:id.json`. Table output also shows the download URL (when present); `json` returns every field, including `content_url`.
@@ -36,12 +36,12 @@ Aliases: `show`, `view`, `metadata`. Fetches the attachment's ID, filename, size
 <Tabs syncKey="attachments-get">
   <TabItem label="Table">
     ```bash
-    redmine attachments get 42
+    rdflow attachments get 42
     ```
   </TabItem>
   <TabItem label="JSON">
     ```bash
-    redmine attachments get 42 -o json
+    rdflow attachments get 42 -o json
     ```
   </TabItem>
 </Tabs>
@@ -49,7 +49,7 @@ Aliases: `show`, `view`, `metadata`. Fetches the attachment's ID, filename, size
 ## download
 
 ```bash
-redmine attachments download <id> [flags]
+rdflow attachments download <id> [flags]
 ```
 
 Aliases: `dl`, `get-file`. Streams the attachment's raw bytes to disk (or stdout), authenticating with the active profile. The response is streamed, never buffered entirely in memory, so large files are safe.
@@ -108,46 +108,46 @@ If the server redirects the download (or any other request), the redirect is fol
   <TabItem label="Current dir">
     ```bash
     # Saves ./<filename>
-    redmine attachments download 42
+    rdflow attachments download 42
     ```
   </TabItem>
   <TabItem label="Into a directory">
     ```bash
-    redmine attachments download 42 --dir ./downloads
+    rdflow attachments download 42 --dir ./downloads
     ```
   </TabItem>
   <TabItem label="Exact path">
     ```bash
-    redmine attachments download 42 --path ./logo.png
+    rdflow attachments download 42 --path ./logo.png
     ```
   </TabItem>
   <TabItem label="Overwrite">
     ```bash
     # Replace a copy left over from an earlier download
-    redmine attachments download 42 --dir ./downloads --clobber
+    rdflow attachments download 42 --dir ./downloads --clobber
     ```
   </TabItem>
   <TabItem label="Pipe to stdout">
     ```bash
-    redmine attachments download 42 --path - | file -
+    rdflow attachments download 42 --path - | file -
     ```
   </TabItem>
   <TabItem label="JSON result">
     ```bash
-    redmine attachments download 42 --dir ./downloads -o json
+    rdflow attachments download 42 --dir ./downloads -o json
     ```
   </TabItem>
 </Tabs>
 
 <Aside type="tip">
   To grab **every** attachment of an issue in one step, use
-  [`redmine issues get <id> --download-attachments <dir>`](/commands/issues/#get).
+  [`rdflow issues get <id> --download-attachments <dir>`](/commands/issues/#get).
 </Aside>
 
 ## update
 
 ```bash
-redmine attachments update <id> [flags]
+rdflow attachments update <id> [flags]
 ```
 
 Aliases: `edit`. Changes an attachment's metadata via `PUT /attachments/:id.json`. At least one flag is required; only the flags you pass are changed.
@@ -159,8 +159,8 @@ Aliases: `edit`. Changes an attachment's metadata via `PUT /attachments/:id.json
 | `--content-type` | New content type, for example `image/png` |
 
 ```bash
-redmine attachments update 42 --filename report-final.pdf
-redmine attachments update 42 --description "Final version"
+rdflow attachments update 42 --filename report-final.pdf
+rdflow attachments update 42 --description "Final version"
 ```
 
 You need permission to edit the object the attachment belongs to (for an issue attachment, the right to edit that issue).
@@ -168,7 +168,7 @@ You need permission to edit the object the attachment belongs to (for an issue a
 ## delete
 
 ```bash
-redmine attachments delete <id> [flags]
+rdflow attachments delete <id> [flags]
 ```
 
 Aliases: `rm`. Permanently deletes the attachment. Asks for confirmation unless `--force` is given; declining prints `Delete cancelled` and changes nothing. Deleting an issue attachment is recorded in the issue history.
@@ -178,14 +178,14 @@ Aliases: `rm`. Permanently deletes the attachment. Asks for confirmation unless 
 | `-f, --force` | Skip the confirmation prompt |
 
 ```bash
-redmine attachments delete 42
-redmine attachments delete 42 --force
+rdflow attachments delete 42
+rdflow attachments delete 42 --force
 ```
 
 ## thumbnail
 
 ```bash
-redmine attachments thumbnail <id> --path <file> [flags]
+rdflow attachments thumbnail <id> --path <file> [flags]
 ```
 
 Aliases: `thumb`. Downloads the thumbnail Redmine renders for an image attachment (and PDFs where the server supports it).
@@ -200,9 +200,9 @@ Aliases: `thumb`. Downloads the thumbnail Redmine renders for an image attachmen
 An existing file is never overwritten without `--clobber`, and a failed request leaves no file behind (same safe-write behavior as [`download`](#existing-files-and---clobber)). With `--path -` the bytes go to stdout, the confirmation to stderr, and `--jq` is rejected.
 
 ```bash
-redmine attachments thumbnail 42 --path thumb.png
-redmine attachments thumbnail 42 --size 200 --path thumb.png --clobber
-redmine attachments thumbnail 42 --path - > thumb.png
+rdflow attachments thumbnail 42 --path thumb.png
+rdflow attachments thumbnail 42 --size 200 --path thumb.png --clobber
+rdflow attachments thumbnail 42 --path - > thumb.png
 ```
 
 <Aside type="note">

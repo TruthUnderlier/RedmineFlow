@@ -33,20 +33,20 @@ import { Tabs, TabItem } from '@astrojs/starlight/components';
   </TabItem>
 
   <TabItem label="手动安装" icon="download">
-    从 [GitHub Releases](https://github.com/aarondpn/redmine-cli/releases/latest) 下载适合你平台的压缩包，并将 `redmine` 放到 `PATH` 中。
+    从 [GitHub Releases](https://github.com/aarondpn/redmine-cli/releases/latest) 下载适合你平台的压缩包，并将 `rdflow` 放到 `PATH` 中。
   </TabItem>
 </Tabs>
 
 确认可以运行，然后[登录](/zh-cn/getting-started/configuration/)：
 
 ```bash
-redmine --version
+rdflow --version
 ```
 
 ## 更新
 
 ```bash
-redmine update
+rdflow update
 ```
 
 通过 Homebrew 安装时使用 `brew upgrade` 更新。Docker 镜像需拉取后重新创建容器（或重启 MCP 客户端）：`docker pull ghcr.io/aarondpn/redmine-mcp`，或 `docker compose pull && docker compose up -d`。详见[自更新](/zh-cn/commands/other/#自动更新)。

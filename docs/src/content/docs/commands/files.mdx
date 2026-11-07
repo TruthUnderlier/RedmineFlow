@@ -17,7 +17,7 @@ Every subcommand needs a project. Pass `--project <identifier>`, or rely on the 
 ## list
 
 ```bash
-redmine files list [flags]
+rdflow files list [flags]
 ```
 
 Aliases: `ls`. Prints each file's ID, name, size in bytes, associated version (if any), uploader, and creation timestamp.
@@ -32,17 +32,17 @@ Aliases: `ls`. Prints each file's ID, name, size in bytes, associated version (i
 <Tabs syncKey="files-list">
   <TabItem label="Default">
     ```bash
-    redmine files list --project myproject
+    rdflow files list --project myproject
     ```
   </TabItem>
   <TabItem label="JSON">
     ```bash
-    redmine files list --project myproject -o json
+    rdflow files list --project myproject -o json
     ```
   </TabItem>
   <TabItem label="Paginated">
     ```bash
-    redmine files list --project myproject --limit 10 --offset 20
+    rdflow files list --project myproject --limit 10 --offset 20
     ```
   </TabItem>
 </Tabs>
@@ -54,7 +54,7 @@ Aliases: `ls`. Prints each file's ID, name, size in bytes, associated version (i
 ## upload
 
 ```bash
-redmine files upload <path> [flags]
+rdflow files upload <path> [flags]
 ```
 
 Aliases: `add`, `create`. Uploads a file from disk to Redmine's `/uploads.json` endpoint, then attaches the resulting token to the project. Pass `--version` to pin the file to a milestone so it shows up in version-scoped views.
@@ -69,14 +69,14 @@ Aliases: `add`, `create`. Uploads a file from disk to Redmine's `/uploads.json` 
 | `-o, --output`   | Output format |
 
 ```bash
-redmine files upload ./release.tar.gz --project myproject
+rdflow files upload ./release.tar.gz --project myproject
 
-redmine files upload ./changelog.md --project myproject \
+rdflow files upload ./changelog.md --project myproject \
   --version 1.2.0 --description "Release notes"
 
-redmine files upload ./build.zip --project myproject --filename "build-1.2.0.zip"
+rdflow files upload ./build.zip --project myproject --filename "build-1.2.0.zip"
 ```
 
 <Aside type="tip">
-  Redmine returns no body on a successful upload. Run `redmine files list --project myproject` afterwards to confirm the new file landed and to capture its assigned ID and content URL.
+  Redmine returns no body on a successful upload. Run `rdflow files list --project myproject` afterwards to confirm the new file landed and to capture its assigned ID and content URL.
 </Aside>

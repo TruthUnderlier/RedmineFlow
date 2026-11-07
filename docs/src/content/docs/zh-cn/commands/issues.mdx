@@ -26,7 +26,7 @@ import { CardGrid, LinkCard, Tabs, TabItem, Aside, Badge } from '@astrojs/starli
 ## list
 
 ```bash
-redmine issues list [flags]
+rdflow issues list [flags]
 ```
 
 | 标志 | 描述 |
@@ -66,17 +66,17 @@ redmine issues list [flags]
 <Tabs syncKey="issues-list">
   <TabItem label="我的工单">
     ```bash
-    redmine issues list --assignee me
+    rdflow issues list --assignee me
     ```
   </TabItem>
   <TabItem label="项目缺陷">
     ```bash
-    redmine issues list --project myproject --tracker Bug
+    rdflow issues list --project myproject --tracker Bug
     ```
   </TabItem>
   <TabItem label="最近关闭">
     ```bash
-    redmine issues list --status closed --sort updated_on:desc
+    rdflow issues list --status closed --sort updated_on:desc
     ```
   </TabItem>
 </Tabs>
@@ -84,7 +84,7 @@ redmine issues list [flags]
 ## get
 
 ```bash
-redmine issues get <id> [flags]
+rdflow issues get <id> [flags]
 ```
 
 别名：`show`、`view`。
@@ -109,25 +109,25 @@ redmine issues get <id> [flags]
   <TabItem label="附件">
     ```bash
     # 列出附件 ID，以便下载某个附件
-    redmine issues get 123 --attachments
+    rdflow issues get 123 --attachments
     ```
   </TabItem>
   <TabItem label="全部下载">
     ```bash
     # 将所有附件下载到 ./issue-123
-    redmine issues get 123 --download-attachments ./issue-123
+    rdflow issues get 123 --download-attachments ./issue-123
 
     # 刷新之前的下载，替换已存在的文件
-    redmine issues get 123 --download-attachments ./issue-123 --clobber
+    rdflow issues get 123 --download-attachments ./issue-123 --clobber
     ```
   </TabItem>
   <TabItem label="完整读取">
     ```bash
     # 调查前先查看历史、文件、子工单和关联
-    redmine issues get 123 --include journals,attachments,children,relations -o json
+    rdflow issues get 123 --include journals,attachments,children,relations -o json
 
     # 当前用户可以将工单转换到的状态
-    redmine issues get 123 --include allowed_statuses -o json
+    rdflow issues get 123 --include allowed_statuses -o json
     ```
   </TabItem>
 </Tabs>
@@ -152,7 +152,7 @@ redmine issues get <id> [flags]
 ## create
 
 ```bash
-redmine issues create [flags]
+rdflow issues create [flags]
 ```
 
 | 标志 | 描述 |
@@ -176,21 +176,21 @@ redmine issues create [flags]
 | `--attach`          | 要附加的文件路径（可重复使用） |
 
 ```bash
-redmine issues create --project myproject --subject "Add search" --tracker Feature --priority High
+rdflow issues create --project myproject --subject "Add search" --tracker Feature --priority High
 
-redmine issues create --project myproject --subject "Bug report" \
+rdflow issues create --project myproject --subject "Bug report" \
   --start-date 2026-05-01 --due-date 2026-05-15 \
   --watcher me --watcher "QA Bot" \
   --custom-field Severity=High \
   --attach /path/to/screenshot.png --attach /path/to/log.txt
 
 # 值包含空格时：用引号包住整个键值对，并为每个字段重复使用该标志
-redmine issues create --project myproject --subject "Bug" \
+rdflow issues create --project myproject --subject "Bug" \
   --custom-field "2=Value for field 2" \
   --custom-field "61=Value for 61"
 
 # 多值字段：对同一字段重复使用该标志
-redmine issues create --project myproject --subject "Cross-platform bug" \
+rdflow issues create --project myproject --subject "Cross-platform bug" \
   --custom-field Platforms=Linux --custom-field Platforms=macOS
 ```
 
@@ -199,7 +199,7 @@ redmine issues create --project myproject --subject "Cross-platform bug" \
 `--custom-field` 接受 `key=value` 键值对，其中 key 为自定义字段名称或数字 ID。
 
 - 名称仅在该资源类型的自定义字段中解析，且需要管理员权限（`/custom_fields.json` 仅限管理员）。工单命令不会选中同名的工时自定义字段。
-- 非管理员请使用数字 ID，可在 JSON 输出的 `custom_fields` 中查到，例如 `redmine issues get 123 --jq '.custom_fields'`。
+- 非管理员请使用数字 ID，可在 JSON 输出的 `custom_fields` 中查到，例如 `rdflow issues get 123 --jq '.custom_fields'`。
 - 值为第一个 `=` 之后的全部内容，原样保留，空格和后续的 `=` 都不会被丢弃。请用引号包住整个键值对，并为每个字段重复使用该标志。
 - 多值字段请重复使用同一字段：`--custom-field Platforms=Linux --custom-field Platforms=macOS`，顺序保持不变。
 - 为单值字段传入多个值会失败。按名称指定字段时由 CLI 在本地检查；按 ID 指定时由 Redmine 返回 `validation_failed`（“is invalid”），错误提示会指出重复的字段。
@@ -209,7 +209,7 @@ redmine issues create --project myproject --subject "Cross-platform bug" \
 ## update
 
 ```bash
-redmine issues update <id> [flags]
+rdflow issues update <id> [flags]
 ```
 
 接受与 `create` 相同的标志（`--project` 与 `--watcher` 除外），并额外支持：
@@ -225,22 +225,22 @@ redmine issues update <id> [flags]
 | `--attach`         | 要附加的文件路径（可重复使用） |
 
 ```bash
-redmine issues update 123 --note "Fixed the bug" --attach /path/to/fixed_code.patch
+rdflow issues update 123 --note "Fixed the bug" --attach /path/to/fixed_code.patch
 
 # 私有日志注释（仅工作人员可见）
-redmine issues update 123 --note "Internal context" --private-notes
+rdflow issues update 123 --note "Internal context" --private-notes
 
 # 按名称更新自定义字段
-redmine issues update 123 --custom-field Severity=Critical
+rdflow issues update 123 --custom-field Severity=Critical
 
 # 清除自定义字段
-redmine issues update 123 --custom-field Severity=
+rdflow issues update 123 --custom-field Severity=
 ```
 
 ## close
 
 ```bash
-redmine issues close <id> [flags]
+rdflow issues close <id> [flags]
 ```
 
 | 标志 | 描述 |
@@ -250,13 +250,13 @@ redmine issues close <id> [flags]
 ## reopen
 
 ```bash
-redmine issues reopen <id> [flags]
+rdflow issues reopen <id> [flags]
 ```
 
 ## assign
 
 ```bash
-redmine issues assign <id> <user-id-or-name> [flags]
+rdflow issues assign <id> <user-id-or-name> [flags]
 ```
 
 用户参数接受数字 ID、登录名、全名或 `me`。
@@ -264,7 +264,7 @@ redmine issues assign <id> <user-id-or-name> [flags]
 ## comment
 
 ```bash
-redmine issues comment <id> --message "Your comment" [flags]
+rdflow issues comment <id> --message "Your comment" [flags]
 ```
 
 ### 编辑评论
@@ -272,13 +272,13 @@ redmine issues comment <id> --message "Your comment" [flags]
 <Badge text="Redmine 5.0+" variant="note" />
 
 ```bash
-redmine issues comment edit <journal-id> [flags]
+rdflow issues comment edit <journal-id> [flags]
 ```
 
 评论由 **journal ID**（而不是工单 ID）标识。Redmine 没有获取单个 journal 的接口，请从工单中列出：
 
 ```bash
-redmine issues get 123 --journals --jq '.journals[] | {id, notes}'
+rdflow issues get 123 --journals --jq '.journals[] | {id, notes}'
 ```
 
 表格视图中每条评论的标题行都带有 journal ID，例如 `--- Alice (2026-01-01T10:00:00Z) [journal 41] ---`；评论之后被修改过则在日期后显示 `(edited)`。
@@ -295,10 +295,10 @@ redmine issues get 123 --journals --jq '.journals[] | {id, notes}'
 以上标志至少需要一个。命令输出资源为 `journal` 的 `updated` 操作。
 
 ```bash
-redmine issues comment edit 456 --message "Corrected: deployed to production"
-redmine issues comment edit 456 --message-file notes.textile
-redmine issues comment edit 456 --private
-redmine issues comment edit 456 --clear --force
+rdflow issues comment edit 456 --message "Corrected: deployed to production"
+rdflow issues comment edit 456 --message-file notes.textile
+rdflow issues comment edit 456 --private
+rdflow issues comment edit 456 --clear --force
 ```
 
 <Aside type="note">
@@ -310,26 +310,26 @@ redmine issues comment edit 456 --clear --force
 ## watchers
 
 ```bash
-redmine issues watchers list <id>
-redmine issues watchers add <id> <user>
-redmine issues watchers remove <id> <user>
+rdflow issues watchers list <id>
+rdflow issues watchers add <id> <user>
+rdflow issues watchers remove <id> <user>
 ```
 
 `<user>` 可以是数字 ID、登录名、全名或 `me`。
 
 ```bash
-redmine issues watchers add 123 me
-redmine issues watchers list 123
-redmine issues watchers remove 123 alice
+rdflow issues watchers add 123 me
+rdflow issues watchers list 123
+rdflow issues watchers remove 123 alice
 ```
 
 ## relations
 
 ```bash
-redmine issues relations list <id>
-redmine issues relations get <relation-id>
-redmine issues relations add <id> --to <other-id> --type <type> [--delay <days>]
-redmine issues relations remove <relation-id>
+rdflow issues relations list <id>
+rdflow issues relations get <relation-id>
+rdflow issues relations add <id> --to <other-id> --type <type> [--delay <days>]
+rdflow issues relations remove <relation-id>
 ```
 
 | 标志 | 描述 |
@@ -353,11 +353,11 @@ Redmine 支持的关联类型（参见 [Redmine REST 文档](https://www.redmine
 | `copied_from` | 当前工单复制自目标工单 |
 
 ```bash
-redmine issues relations add 123 --to 124 --type blocks
-redmine issues relations add 123 --to 124 --type precedes --delay 5
-redmine issues relations list 123
-redmine issues relations get 42
-redmine issues relations remove 42
+rdflow issues relations add 123 --to 124 --type blocks
+rdflow issues relations add 123 --to 124 --type precedes --delay 5
+rdflow issues relations list 123
+rdflow issues relations get 42
+rdflow issues relations remove 42
 ```
 
 <Aside type="note">
@@ -368,7 +368,7 @@ redmine issues relations remove 42
 
 <Badge text="危险操作" variant="caution" />
 ```bash
-redmine issues delete <id> [flags]
+rdflow issues delete <id> [flags]
 ```
 
 | 标志 | 描述 |
@@ -382,19 +382,19 @@ redmine issues delete <id> [flags]
 ## open
 
 ```bash
-redmine issues open <id>
+rdflow issues open <id>
 ```
 
 根据已配置的 Redmine 服务器构造工单 URL，并在默认浏览器中打开。
 
 ```bash
-redmine issues open 123   # → https://redmine.example.com/issues/123
+rdflow issues open 123   # → https://redmine.example.com/issues/123
 ```
 
 ## browse
 
 ```bash
-redmine issues browse [flags]
+rdflow issues browse [flags]
 ```
 
 打开工单的交互式终端浏览器。接受与 [`list`](#list) 相同的过滤标志。

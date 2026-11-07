@@ -20,7 +20,7 @@ import { CardGrid, LinkCard, Aside } from '@astrojs/starlight/components';
 ## list
 
 ```bash
-redmine categories list --project <identifier> [flags]
+rdflow categories list --project <identifier> [flags]
 ```
 
 别名：`ls`。
@@ -31,14 +31,14 @@ redmine categories list --project <identifier> [flags]
 | `-o, --output` | 输出格式 |
 
 ```bash
-redmine categories list --project myproject
-redmine categories list --project myproject -o json
+rdflow categories list --project myproject
+rdflow categories list --project myproject -o json
 ```
 
 ## get
 
 ```bash
-redmine categories get <id-or-name> [flags]
+rdflow categories get <id-or-name> [flags]
 ```
 
 别名：`show`、`view`。显示 ID、项目、名称和默认指派人。
@@ -49,14 +49,14 @@ redmine categories get <id-or-name> [flags]
 | `-o, --output` | 输出格式 |
 
 ```bash
-redmine categories get 12
-redmine categories get "Backend" --project myproject -o json
+rdflow categories get 12
+rdflow categories get "Backend" --project myproject -o json
 ```
 
 ## create
 
 ```bash
-redmine categories create --name <name> [flags]
+rdflow categories create --name <name> [flags]
 ```
 
 别名：`new`。
@@ -69,14 +69,14 @@ redmine categories create --name <name> [flags]
 | `-o, --output` | 输出格式 |
 
 ```bash
-redmine categories create --project myproject --name Backend
-redmine categories create --project myproject --name Backend --assignee me
+rdflow categories create --project myproject --name Backend
+rdflow categories create --project myproject --name Backend --assignee me
 ```
 
 ## update
 
 ```bash
-redmine categories update <id-or-name> [flags]
+rdflow categories update <id-or-name> [flags]
 ```
 
 别名：`edit`。只会修改你传入的标志；`--name` 与 `--assignee` 至少需要一个。
@@ -88,15 +88,15 @@ redmine categories update <id-or-name> [flags]
 | `--assignee` | 新的默认指派人（用户或用户组的名称、登录名、ID、`me`），或用 `none` 清除 |
 
 ```bash
-redmine categories update 12 --name "Back end"
-redmine categories update Backend --project myproject --assignee "Backend Team"
-redmine categories update 12 --assignee none
+rdflow categories update 12 --name "Back end"
+rdflow categories update Backend --project myproject --assignee "Backend Team"
+rdflow categories update 12 --assignee none
 ```
 
 ## delete
 
 ```bash
-redmine categories delete <id-or-name> [flags]
+rdflow categories delete <id-or-name> [flags]
 ```
 
 别名：`rm`。除非传入 `--force`，否则会先请求确认。拒绝确认会打印 `Delete cancelled`，且不做任何更改。
@@ -110,8 +110,8 @@ redmine categories delete <id-or-name> [flags]
 不使用 `--reassign-to` 时，该类别下的工单将不再属于任何类别。
 
 ```bash
-redmine categories delete 12
-redmine categories delete Backend --project myproject --reassign-to Platform --force
+rdflow categories delete 12
+rdflow categories delete Backend --project myproject --reassign-to Platform --force
 ```
 
 <Aside type="caution" title="会校验转移目标">

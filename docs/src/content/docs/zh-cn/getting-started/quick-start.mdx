@@ -12,13 +12,13 @@ import { Steps, Tabs, TabItem, Aside, LinkCard, CardGrid, Badge } from '@astrojs
 1. 运行登录向导并指向你的 Redmine 服务器：
 
    ```bash
-   redmine auth login
+   rdflow auth login
    ```
 
 2. 确认连接是否正常：
 
    ```bash
-   redmine auth status
+   rdflow auth status
    ```
 
 3. 开始管理工单、工时记录等内容。
@@ -30,18 +30,18 @@ import { Steps, Tabs, TabItem, Aside, LinkCard, CardGrid, Badge } from '@astrojs
 <Tabs syncKey="issue-verb">
   <TabItem label="列表">
     ```bash
-    redmine issues list --project myproject
-    redmine issues list --assignee me --status open
+    rdflow issues list --project myproject
+    rdflow issues list --assignee me --status open
     ```
   </TabItem>
   <TabItem label="查看">
     ```bash
-    redmine issues get 123
+    rdflow issues get 123
     ```
   </TabItem>
   <TabItem label="创建">
     ```bash
-    redmine issues create \
+    rdflow issues create \
       --project myproject \
       --subject "Fix login bug" \
       --tracker Bug
@@ -49,17 +49,17 @@ import { Steps, Tabs, TabItem, Aside, LinkCard, CardGrid, Badge } from '@astrojs
   </TabItem>
   <TabItem label="更新">
     ```bash
-    redmine issues update 123 --status "In Progress" --assignee me
+    rdflow issues update 123 --status "In Progress" --assignee me
     ```
   </TabItem>
   <TabItem label="关闭">
     ```bash
-    redmine issues close 123 --notes "Fixed in commit abc123"
+    rdflow issues close 123 --notes "Fixed in commit abc123"
     ```
   </TabItem>
   <TabItem label="浏览">
     ```bash
-    redmine issues browse --project myproject
+    rdflow issues browse --project myproject
     ```
   </TabItem>
 </Tabs>
@@ -68,21 +68,21 @@ import { Steps, Tabs, TabItem, Aside, LinkCard, CardGrid, Badge } from '@astrojs
 
 ```bash
 # interactive
-redmine time log
+rdflow time log
 
 # one-shot
-redmine time log --issue 123 --hours 2.5 --activity Development --comment "Code review"
+rdflow time log --issue 123 --hours 2.5 --activity Development --comment "Code review"
 
 # today's entries
-redmine time list --user me --from today
+rdflow time list --user me --from today
 ```
 
 ## 搜索
 
 ```bash
-redmine search "login bug"
-redmine search issues "login bug" --project myproject
-redmine search "login bug" --open-issues
+rdflow search "login bug"
+rdflow search issues "login bug" --project myproject
+rdflow search "login bug" --open-issues
 ```
 
 ## 名称解析
@@ -91,13 +91,13 @@ redmine search "login bug" --open-issues
 你无需记忆数字 ID。CLI 可通过名称解析跟踪类型、状态、优先级、项目和用户。
 
 ```bash
-redmine issues create \
+rdflow issues create \
   --project myproject \
   --tracker Bug \
   --priority High \
   --assignee "John Smith"
 
-redmine issues list --assignee me
+rdflow issues list --assignee me
 ```
 
 <Aside type="tip" title="`me` 关键字">
@@ -107,9 +107,9 @@ redmine issues list --assignee me
 ## 输出格式
 
 ```bash
-redmine issues list          # table (default)
-redmine issues list -o json  # machine-readable / scripting
-redmine issues list -o json --jq '.[] | [.id, .subject] | @csv'  # CSV for spreadsheets
+rdflow issues list          # table (default)
+rdflow issues list -o json  # machine-readable / scripting
+rdflow issues list -o json --jq '.[] | [.id, .subject] | @csv'  # CSV for spreadsheets
 ```
 
 ## 下一步

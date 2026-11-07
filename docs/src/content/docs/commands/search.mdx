@@ -16,7 +16,7 @@ The `search` command lets you search for issues, news, documents, wiki pages, me
 ## General search
 
 ```bash
-redmine search <query> [flags]
+rdflow search <query> [flags]
 ```
 
 | Flag | Description |
@@ -61,22 +61,22 @@ changesets. Add `--issues`, `--wiki-pages`, etc. to cut the noise.
 <Tabs syncKey="search-examples">
   <TabItem label="Everything">
     ```bash
-    redmine search "login bug"
+    rdflow search "login bug"
     ```
   </TabItem>
   <TabItem label="All projects">
     ```bash
-    redmine search "login bug" --scope all --issues
+    rdflow search "login bug" --scope all --issues
     ```
   </TabItem>
   <TabItem label="Project-scoped">
     ```bash
-    redmine search "login bug" --project myproject --open-issues
+    rdflow search "login bug" --project myproject --open-issues
     ```
   </TabItem>
   <TabItem label="Titles only">
     ```bash
-    redmine search "login" --titles-only --issues
+    rdflow search "login" --titles-only --issues
     ```
   </TabItem>
 </Tabs>
@@ -86,11 +86,11 @@ changesets. Add `--issues`, `--wiki-pages`, etc. to cut the noise.
 Search specific resource types directly:
 
 ```bash
-redmine search issues   <query> [flags]
-redmine search projects <query> [flags]
-redmine search wiki     <query> [flags]
-redmine search news     <query> [flags]
-redmine search messages <query> [flags]
+rdflow search issues   <query> [flags]
+rdflow search projects <query> [flags]
+rdflow search wiki     <query> [flags]
+rdflow search news     <query> [flags]
+rdflow search messages <query> [flags]
 ```
 
 <Aside type="tip">
@@ -100,7 +100,7 @@ redmine search messages <query> [flags]
 ## Interactive browse
 
 ```bash
-redmine search browse <query> [flags]
+rdflow search browse <query> [flags]
 ```
 
 Opens search results in an interactive terminal browser.

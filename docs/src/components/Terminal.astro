@@ -1,13 +1,13 @@
 ---
 const t = Astro.locals.t;
 const lines = [
-  { type: 'command', text: 'redmine issues list --project api --assignee me' },
+  { type: 'command', text: 'rdflow issues list --project api --assignee me' },
   { type: 'header', text: 'ID    TRACKER  STATUS       PRIORITY  SUBJECT' },
   { type: 'row', id: '312', text: `   Bug      In Progress  High      ${t('terminal.subject1')}` },
   { type: 'row', id: '298', text: `   Feature  Open         Normal    ${t('terminal.subject2')}` },
   { type: 'row', id: '285', text: `   Feature  Open         Normal    ${t('terminal.subject3')}` },
   { type: 'blank' },
-  { type: 'command', text: `redmine issues close 312 --notes "${t('terminal.notes')}"` },
+  { type: 'command', text: `rdflow issues close 312 --notes "${t('terminal.notes')}"` },
   { type: 'success', text: t('terminal.closed', { id: '312' }) },
 ];
 ---

@@ -12,7 +12,7 @@ import { Steps, Tabs, TabItem, Aside, FileTree, LinkCard, CardGrid, Badge } from
 1. Start the login wizard:
 
    ```bash
-   redmine auth login
+   rdflow auth login
    ```
 
 2. Provide your Redmine server URL and authentication method (API key or username/password).
@@ -23,33 +23,33 @@ import { Steps, Tabs, TabItem, Aside, FileTree, LinkCard, CardGrid, Badge } from
 
 </Steps>
 
-Without a terminal (CI, scripts, AI agents), skip the wizard: `echo "$KEY" | redmine auth login --server https://redmine.example.com --api-key-file -`. See [`auth login`](/commands/auth/#non-interactive-login).
+Without a terminal (CI, scripts, AI agents), skip the wizard: `echo "$KEY" | rdflow auth login --server https://redmine.example.com --api-key-file -`. See [`auth login`](/commands/auth/#non-interactive-login).
 
 ## Multiple profiles
 
-You can authenticate against as many Redmine instances as you like. Each `redmine auth login` creates a named profile.
+You can authenticate against as many Redmine instances as you like. Each `rdflow auth login` creates a named profile.
 
 <Tabs syncKey="profile-flow">
   <TabItem label="Add">
     ```bash
-    redmine auth login             # second instance
-    redmine auth login --name work # with an explicit name
+    rdflow auth login             # second instance
+    rdflow auth login --name work # with an explicit name
     ```
   </TabItem>
   <TabItem label="Switch">
     ```bash
-    redmine auth list    # see all profiles
-    redmine auth switch  # interactive picker
+    rdflow auth list    # see all profiles
+    rdflow auth switch  # interactive picker
     ```
   </TabItem>
   <TabItem label="Use once">
     ```bash
-    redmine --profile work issues list
+    rdflow --profile work issues list
     ```
   </TabItem>
   <TabItem label="Status">
     ```bash
-    redmine auth status
+    rdflow auth status
     ```
   </TabItem>
 </Tabs>
@@ -60,7 +60,7 @@ You can authenticate against as many Redmine instances as you like. Each `redmin
 - ~/
   - **.redmine-flow.yaml** active profile + all profile data
   - .local/bin/
-    - redmine binary (install script target)
+    - rdflow binary (install script target)
 </FileTree>
 
 ```yaml title="~/.redmine-flow.yaml"
@@ -94,7 +94,7 @@ You can keep the API key (or password) out of the config file and in your operat
 1. Opt in during login. The wizard asks whether to use the keyring when a usable backend is detected on a TTY. For scripted logins use the flag:
 
    ```bash
-   redmine auth login --keyring
+   rdflow auth login --keyring
    ```
 
 2. The profile records `credential_store: keyring` and the secret is written to the keyring, not the file. On the next run the secret is read back from the keyring automatically.
@@ -103,14 +103,14 @@ You can keep the API key (or password) out of the config file and in your operat
 
 Logging in again for a profile that already uses the keyring keeps the keyring by default; it never silently falls back to the plaintext file. Pass `--keyring=false` to explicitly switch a profile back to plaintext storage.
 
-The MCP server's bearer token (`mcp.auth_token`, see [AI agents](/guides/ai-agents/)) is kept in the keyring too. A keyring profile that still has a plaintext `mcp.auth_token` keeps working: the value in the file is used, and it is moved into the keyring and removed from the file the next time the CLI saves the config (for example on `redmine auth login` or `redmine auth switch`). If the keyring is unavailable at that point, the token stays in the file and the save still succeeds. To rotate the token, write the new value into `mcp.auth_token`; `REDMINE_MCP_AUTH_TOKEN` and `--auth-token` still take precedence. Switching the profile back to plaintext moves the token back into the file, and `redmine auth logout` removes it from the keyring.
+The MCP server's bearer token (`mcp.auth_token`, see [AI agents](/guides/ai-agents/)) is kept in the keyring too. A keyring profile that still has a plaintext `mcp.auth_token` keeps working: the value in the file is used, and it is moved into the keyring and removed from the file the next time the CLI saves the config (for example on `rdflow auth login` or `rdflow auth switch`). If the keyring is unavailable at that point, the token stays in the file and the save still succeeds. To rotate the token, write the new value into `mcp.auth_token`; `REDMINE_MCP_AUTH_TOKEN` and `--auth-token` still take precedence. Switching the profile back to plaintext moves the token back into the file, and `rdflow auth logout` removes it from the keyring.
 
 Resolution order is CLI flag, then environment variable, then keyring, then the plaintext file field. Environment variables and flags are resolved before the keyring is consulted, so an explicit API key or password means that secret is not read from the keyring.
 
-The MCP token is a separate lookup: on a keyring profile, `redmine mcp serve --http` reads it from the keyring whenever `--auth-token-file`, `--auth-token`, `REDMINE_MCP_AUTH_TOKEN` and `mcp.auth_token` all leave it unset, even if the API key came from a flag or environment variable. If that read fails (for example a locked keychain over SSH), or `REDMINE_NO_KEYRING=1` disables it, the server refuses to start rather than serve without a token that may exist.
+The MCP token is a separate lookup: on a keyring profile, `rdflow mcp serve --http` reads it from the keyring whenever `--auth-token-file`, `--auth-token`, `REDMINE_MCP_AUTH_TOKEN` and `mcp.auth_token` all leave it unset, even if the API key came from a flag or environment variable. If that read fails (for example a locked keychain over SSH), or `REDMINE_NO_KEYRING=1` disables it, the server refuses to start rather than serve without a token that may exist.
 
 <Aside type="tip" title="CI and headless environments">
-  Keep using environment variables (`REDMINE_API_KEY`, `REDMINE_PASSWORD`) in CI. Set `REDMINE_NO_KEYRING=1` to hard-disable all keyring reads and writes on runners that have no usable keyring, so nothing ever stalls on a keyring prompt. To run `redmine mcp serve --http` there with a keyring profile, also supply the token with `REDMINE_MCP_AUTH_TOKEN` or `--auth-token-file`, or pass `--no-auth` if serving without authentication is what you want; otherwise the server refuses to start.
+  Keep using environment variables (`REDMINE_API_KEY`, `REDMINE_PASSWORD`) in CI. Set `REDMINE_NO_KEYRING=1` to hard-disable all keyring reads and writes on runners that have no usable keyring, so nothing ever stalls on a keyring prompt. To run `rdflow mcp serve --http` there with a keyring profile, also supply the token with `REDMINE_MCP_AUTH_TOKEN` or `--auth-token-file`, or pass `--no-auth` if serving without authentication is what you want; otherwise the server refuses to start.
 </Aside>
 
 ## Environment variables
@@ -163,10 +163,10 @@ Flags take precedence over config values and environment variables.
 A key given with `--api-key` shows up in process listings (`ps`), shell history, and CI logs. Prefer one of these instead:
 
 ```bash
-redmine --api-key-file ~/.config/redmine/key issues list   # read from a file
-pass show redmine | redmine --api-key-file - issues list   # read from stdin
+rdflow --api-key-file ~/.config/redmine/key issues list   # read from a file
+pass show redmine | rdflow --api-key-file - issues list   # read from stdin
 export REDMINE_API_KEY=your-api-key                        # environment variable
-redmine auth login --keyring                               # system keyring
+rdflow auth login --keyring                               # system keyring
 ```
 
 `--api-key-file` trims surrounding whitespace, including the trailing newline, and cannot be combined with `--api-key`. With `-`, stdin is consumed by the key, so it cannot also feed a command that reads stdin.
@@ -196,7 +196,7 @@ Point the CLI at a production Redmine without any risk of changing data. When en
 Enable it in any of three ways (precedence: flag > environment variable > config):
 
 ```bash
-redmine --read-only issues list   # single invocation
+rdflow --read-only issues list   # single invocation
 export REDMINE_READ_ONLY=1        # whole shell session
 ```
 
@@ -233,13 +233,13 @@ profiles:
 For a single invocation, pass `--header` (repeatable). It overrides a profile header with the same name:
 
 ```bash
-redmine --header "User-Agent: Mozilla/5.0" issues list
+rdflow --header "User-Agent: Mozilla/5.0" issues list
 ```
 
-Passed to `redmine auth login`, the headers are used for the connection test and saved to the profile, so a server that requires them works from the first login:
+Passed to `rdflow auth login`, the headers are used for the connection test and saved to the profile, so a server that requires them works from the first login:
 
 ```bash
-redmine auth login --header "User-Agent: Mozilla/5.0"
+rdflow auth login --header "User-Agent: Mozilla/5.0"
 ```
 
 Logging in again keeps a profile's headers as long as the server's host stays the same. If you point the profile at a different server, its headers are dropped, since they may be secrets meant for the old one. To remove a header, delete it from the config file.
@@ -310,9 +310,9 @@ profiles:
 
 ## Connection security
 
-Use an `https://` server URL where you can. Plain `http://` is supported, for example for an internal instance, but the API key or password then crosses the network unencrypted. `redmine auth login` points this out once when you enter a plain `http://` URL for a host other than loopback (`localhost` and names under it such as `dev.localhost`, `127.0.0.0/8`, `::1`); other commands connect without a warning.
+Use an `https://` server URL where you can. Plain `http://` is supported, for example for an internal instance, but the API key or password then crosses the network unencrypted. `rdflow auth login` points this out once when you enter a plain `http://` URL for a host other than loopback (`localhost` and names under it such as `dev.localhost`, `127.0.0.0/8`, `::1`); other commands connect without a warning.
 
-Redirects are followed up to 10 hops. A redirect from `https://` to `http://` is always refused, so a connection that starts encrypted is never downgraded. Credentials and custom headers are only sent when both the scheme and the host (including the port) match the configured server; the one exception is an `http://` server redirecting to `https://` on the same host. A redirect away from the configured server is refused when it leads to a loopback, private or otherwise non-public address, for API requests (including `redmine api`) and attachment downloads alike; see [attachments download](/commands/attachments/#download) for the full rules.
+Redirects are followed up to 10 hops. A redirect from `https://` to `http://` is always refused, so a connection that starts encrypted is never downgraded. Credentials and custom headers are only sent when both the scheme and the host (including the port) match the configured server; the one exception is an `http://` server redirecting to `https://` on the same host. A redirect away from the configured server is refused when it leads to a loopback, private or otherwise non-public address, for API requests (including `rdflow api`) and attachment downloads alike; see [attachments download](/commands/attachments/#download) for the full rules.
 
 ## Timeouts and limits
 
@@ -323,7 +323,7 @@ API responses are capped at 256 MiB, and at most 1 MiB of an error response is r
 ## Inspect current config
 
 ```bash
-redmine config
+rdflow config
 ```
 
 Prints the active profile, server, auth method, default project, output format, read-only state, and the names of configured headers (values are hidden).

@@ -27,28 +27,28 @@ import { CardGrid, LinkCard, Tabs, TabItem, Aside, Badge } from '@astrojs/starli
 <Tabs syncKey="api-examples">
   <TabItem label="GET">
     ```bash
-    redmine api /users/current.json
+    rdflow api /users/current.json
 
-    redmine api /issues.json -f project_id=myproject -f limit=5
+    rdflow api /issues.json -f project_id=myproject -f limit=5
     ```
   </TabItem>
   <TabItem label="POST">
     ```bash
     # 提供请求体字段时会自动检测请求方法
-    redmine api /issues.json \
+    rdflow api /issues.json \
       -F 'issue={"subject":"Bug report","project_id":1}'
     ```
   </TabItem>
   <TabItem label="从文件读取">
     ```bash
     # - 表示从标准输入读取
-    redmine api /issues.json --input body.json
+    rdflow api /issues.json --input body.json
     ```
   </TabItem>
   <TabItem label="指定请求方法">
     ```bash
-    redmine api -X DELETE /issues/123.json
-    redmine api -X PUT /issues/123.json -F 'issue={"status_id":5}' --silent
+    rdflow api -X DELETE /issues/123.json
+    rdflow api -X PUT /issues/123.json -F 'issue={"status_id":5}' --silent
     ```
   </TabItem>
 </Tabs>
@@ -77,8 +77,8 @@ import { CardGrid, LinkCard, Tabs, TabItem, Aside, Badge } from '@astrojs/starli
 ## trackers
 
 ```bash
-redmine trackers list
-redmine trackers get Bug
+rdflow trackers list
+rdflow trackers get Bug
 ```
 
 列出所有可用的跟踪类型。列表视图会显示每个跟踪类型的默认状态，而 `trackers get` 会在 Redmine 服务器提供这些数据时展示更完整的元数据，例如启用的标准字段。
@@ -86,7 +86,7 @@ redmine trackers get Bug
 ## statuses
 
 ```bash
-redmine statuses list
+rdflow statuses list
 ```
 
 列出所有工单状态。
@@ -94,18 +94,18 @@ redmine statuses list
 ## priorities
 
 ```bash
-redmine priorities list
-redmine priorities list -o json
-redmine priorities list --jq '.[] | select(.is_default) | .id'
+rdflow priorities list
+rdflow priorities list -o json
+rdflow priorities list --jq '.[] | select(.is_default) | .id'
 ```
 
-列出工单优先级及其 ID、是否默认、是否启用。名称或 ID 可用于 `redmine issues create --priority` 与 `redmine issues update --priority`。也可使用别名 `redmine priority ls`。
+列出工单优先级及其 ID、是否默认、是否启用。名称或 ID 可用于 `rdflow issues create --priority` 与 `rdflow issues update --priority`。也可使用别名 `rdflow priority ls`。
 
 ## activities
 
 ```bash
-redmine activities list
-redmine activities list --project <project>
+rdflow activities list
+rdflow activities list --project <project>
 ```
 
 列出工时活动。不带 `--project` 时列出共享（全局）活动，并显示是否默认与是否启用。
@@ -119,17 +119,17 @@ redmine activities list --project <project>
 ## document-categories
 
 ```bash
-redmine document-categories list
+rdflow document-categories list
 ```
 
-列出文档类别（`ID`、`Name`、`Default`、`Active`）。也可使用别名 `redmine document-category ls`。
+列出文档类别（`ID`、`Name`、`Default`、`Active`）。也可使用别名 `rdflow document-category ls`。
 
 ## custom-fields
 
 ```bash
-redmine custom-fields list
-redmine custom-fields get "Severity"
-redmine custom-fields get 7 --output json
+rdflow custom-fields list
+rdflow custom-fields get "Severity"
+rdflow custom-fields get 7 --output json
 ```
 
 列出或查看自定义字段定义。列表视图会展示目标资源类型、字段格式以及是否必填、可筛选、可搜索、可多选等标志。`custom-fields get` 还会显示默认值、长度与正则约束、列表字段的可选值，以及该字段限定的跟踪类型与角色。
@@ -153,17 +153,17 @@ redmine custom-fields get 7 --output json
 <Tabs syncKey="shell">
   <TabItem label="bash" icon="seti:shell">
     ```bash
-    redmine completion bash > /etc/bash_completion.d/redmine
+    rdflow completion bash > /etc/bash_completion.d/redmine
     ```
   </TabItem>
   <TabItem label="zsh" icon="seti:shell">
     ```bash
-    redmine completion zsh > "${fpath[1]}/_redmine"
+    rdflow completion zsh > "${fpath[1]}/_redmine"
     ```
   </TabItem>
   <TabItem label="fish" icon="seti:shell">
     ```bash
-    redmine completion fish > ~/.config/fish/completions/redmine.fish
+    rdflow completion fish > ~/.config/fish/completions/redmine.fish
     ```
   </TabItem>
 </Tabs>
@@ -172,14 +172,14 @@ redmine custom-fields get 7 --output json
   通过 Homebrew 安装时会自动附带补全脚本——仅当通过安装脚本或手动下载安装时才需运行上述命令。
 </Aside>
 
-跟踪器、版本、类别和成员名称等补全候选项来自服务器。bash 脚本会在 bash 看到它们之前先加引号，因此像 `$(cmd)` 这样的名称只会作为文本给出，绝不会被执行；包含换行的候选项会被丢弃，控制字符会被中和。旧版本生成的 bash 脚本会把候选项不加引号地交给 bash：如果你把 `redmine completion bash` 的输出保存到了文件中，升级后请重新生成该文件。
+跟踪器、版本、类别和成员名称等补全候选项来自服务器。bash 脚本会在 bash 看到它们之前先加引号，因此像 `$(cmd)` 这样的名称只会作为文本给出，绝不会被执行；包含换行的候选项会被丢弃，控制字符会被中和。旧版本生成的 bash 脚本会把候选项不加引号地交给 bash：如果你把 `rdflow completion bash` 的输出保存到了文件中，升级后请重新生成该文件。
 
 ## 自动更新
 
 <Badge text="已验证校验和" variant="success" /> <Badge text="已验证证明" variant="success" />
 
 ```bash
-redmine update
+rdflow update
 ```
 
 检查 GitHub 是否有最新版本并下载，只有通过以下两项检查后才会替换当前二进制文件：
@@ -195,7 +195,7 @@ gh attestation verify redmine-cli-<os>-<arch>.tar.gz --repo aarondpn/redmine-cli
   --source-ref refs/tags/<tag>
 ```
 
-校验和与归档文件来自同一位置，因此只有证明才能证实二进制文件确实由本项目的发布流水线构建。如果证明缺失、无效或由其他身份签名，更新会被拒绝。版本发布后几分钟才会生成证明；如果在发布后 30 分钟内更新而证明尚未生成，`redmine update` 会说明这一点并提示稍后重试，而不会报告验证失败。
+校验和与归档文件来自同一位置，因此只有证明才能证实二进制文件确实由本项目的发布流水线构建。如果证明缺失、无效或由其他身份签名，更新会被拒绝。版本发布后几分钟才会生成证明；如果在发布后 30 分钟内更新而证明尚未生成，`rdflow update` 会说明这一点并提示稍后重试，而不会报告验证失败。
 
 通过 Homebrew 安装时，将委托给 `brew upgrade` 执行。
 
@@ -205,7 +205,7 @@ gh attestation verify redmine-cli-<os>-<arch>.tar.gz --repo aarondpn/redmine-cli
 |------|------|
 | `--skip-attestation` | 仅校验校验和后安装，并打印警告。 |
 
-验证需要访问 `api.github.com`（attestations API）和 `tuf-repo-cdn.sigstore.dev`（Sigstore 信任根，在用户缓存目录中缓存一天）。任一地址无法访问时，`redmine update` 会拒绝安装并建议使用 `--skip-attestation`。设置 `GITHUB_TOKEN` 或 `GH_TOKEN` 可避免 GitHub API 速率限制；该令牌只会发送给 `api.github.com`。
+验证需要访问 `api.github.com`（attestations API）和 `tuf-repo-cdn.sigstore.dev`（Sigstore 信任根，在用户缓存目录中缓存一天）。任一地址无法访问时，`rdflow update` 会拒绝安装并建议使用 `--skip-attestation`。设置 `GITHUB_TOKEN` 或 `GH_TOKEN` 可避免 GitHub API 速率限制；该令牌只会发送给 `api.github.com`。
 
 <Aside type="caution" title="验证失败时不要跳过">
   `--skip-attestation` 仅适用于屏蔽了验证端点的网络环境。如果验证*失败*（而不是无法访问），请不要绕过，而应将其作为安全问题报告。[安装脚本](/zh-cn/getting-started/installation/)中的等效开关 `REDMINE_CLI_SKIP_ATTESTATION=1` 同样如此。
@@ -215,17 +215,17 @@ gh attestation verify redmine-cli-<os>-<arch>.tar.gz --repo aarondpn/redmine-cli
 
 ### 启动时更新检查
 
-每次执行命令时，`redmine` 会在后台检查 GitHub 是否有新版本。如有新版本，会在命令输出后将提示信息打印至 stderr：
+每次执行命令时，`rdflow` 会在后台检查 GitHub 是否有新版本。如有新版本，会在命令输出后将提示信息打印至 stderr：
 
 ```text
-A new version of redmine is available: v1.2.0 → v1.3.0
+A new version of rdflow is available: v1.2.0 → v1.3.0
 https://github.com/aarondpn/redmine-cli/releases/tag/v1.3.0
-Run "redmine update" to upgrade
+Run "rdflow update" to upgrade
 ```
 
 检查与命令同时在后台启动，并在启动 2 秒后放弃。只有命令成功时才会打印结果；命令失败时会立即退出。如果命令结束时检查仍在进行，CLI 会等待它，最多等到这个 2 秒的截止时间；等待超过 200 毫秒时会向 stderr 打印 `Checking for updates...`。有效的缓存结果（见下文）会立即返回，因此只有需要询问 GitHub 时才会出现这种延迟：成功检查后每天一次，但在检查失败或超时期间则每次运行都会发生（失败结果不会被缓存）。以下情况下会自动跳过检查：
 
-- 当前命令本身是 `redmine update`；
+- 当前命令本身是 `rdflow update`；
 - stderr 不是 TTY（管道输出或 CI 环境）；
 - `REDMINE_NO_UPDATE_CHECK` 的值为 `1` 或 `true`。
 

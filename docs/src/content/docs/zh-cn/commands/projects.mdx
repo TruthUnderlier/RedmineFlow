@@ -21,7 +21,7 @@ import { CardGrid, LinkCard, Aside, Badge } from '@astrojs/starlight/components'
 ## list
 
 ```bash
-redmine projects list [flags]
+rdflow projects list [flags]
 ```
 
 | 标志 | 描述 |
@@ -36,7 +36,7 @@ redmine projects list [flags]
 ## get
 
 ```bash
-redmine projects get <identifier> [flags]
+rdflow projects get <identifier> [flags]
 ```
 
 别名：`show`、`view`。
@@ -51,7 +51,7 @@ redmine projects get <identifier> [flags]
 ## create
 
 ```bash
-redmine projects create [flags]
+rdflow projects create [flags]
 ```
 
 | 标志 | 描述 |
@@ -70,7 +70,7 @@ redmine projects create [flags]
 | `--custom-field`       | 项目自定义字段值，格式为 `name=value` 或 `id=value`（可重复；多值字段请对同一字段重复使用该标志，`name=` 表示清空）。参见[自定义字段值](/zh-cn/commands/issues/#自定义字段值)。名称仅匹配项目自定义字段 |
 
 ```bash
-redmine projects create \
+rdflow projects create \
   --name "Platform" --identifier platform \
   --homepage https://platform.example.test \
   --tracker Bug,Feature \
@@ -80,7 +80,7 @@ redmine projects create \
 ## update
 
 ```bash
-redmine projects update <identifier> [flags]
+rdflow projects update <identifier> [flags]
 ```
 
 所有标志均为可选；未提供的字段保持不变。
@@ -108,7 +108,7 @@ redmine projects update <identifier> [flags]
 
 <Badge text="Redmine 5.0+" variant="note" />
 ```bash
-redmine projects archive <identifier> [flags]
+rdflow projects archive <identifier> [flags]
 ```
 
 | 标志 | 描述 |
@@ -121,7 +121,7 @@ redmine projects archive <identifier> [flags]
 
 <Badge text="Redmine 5.0+" variant="note" />
 ```bash
-redmine projects unarchive <identifier>
+rdflow projects unarchive <identifier>
 ```
 
 恢复先前归档的项目，使其再次出现在默认列表中。
@@ -130,7 +130,7 @@ redmine projects unarchive <identifier>
 
 <Badge text="危险操作" variant="caution" />
 ```bash
-redmine projects delete <identifier> [flags]
+rdflow projects delete <identifier> [flags]
 ```
 
 | 标志 | 描述 |
@@ -144,7 +144,7 @@ redmine projects delete <identifier> [flags]
 ## members
 
 ```bash
-redmine projects members <identifier> [flags]
+rdflow projects members <identifier> [flags]
 ```
 
 列出项目的所有成员及其角色。

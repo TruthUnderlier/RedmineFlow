@@ -17,7 +17,7 @@ import { CardGrid, LinkCard, Tabs, TabItem, Aside, Badge } from '@astrojs/starli
 ## list
 
 ```bash
-redmine files list [flags]
+rdflow files list [flags]
 ```
 
 别名：`ls`。输出每个文件的 ID、名称、字节大小、关联版本（如有）、上传者及创建时间。
@@ -32,17 +32,17 @@ redmine files list [flags]
 <Tabs syncKey="files-list">
   <TabItem label="默认">
     ```bash
-    redmine files list --project myproject
+    rdflow files list --project myproject
     ```
   </TabItem>
   <TabItem label="JSON">
     ```bash
-    redmine files list --project myproject -o json
+    rdflow files list --project myproject -o json
     ```
   </TabItem>
   <TabItem label="分页">
     ```bash
-    redmine files list --project myproject --limit 10 --offset 20
+    rdflow files list --project myproject --limit 10 --offset 20
     ```
   </TabItem>
 </Tabs>
@@ -54,7 +54,7 @@ redmine files list [flags]
 ## upload
 
 ```bash
-redmine files upload <path> [flags]
+rdflow files upload <path> [flags]
 ```
 
 别名：`add`、`create`。先调用 Redmine 的 `/uploads.json` 上传文件，再用返回的 token 把文件挂在项目下。通过 `--version` 可将文件绑定到某个里程碑，使其出现在按版本筛选的视图中。
@@ -69,14 +69,14 @@ redmine files upload <path> [flags]
 | `-o, --output`   | 输出格式 |
 
 ```bash
-redmine files upload ./release.tar.gz --project myproject
+rdflow files upload ./release.tar.gz --project myproject
 
-redmine files upload ./changelog.md --project myproject \
+rdflow files upload ./changelog.md --project myproject \
   --version 1.2.0 --description "发布说明"
 
-redmine files upload ./build.zip --project myproject --filename "build-1.2.0.zip"
+rdflow files upload ./build.zip --project myproject --filename "build-1.2.0.zip"
 ```
 
 <Aside type="tip">
-  Redmine 上传成功后不会返回响应体。可在上传后执行 `redmine files list --project myproject` 以确认文件入库，并获取其 ID 与下载链接。
+  Redmine 上传成功后不会返回响应体。可在上传后执行 `rdflow files list --project myproject` 以确认文件入库，并获取其 ID 与下载链接。
 </Aside>

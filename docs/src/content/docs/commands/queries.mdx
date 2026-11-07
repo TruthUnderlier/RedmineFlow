@@ -19,7 +19,7 @@ The `queries` command (alias `q`) lists saved queries (custom filters) defined i
 ## list
 
 ```bash
-redmine queries list [flags]
+rdflow queries list [flags]
 ```
 
 | Flag | Description |
@@ -31,14 +31,14 @@ redmine queries list [flags]
 Each row reports the query ID, name, visibility (`public` or `private`), and scope (`global` or `project <id>`).
 
 ```bash
-redmine queries list
-redmine queries list -o json
+rdflow queries list
+rdflow queries list -o json
 ```
 
 ## get
 
 ```bash
-redmine queries get <id-or-name> [flags]
+rdflow queries get <id-or-name> [flags]
 ```
 
 Aliases: `show`, `view`. Accepts a numeric ID or query name.
@@ -54,13 +54,13 @@ Once you know the query ID (or name), run it through the issues endpoint:
 
 ```bash
 # By ID - no extra round trip
-redmine issues list --query-id 12
+rdflow issues list --query-id 12
 
 # By name - the CLI resolves the ID first
-redmine issues list --query "My open issues"
+rdflow issues list --query "My open issues"
 
 # Combine with --project to disambiguate per-project queries
-redmine issues list --project myproject --query "Sprint backlog"
+rdflow issues list --project myproject --query "Sprint backlog"
 ```
 
 The saved query's filters apply server-side. You can still pair `--query-id` with `--sort`, `--limit`, `--offset`, and `--include` to shape the result set.

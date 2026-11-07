@@ -19,7 +19,7 @@ import { CardGrid, LinkCard, Aside, Badge } from '@astrojs/starlight/components'
 ## list
 
 ```bash
-redmine users list [flags]
+rdflow users list [flags]
 ```
 
 | 标志 | 描述 |
@@ -35,7 +35,7 @@ redmine users list [flags]
 ## get
 
 ```bash
-redmine users get <id-or-name> [flags]
+rdflow users get <id-or-name> [flags]
 ```
 
 别名：`show`、`view`。接受数字 ID、登录名、全名或 `me`。
@@ -48,7 +48,7 @@ redmine users get <id-or-name> [flags]
 ## me
 
 ```bash
-redmine users me [flags]
+rdflow users me [flags]
 ```
 
 显示当前已认证用户的详细信息——在脚本中用于解析当前账户非常实用。
@@ -72,7 +72,7 @@ redmine users me [flags]
 ## create
 
 ```bash
-redmine users create [flags]
+rdflow users create [flags]
 ```
 
 | 标志 | 描述 |
@@ -97,21 +97,21 @@ redmine users create [flags]
 ## update
 
 ```bash
-redmine users update <id-or-name> [flags]
+rdflow users update <id-or-name> [flags]
 ```
 
 接受与 [`create`](#create) 相同的标志（均为可选，`--send-information` 仅在 create 时可用）。用户参数接受数字 ID、登录名、全名或 `me`。仅显式设置的字段会发送到服务器，因此局部更新不会覆盖其他字段。
 
 ```bash
 # 多值自定义字段：重复使用该标志
-redmine users update jdoe --custom-field Skills=Go --custom-field Skills=SQL
+rdflow users update jdoe --custom-field Skills=Go --custom-field Skills=SQL
 ```
 
 ## delete
 
 <Badge text="危险操作" variant="caution" />
 ```bash
-redmine users delete <id-or-name> [flags]
+rdflow users delete <id-or-name> [flags]
 ```
 
 | 标志 | 描述 |

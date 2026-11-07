@@ -9,7 +9,7 @@ import InstallTabs from '../../../components/InstallTabs.astro';
 redmine-cli ships two complementary integrations, both vendor-neutral:
 
 - **Agent Skill** -- a `SKILL.md` instruction set following the open [Agent Skills standard](https://agentskills.io), supported by 35+ agents (Claude, Codex, Gemini, Cursor, Copilot, Cline, Goose, Windsurf, Roo, Junie, ...). Teaches the agent how to drive the CLI effectively.
-- **MCP Server** -- `redmine mcp serve` exposes the CLI over the [Model Context Protocol](https://modelcontextprotocol.io). Best for hosts that discover tools through MCP.
+- **MCP Server** -- `rdflow mcp serve` exposes the CLI over the [Model Context Protocol](https://modelcontextprotocol.io). Best for hosts that discover tools through MCP.
 
 For most hosts you want both. Several major hosts (Claude Code, Codex CLI, Gemini CLI) support a one-step plugin install that bundles them together.
 
@@ -17,13 +17,13 @@ For most hosts you want both. Several major hosts (Claude Code, Codex CLI, Gemin
 
 <InstallTabs />
 
-- **Any agent** uses the [skills.sh](https://skills.sh) installer (`npx skills add`), which detects your agent and writes `SKILL.md` to the right location (`.claude/skills/`, `.codex/skills/`, `.gemini/skills/`, or the cross-vendor `.agents/skills/` fallback). The bundled wrapper is `redmine install-skill [--global]`.
+- **Any agent** uses the [skills.sh](https://skills.sh) installer (`npx skills add`), which detects your agent and writes `SKILL.md` to the right location (`.claude/skills/`, `.codex/skills/`, `.gemini/skills/`, or the cross-vendor `.agents/skills/` fallback). The bundled wrapper is `rdflow install-skill [--global]`.
 - **Claude Code / Codex CLI / Gemini CLI** bundle the skill and MCP server in a single plugin install. After installing, run `/reload-plugins` (Claude) or restart the CLI to activate.
-- **MCP host** is the manual route for Cursor, VS Code, Zed, Claude Desktop, and other MCP-aware hosts. Add `redmine mcp serve` (with optional `--profile`, `--enable-writes`, `--enable-groups`, ...) to your host's MCP config; see your host's MCP setup docs for the exact file path and JSON shape.
-- **Docker** runs the MCP server from the `ghcr.io/aarondpn/redmine-mcp` image without installing `redmine` at all. See [Run with Docker](#run-with-docker).
+- **MCP host** is the manual route for Cursor, VS Code, Zed, Claude Desktop, and other MCP-aware hosts. Add `rdflow mcp serve` (with optional `--profile`, `--enable-writes`, `--enable-groups`, ...) to your host's MCP config; see your host's MCP setup docs for the exact file path and JSON shape.
+- **Docker** runs the MCP server from the `ghcr.io/aarondpn/redmine-mcp` image without installing `rdflow` at all. See [Run with Docker](#run-with-docker).
 
 <Aside type="note">
-  Prerequisite for the non-Docker paths: `redmine` must be on the host's `PATH` and you must have logged in once via `redmine auth login`. The skill-only path additionally needs Node.js for `npx skills add`.
+  Prerequisite for the non-Docker paths: `rdflow` must be on the host's `PATH` and you must have logged in once via `rdflow auth login`. The skill-only path additionally needs Node.js for `npx skills add`.
 </Aside>
 
 ## Agent Skill
@@ -34,22 +34,22 @@ The full skill source: [`skills/redmine-cli/SKILL.md`](https://github.com/aarond
 
 ## MCP Server
 
-`redmine mcp serve` exposes the CLI as a [Model Context Protocol](https://modelcontextprotocol.io) server over stdio by default, or over streamable HTTP when `--http` is passed. MCP-aware hosts can then drive Redmine through tool calls, reusing the same profile-backed authentication as every other `redmine` command.
+`rdflow mcp serve` exposes the CLI as a [Model Context Protocol](https://modelcontextprotocol.io) server over stdio by default, or over streamable HTTP when `--http` is passed. MCP-aware hosts can then drive Redmine through tool calls, reusing the same profile-backed authentication as every other `rdflow` command.
 
 ### How it works
 
-- **Transport:** stdio by default. The host can spawn `redmine mcp serve` and talk JSON-RPC over its standard streams, or you can pass `--http :8080` to expose the same server over streamable HTTP.
+- **Transport:** stdio by default. The host can spawn `rdflow mcp serve` and talk JSON-RPC over its standard streams, or you can pass `--http :8080` to expose the same server over streamable HTTP.
 - **Authentication:** the active profile is used by default. Override with `--profile <name>`, `--server` / `--api-key`, or the `REDMINE_*` environment variables -- exactly like every other subcommand.
 - **Read-only by default.** Mutating tools (create / update / delete, comment, close, reopen, and similar write operations) are registered only when `--enable-writes` is passed. Without the flag they never appear in `tools/list`. For a second, transport-level guarantee, set [read-only mode](/getting-started/configuration/#read-only-mode) (`read_only: true` in the profile or `REDMINE_READ_ONLY=1`) -- it blocks every write at the HTTP layer, even when `--enable-writes` is passed.
 - **Verified status changes.** `update_issue` (with `status_id`), `close_issue` and `reopen_issue` read the issue back and return a tool error when Redmine silently ignored the transition, naming the allowed statuses on Redmine 5.0+ (`close_issue` / `reopen_issue` accept an issue that is already in another closed / open status). Other changes in the same call (such as notes) may already have been applied. The CLI behaves the same way, see [status changes are verified](/commands/issues/#status-changes-are-verified).
 - **Verified wiki parent changes.** `create_wiki_page` and `update_wiki_page` accept `parent_title`, and `list_wiki_pages` reports each page's `parent`. Redmine silently ignores a parent change on an existing page without the `rename_wiki_pages` permission, so these tools read the page back and return a tool error when the parent did not change. `update_wiki_page` resends the current text when `text` is omitted, so `{project_id, page, parent_title}` is enough to move a page. The CLI behaves the same way, see [parent changes are verified](/commands/wiki/#parent-changes-are-verified).
 - **ID lookups.** `list_priorities` and `list_time_entry_activities` (with `project_id` for the activities of one project, including project-specific overrides whose IDs differ from the global ones) return the numeric IDs the write tools expect for `priority_id` and `activity_id`.
 - **Editing comments.** `update_journal` (a write tool, Redmine 5.0+) changes the `notes` or `private_notes` of a comment by journal ID; get the IDs from `get_issue` with `includes: ["journals"]`. An empty `notes` string removes the comment from the history. Redmine answers success even when it ignores a change (for example `private_notes` without the "Set notes as private" permission), so re-read the issue to confirm.
-- **Categories and attachments.** `create_issue_category`, `update_issue_category` (`assigned_to_id: 0` clears the default assignee), `delete_issue_category`, `update_attachment` and `delete_attachment` are write tools; `get_issue_category` is read-only. `delete_issue_category` accepts `reassign_to_id` to move the issues to another category, which must belong to the same project: Redmine silently ignores a foreign target and would leave the issues uncategorized, so the tool rejects it instead. There is no MCP tool for attachment thumbnails (binary data); use `redmine attachments thumbnail` from the CLI.
+- **Categories and attachments.** `create_issue_category`, `update_issue_category` (`assigned_to_id: 0` clears the default assignee), `delete_issue_category`, `update_attachment` and `delete_attachment` are write tools; `get_issue_category` is read-only. `delete_issue_category` accepts `reassign_to_id` to move the issues to another category, which must belong to the same project: Redmine silently ignores a foreign target and would leave the issues uncategorized, so the tool rejects it instead. There is no MCP tool for attachment thumbnails (binary data); use `rdflow attachments thumbnail` from the CLI.
 - **News.** `list_news` and `get_news` are read-only (the `news` group); `create_news`, `update_news` and `delete_news` are write tools. Redmine answers a news create without a body, so `create_news` looks the new item up afterwards (newest item in the project with the same title, summary and description by the current user) and returns its `id`; when it cannot be determined the `id` is omitted and a warning is added, so re-read with `list_news` instead of retrying the create. News comments cannot be written through the API; `get_news` with `includes: ["comments"]` only reads them.
 - **Custom field values.** Write tools for issues, projects, time entries, versions, users, my account and groups accept `custom_field_values`, keyed by numeric custom field ID (`list_custom_fields`; names are rejected). Each value is a string, or an array of strings for a multi-value field; `""` clears a field. A one-element array is sent as a plain string, so it is also valid for single-value fields. `create_time_entry` needs it on servers with required time entry custom fields.
-- **API keys stay out of MCP.** No tool or resource returns a Redmine API key. `get_my_account`, `me`, `get_user`, `list_users`, `create_user`, and `redmine://user/...` strip `api_key` from the user record before it reaches the client, even if Redmine includes it in the response, and their output schemas do not declare the field. The CLI is unaffected: `redmine my-account get` still shows your own key.
-- **Configurable surface.** `--enable-groups` / `--disable-groups` constrain the registered tools to specific categories (`issues`, `wiki`, `time`, `news`, ...). For sharper control, `--enable-tools` / `--disable-tools` allow- or deny-list individual tool names. Run `redmine mcp tools` to print the full catalog. Resources follow the same filters as the matching read tool, so a host can't use a resource to read data its tools are denied:
+- **API keys stay out of MCP.** No tool or resource returns a Redmine API key. `get_my_account`, `me`, `get_user`, `list_users`, `create_user`, and `redmine://user/...` strip `api_key` from the user record before it reaches the client, even if Redmine includes it in the response, and their output schemas do not declare the field. The CLI is unaffected: `rdflow my-account get` still shows your own key.
+- **Configurable surface.** `--enable-groups` / `--disable-groups` constrain the registered tools to specific categories (`issues`, `wiki`, `time`, `news`, ...). For sharper control, `--enable-tools` / `--disable-tools` allow- or deny-list individual tool names. Run `rdflow mcp tools` to print the full catalog. Resources follow the same filters as the matching read tool, so a host can't use a resource to read data its tools are denied:
 
   | Resource | Registered when this tool is enabled |
   | --- | --- |
@@ -68,7 +68,7 @@ The full skill source: [`skills/redmine-cli/SKILL.md`](https://github.com/aarond
 
 ### Run with Docker
 
-The `ghcr.io/aarondpn/redmine-mcp` image (linux/amd64 and linux/arm64) runs `redmine mcp serve` directly. You don't need a local install, a profile, or a keyring. Pass the server URL and API key as environment variables instead. Every `REDMINE_*` variable and every `redmine mcp serve` flag works the same way inside the container. Flags go after the image name.
+The `ghcr.io/aarondpn/redmine-mcp` image (linux/amd64 and linux/arm64) runs `rdflow mcp serve` directly. You don't need a local install, a profile, or a keyring. Pass the server URL and API key as environment variables instead. Every `REDMINE_*` variable and every `rdflow mcp serve` flag works the same way inside the container. Flags go after the image name.
 
 | Tag | Tracks |
 |---|---|
@@ -113,7 +113,7 @@ VS Code prompts for the URL and API key and stores the key as a secret. Cursor i
 
 To enable writes or narrow the tool surface, add flags after the image name (`... ghcr.io/aarondpn/redmine-mcp --enable-writes --enable-groups issues,time`) or forward the matching `REDMINE_MCP_*` variable.
 
-Already have a `~/.redmine-flow.yaml` with profiles? Mount it read-only and pick a profile. `--user` keeps the file readable even though `redmine auth login` writes it with mode `0600`. Profiles that store their secret in the system keyring can't be read inside the container; supply `REDMINE_API_KEY` for those.
+Already have a `~/.redmine-flow.yaml` with profiles? Mount it read-only and pick a profile. `--user` keeps the file readable even though `rdflow auth login` writes it with mode `0600`. Profiles that store their secret in the system keyring can't be read inside the container; supply `REDMINE_API_KEY` for those.
 
 ```bash
 docker run -i --rm --user "$(id -u):$(id -g)" \
@@ -162,15 +162,15 @@ Pass `--http <addr>` to expose the server over streamable HTTP instead of stdio.
 
 ```bash
 # Loopback only
-redmine mcp serve --http :8080
+rdflow mcp serve --http :8080
 
 # Explicit loopback (equivalent)
-redmine mcp serve --http 127.0.0.1:8080
+rdflow mcp serve --http 127.0.0.1:8080
 
 # Listen on every interface -- always pair with a token.
 # umask 077 creates the token file readable only by you from the start.
 (umask 077; openssl rand -hex 32 > ~/.redmine-mcp-token)
-redmine mcp serve --http 0.0.0.0:8080 --auth-token-file ~/.redmine-mcp-token
+rdflow mcp serve --http 0.0.0.0:8080 --auth-token-file ~/.redmine-mcp-token
 ```
 
 The umask only applies when the file is created. If the token file already exists, run `chmod 600 ~/.redmine-mcp-token` before writing a new token into it.
@@ -191,7 +191,7 @@ Authorization: Bearer <token>
 Content-Type: application/json
 ```
 
-Pass the token with `--auth-token-file <path>`, or `--auth-token-file -` to read it from standard input (`pass show redmine-mcp | redmine mcp serve --http :8080 --auth-token-file -`). Surrounding whitespace such as a trailing newline is ignored. The token can also live in the config block (`mcp.auth_token`) or `REDMINE_MCP_AUTH_TOKEN`, and the listen address in `mcp.http` or `REDMINE_MCP_HTTP`. Flags override both. For profiles with `credential_store: keyring`, `mcp.auth_token` is moved into the system keyring on the next save, like the API key (see [System keyring](/getting-started/configuration/#system-keyring-optional)). If `redmine mcp serve --http` then can't read the keyring (for example a locked keychain over SSH, or `REDMINE_NO_KEYRING=1`), it refuses to start rather than serve without the token; supply the token another way, or pass `--no-auth` to serve without authentication on purpose.
+Pass the token with `--auth-token-file <path>`, or `--auth-token-file -` to read it from standard input (`pass show redmine-mcp | rdflow mcp serve --http :8080 --auth-token-file -`). Surrounding whitespace such as a trailing newline is ignored. The token can also live in the config block (`mcp.auth_token`) or `REDMINE_MCP_AUTH_TOKEN`, and the listen address in `mcp.http` or `REDMINE_MCP_HTTP`. Flags override both. For profiles with `credential_store: keyring`, `mcp.auth_token` is moved into the system keyring on the next save, like the API key (see [System keyring](/getting-started/configuration/#system-keyring-optional)). If `rdflow mcp serve --http` then can't read the keyring (for example a locked keychain over SSH, or `REDMINE_NO_KEYRING=1`), it refuses to start rather than serve without the token; supply the token another way, or pass `--no-auth` to serve without authentication on purpose.
 
 `--auth-token <token>` also works, but the token then shows up in `ps` output and shell history. Prefer `--auth-token-file`, `REDMINE_MCP_AUTH_TOKEN`, or `mcp.auth_token`.
 
@@ -204,13 +204,13 @@ Pass the token with `--auth-token-file <path>`, or `--auth-token-file -` to read
 For an issue-only assistant, drop everything but the issues group:
 
 ```bash
-redmine mcp serve --enable-groups issues
+rdflow mcp serve --enable-groups issues
 ```
 
 To enable writes everywhere except destructive deletes, combine the flags:
 
 ```bash
-redmine mcp serve --enable-writes --disable-tools delete_issue,delete_project,delete_wiki_page
+rdflow mcp serve --enable-writes --disable-tools delete_issue,delete_project,delete_wiki_page
 ```
 
 The same defaults can live in `~/.redmine-flow.yaml` per profile, and CLI flags override them:
@@ -230,23 +230,23 @@ Environment variables (`REDMINE_MCP_ENABLE_GROUPS`, `REDMINE_MCP_DISABLE_GROUPS`
 
 ### Prerequisite
 
-`redmine` must be on the host's `PATH` and a profile must already be logged in (`redmine auth login`). No Node.js required. With [Docker](#run-with-docker), you only need Docker and an API key.
+`rdflow` must be on the host's `PATH` and a profile must already be logged in (`rdflow auth login`). No Node.js required. With [Docker](#run-with-docker), you only need Docker and an API key.
 
 ### Troubleshooting
 
 <Steps>
 
-1. **Host reports "command not found".** The spawned process inherits the host's `PATH`, which often differs from your shell. Use an absolute path (`which redmine`) in the `command` field.
+1. **Host reports "command not found".** The spawned process inherits the host's `PATH`, which often differs from your shell. Use an absolute path (`which rdflow`) in the `command` field.
 
-2. **Plugin's MCP server shows "Failed to connect".** The Claude Code, Codex and Gemini plugins start the server with the `redmine` binary; this error usually means it is not on the host's `PATH` (other startup errors, see item 6, give the same message). Apps launched from the GUI often get a minimal `PATH`. [Install `redmine`](/getting-started/installation/) (`brew install aarondpn/tap/redmine` or the `install.sh` one-liner) and make sure its directory (`/opt/homebrew/bin`, `/usr/local/bin`, `~/.local/bin`, `$GOBIN` or `~/go/bin`) is on the app's `PATH`. For an MCP server you configure yourself, the launcher [`scripts/redmine-mcp.sh`](https://github.com/aarondpn/redmine-cli/blob/main/scripts/redmine-mcp.sh) checks those locations automatically: use `sh` as the `command` and `["/path/to/redmine-mcp.sh", "mcp", "serve"]` as the `args`.
+2. **Plugin's MCP server shows "Failed to connect".** The Claude Code, Codex and Gemini plugins start the server with the `rdflow` binary; this error usually means it is not on the host's `PATH` (other startup errors, see item 6, give the same message). Apps launched from the GUI often get a minimal `PATH`. [Install `rdflow`](/getting-started/installation/) (`brew install aarondpn/tap/redmine` or the `install.sh` one-liner) and make sure its directory (`/opt/homebrew/bin`, `/usr/local/bin`, `~/.local/bin`, `$GOBIN` or `~/go/bin`) is on the app's `PATH`. For an MCP server you configure yourself, the launcher [`scripts/redmine-mcp.sh`](https://github.com/aarondpn/redmine-cli/blob/main/scripts/redmine-mcp.sh) checks those locations automatically: use `sh` as the `command` and `["/path/to/redmine-mcp.sh", "mcp", "serve"]` as the `args`.
 
-3. **Tools list is empty or missing mutations.** `--enable-writes` was not passed, the surface was narrowed via `--enable-groups` / `--enable-tools`, or the host cached an older `tools/list`. Run `redmine mcp tools` to see the full catalog and restart the host after changing args.
+3. **Tools list is empty or missing mutations.** `--enable-writes` was not passed, the surface was narrowed via `--enable-groups` / `--enable-tools`, or the host cached an older `tools/list`. Run `rdflow mcp tools` to see the full catalog and restart the host after changing args.
 
-4. **Only a `setup_status` tool, or the server instructions say Redmine is not connected.** No server or credentials are configured (or the profile's keyring secret cannot be read, or several profiles exist and none is active), so `redmine mcp serve` stays up instead of exiting, without Redmine tools, and tells the agent what to do. Run `redmine auth login` in a terminal (or `redmine auth login --server https://redmine.example.com --api-key-file -` with the key on stdin), or set `REDMINE_SERVER` and `REDMINE_API_KEY` in the host's MCP `env` block, then restart or reconnect the MCP server. When profiles exist but none is active, run `redmine auth switch` or add `--profile <name>` to the server's `args` instead. Never paste the key into the chat; no tool accepts one. The same message goes to stderr, which hosts show in the server log. This only applies to stdio: with `--http` (flag, `REDMINE_MCP_HTTP` or `mcp.http`) the command exits with the error instead. An unknown `--profile <name>` or invalid `--enable-groups` / `--enable-tools` values still fail at startup.
+4. **Only a `setup_status` tool, or the server instructions say Redmine is not connected.** No server or credentials are configured (or the profile's keyring secret cannot be read, or several profiles exist and none is active), so `rdflow mcp serve` stays up instead of exiting, without Redmine tools, and tells the agent what to do. Run `rdflow auth login` in a terminal (or `rdflow auth login --server https://redmine.example.com --api-key-file -` with the key on stdin), or set `REDMINE_SERVER` and `REDMINE_API_KEY` in the host's MCP `env` block, then restart or reconnect the MCP server. When profiles exist but none is active, run `rdflow auth switch` or add `--profile <name>` to the server's `args` instead. Never paste the key into the chat; no tool accepts one. The same message goes to stderr, which hosts show in the server log. This only applies to stdio: with `--http` (flag, `REDMINE_MCP_HTTP` or `mcp.http`) the command exits with the error instead. An unknown `--profile <name>` or invalid `--enable-groups` / `--enable-tools` values still fail at startup.
 
-5. **Warning on stderr about rejected credentials (401) or a refused check (403).** At startup the server checks the credentials in the background (without delaying the connection) and warns, naming the profile and server. On 401 the key or password is wrong, expired or revoked, or the account is locked: run `redmine auth login` to update them, or fix `REDMINE_API_KEY` in the host config, then restart the MCP server. A 403 means the REST API is disabled (an administrator must enable Administration > Settings > API > Enable REST web service) or a proxy blocks the request; new credentials will not help, `redmine auth status` shows the diagnosis. Network errors during that check are not reported; tools report them when called.
+5. **Warning on stderr about rejected credentials (401) or a refused check (403).** At startup the server checks the credentials in the background (without delaying the connection) and warns, naming the profile and server. On 401 the key or password is wrong, expired or revoked, or the account is locked: run `rdflow auth login` to update them, or fix `REDMINE_API_KEY` in the host config, then restart the MCP server. A 403 means the REST API is disabled (an administrator must enable Administration > Settings > API > Enable REST web service) or a proxy blocks the request; new credentials will not help, `rdflow auth status` shows the diagnosis. Network errors during that check are not reported; tools report them when called.
 
-6. **Startup error with `--http` or `--profile`.** Over `--http` (also via `REDMINE_MCP_HTTP` or `mcp.http`), missing credentials make the command exit with the error instead of entering setup mode, and `--profile <name>` pointing at a profile that does not exist fails too. Run `redmine auth list` to confirm the profile names.
+6. **Startup error with `--http` or `--profile`.** Over `--http` (also via `REDMINE_MCP_HTTP` or `mcp.http`), missing credentials make the command exit with the error instead of entering setup mode, and `--profile <name>` pointing at a profile that does not exist fails too. Run `rdflow auth list` to confirm the profile names.
 
 </Steps>
 

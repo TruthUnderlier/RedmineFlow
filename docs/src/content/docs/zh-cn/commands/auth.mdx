@@ -20,9 +20,9 @@ import { CardGrid, LinkCard, Tabs, TabItem, Aside, Badge } from '@astrojs/starli
 启动交互式登录向导：
 
 ```bash
-redmine auth login
-redmine auth login --name work   # 显式指定配置文件名称
-redmine auth login --header "User-Agent: Mozilla/5.0"   # 服务器位于有特定要求的防火墙之后
+rdflow auth login
+rdflow auth login --name work   # 显式指定配置文件名称
+rdflow auth login --header "User-Agent: Mozilla/5.0"   # 服务器位于有特定要求的防火墙之后
 ```
 
 | 标志 | 描述 |
@@ -36,8 +36,8 @@ redmine auth login --header "User-Agent: Mozilla/5.0"   # 服务器位于有特�
 没有终端时（CI、脚本、AI 代理）无法运行向导。同时传入全局标志 `--server` 与 `--api-key-file`（`-` 表示从标准输入读取）或 `--api-key`，即不会出现任何提示：URL 会被规范化，连接会被测试，配置文件会被保存并激活。
 
 ```bash
-echo "$REDMINE_KEY" | redmine auth login --server https://redmine.example.com --api-key-file -
-redmine auth login --server redmine.example.com --api-key-file ~/.redmine-key --name work --default-project web -o json
+echo "$REDMINE_KEY" | rdflow auth login --server https://redmine.example.com --api-key-file -
+rdflow auth login --server redmine.example.com --api-key-file ~/.redmine-key --name work --default-project web -o json
 ```
 
 `-o json` 会输出常规的 action 信封（`"action": "logged_in"`）。缺少必要值且没有终端时，命令会立即失败并指出需要传入的标志。在终端中，已通过标志提供的值不会再次询问。
@@ -53,13 +53,13 @@ redmine auth login --server redmine.example.com --api-key-file ~/.redmine-key --
 URL 在保存前会被整理，若有改动，向导会告知：去除首尾空白、查询参数、片段和末尾斜杠；未指定协议时添加 `https://`（显式的 `http://` 会保留）；从浏览器复制的 Redmine 页面会被还原为基础 URL（`https://host/projects/foo/issues` 变为 `https://host`）。子路径部署会被保留：`https://host/redmine/issues/5` 变为 `https://host/redmine`。来自 `REDMINE_SERVER` 或配置文件的服务器值仅在缺少协议时补上 `https://`。
 
 <Aside type="tip">
-  随时再次执行 `redmine auth login` 即可添加新的配置文件——向导在未经确认的情况下绝不会覆盖已有配置文件。
+  随时再次执行 `rdflow auth login` 即可添加新的配置文件——向导在未经确认的情况下绝不会覆盖已有配置文件。
 </Aside>
 
 ## list
 
 ```bash
-redmine auth list
+rdflow auth list
 ```
 
 显示每个配置文件的服务器 URL 及当前活跃的配置文件。
@@ -67,7 +67,7 @@ redmine auth list
 ## switch
 
 ```bash
-redmine auth switch
+rdflow auth switch
 ```
 
 打开交互式选择器。所选配置文件将成为后续命令的默认配置文件。
@@ -75,7 +75,7 @@ redmine auth switch
 ## status
 
 ```bash
-redmine auth status
+rdflow auth status
 ```
 
 显示活跃配置文件名称、服务器 URL、身份验证方式，以及凭据对应的用户。
@@ -94,8 +94,8 @@ redmine auth status
 
 <Badge text="危险操作" variant="caution" />
 ```bash
-redmine auth logout              # 当前配置文件
-redmine auth logout work         # 指定名称的配置文件
+rdflow auth logout              # 当前配置文件
+rdflow auth logout work         # 指定名称的配置文件
 ```
 
 移除前会提示你确认。
@@ -109,26 +109,26 @@ redmine auth logout work         # 指定名称的配置文件
 <Tabs syncKey="auth-flow">
   <TabItem label="新增账户">
     ```bash
-    redmine auth login
-    redmine auth login --name work
-    redmine auth list
+    rdflow auth login
+    rdflow auth login --name work
+    rdflow auth list
     ```
   </TabItem>
   <TabItem label="切换配置文件">
     ```bash
-    redmine auth switch
-    redmine auth status
+    rdflow auth switch
+    rdflow auth status
     ```
   </TabItem>
   <TabItem label="临时覆盖">
     ```bash
-    redmine --profile work issues list
+    rdflow --profile work issues list
     ```
   </TabItem>
   <TabItem label="移除账户">
     ```bash
-    redmine auth logout
-    redmine auth logout work
+    rdflow auth logout
+    rdflow auth logout work
     ```
   </TabItem>
 </Tabs>

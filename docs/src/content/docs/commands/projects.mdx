@@ -25,7 +25,7 @@ The `projects` command (alias `p`) manages Redmine projects.
 ## list
 
 ```bash
-redmine projects list [flags]
+rdflow projects list [flags]
 ```
 
 | Flag | Description |
@@ -40,7 +40,7 @@ The table view always shows `ID, Identifier, Name, Status, Public`. Use `--outpu
 ## get
 
 ```bash
-redmine projects get <identifier> [flags]
+rdflow projects get <identifier> [flags]
 ```
 
 Aliases: `show`, `view`.
@@ -55,7 +55,7 @@ The detail view surfaces homepage, default assignee, default version, enabled mo
 ## create
 
 ```bash
-redmine projects create [flags]
+rdflow projects create [flags]
 ```
 
 | Flag | Description |
@@ -75,7 +75,7 @@ redmine projects create [flags]
 | `--custom-field`       | Project custom field value as `name=value` or `id=value` (repeatable; repeat a field for multi-value fields, `name=` clears it). See [custom field values](/commands/issues/#custom-field-values). Names match project custom fields only |
 
 ```bash
-redmine projects create \
+rdflow projects create \
   --name "Platform" --identifier platform \
   --homepage https://platform.example.test \
   --tracker Bug,Feature \
@@ -85,7 +85,7 @@ redmine projects create \
 ## update
 
 ```bash
-redmine projects update <identifier> [flags]
+rdflow projects update <identifier> [flags]
 ```
 
 Every flag is optional; omitted flags leave the corresponding field untouched.
@@ -114,7 +114,7 @@ Every flag is optional; omitted flags leave the corresponding field untouched.
 
 <Badge text="Redmine 5.0+" variant="note" />
 ```bash
-redmine projects archive <identifier> [flags]
+rdflow projects archive <identifier> [flags]
 ```
 
 | Flag | Description |
@@ -127,7 +127,7 @@ Archived projects are hidden from the default project listing and cannot be edit
 
 <Badge text="Redmine 5.0+" variant="note" />
 ```bash
-redmine projects unarchive <identifier>
+rdflow projects unarchive <identifier>
 ```
 
 Restore a previously archived project so it appears in default listings again.
@@ -136,7 +136,7 @@ Restore a previously archived project so it appears in default listings again.
 
 <Badge text="destructive" variant="caution" />
 ```bash
-redmine projects delete <identifier> [flags]
+rdflow projects delete <identifier> [flags]
 ```
 
 | Flag | Description |
@@ -150,7 +150,7 @@ redmine projects delete <identifier> [flags]
 ## members
 
 ```bash
-redmine projects members <identifier> [flags]
+rdflow projects members <identifier> [flags]
 ```
 
 Lists all members and their roles for a project.

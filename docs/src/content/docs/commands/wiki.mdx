@@ -22,7 +22,7 @@ Page names are sent as a single escaped path segment. An empty name, or one with
 ## list
 
 ```bash
-redmine wiki list [flags]
+rdflow wiki list [flags]
 ```
 
 Aliases: `ls`. Lists each page's title, parent page, version, and last-modified timestamp, so you can see the page hierarchy at a glance. JSON output also carries `created_on` and, on Redmine 7.0+, the owning `project`. Results are paginated server-side; combine `--limit 0` with `--offset` to walk large wikis.
@@ -37,17 +37,17 @@ Aliases: `ls`. Lists each page's title, parent page, version, and last-modified 
 <Tabs syncKey="wiki-list">
   <TabItem label="Default">
     ```bash
-    redmine wiki list --project myproject
+    rdflow wiki list --project myproject
     ```
   </TabItem>
   <TabItem label="JSON">
     ```bash
-    redmine wiki list --project myproject -o json
+    rdflow wiki list --project myproject -o json
     ```
   </TabItem>
   <TabItem label="Paginated">
     ```bash
-    redmine wiki list --project myproject --limit 10 --offset 20
+    rdflow wiki list --project myproject --limit 10 --offset 20
     ```
   </TabItem>
 </Tabs>
@@ -55,7 +55,7 @@ Aliases: `ls`. Lists each page's title, parent page, version, and last-modified 
 ## get
 
 ```bash
-redmine wiki get <page> [flags]
+rdflow wiki get <page> [flags]
 ```
 
 Aliases: `show`, `view`. Prints the page metadata and full Textile/Markdown source. Pass `--version` to fetch a historical revision instead of the current one.
@@ -70,19 +70,19 @@ Redmine 7.0 added the owning project to the wiki page API response, so `wiki get
 | `-o, --output` | Output format |
 
 ```bash
-redmine wiki get WikiStart --project myproject
-redmine wiki get WikiStart --project myproject --version 3
-redmine wiki get WikiStart --project myproject --include attachments
+rdflow wiki get WikiStart --project myproject
+rdflow wiki get WikiStart --project myproject --version 3
+rdflow wiki get WikiStart --project myproject --include attachments
 ```
 
 <Aside>
-  Page names with spaces or slashes are URL-escaped automatically, so quote them in your shell: `redmine wiki get "Release Notes/2025-Q4" --project myproject`.
+  Page names with spaces or slashes are URL-escaped automatically, so quote them in your shell: `rdflow wiki get "Release Notes/2025-Q4" --project myproject`.
 </Aside>
 
 ## create
 
 ```bash
-redmine wiki create <page> [flags]
+rdflow wiki create <page> [flags]
 ```
 
 Aliases: `new`. Creates a new wiki page. If a page with the same name already exists, Redmine **overwrites** it. Use [`update`](#update) when you want to be sure you are editing rather than replacing.
@@ -99,27 +99,27 @@ Aliases: `new`. Creates a new wiki page. If a page with the same name already ex
 | `-o, --output` | Output format |
 
 ```bash
-redmine wiki create MyPage --project myproject --text "h1. Hello World"
+rdflow wiki create MyPage --project myproject --text "h1. Hello World"
 
-redmine wiki create MyPage --project myproject \
+rdflow wiki create MyPage --project myproject \
   --text "Content here" --title "My Page" --comments "Initial draft"
 
 # Nest the new page under an existing page
-redmine wiki create Installation --project myproject \
+rdflow wiki create Installation --project myproject \
   --text "h1. Installation" --parent "User Guide"
 
-redmine wiki create MyPage --project myproject \
+rdflow wiki create MyPage --project myproject \
   --text "See diagram" --attach ./diagram.png
 ```
 
 <Aside type="tip">
-  Read long content from a file instead of quoting it on the command line: `redmine wiki create Notes --project myproject --text-file notes.md`, or pipe it in with `--text-file -`. The file is sent as read (UTF-8, no trimming; only a leading byte-order mark is dropped).
+  Read long content from a file instead of quoting it on the command line: `rdflow wiki create Notes --project myproject --text-file notes.md`, or pipe it in with `--text-file -`. The file is sent as read (UTF-8, no trimming; only a leading byte-order mark is dropped).
 </Aside>
 
 ## update
 
 ```bash
-redmine wiki update <page> [flags]
+rdflow wiki update <page> [flags]
 ```
 
 Aliases: `edit`. Edits an existing page. Only the fields you pass change. When `--text` is omitted, the current page text is fetched and resent unchanged so that retitling or re-commenting does not wipe content.
@@ -139,33 +139,33 @@ Aliases: `edit`. Edits an existing page. Only the fields you pass change. When `
 | `--section-hash`   | Hash of the original section content, used by Redmine for conflict detection on section edits. Requires `--section`. |
 
 ```bash
-redmine wiki update MyPage --project myproject --text "Updated content"
+rdflow wiki update MyPage --project myproject --text "Updated content"
 
-redmine wiki update MyPage --project myproject --comments "Fixed typo"
+rdflow wiki update MyPage --project myproject --comments "Fixed typo"
 
-redmine wiki update MyPage --project myproject --title "New Title"
+rdflow wiki update MyPage --project myproject --title "New Title"
 
 # Move a page under another page, or back to the wiki root
-redmine wiki update MyPage --project myproject --parent "User Guide"
-redmine wiki update MyPage --project myproject --parent ""
+rdflow wiki update MyPage --project myproject --parent "User Guide"
+rdflow wiki update MyPage --project myproject --parent ""
 
-redmine wiki update MyPage --project myproject --attach ./screenshot.png
+rdflow wiki update MyPage --project myproject --attach ./screenshot.png
 
 # Update only section 5 of the page
-redmine wiki update MyPage --project myproject \
+rdflow wiki update MyPage --project myproject \
   --section 5 --text "h3. Updated Section Content"
 
 # Section update with conflict detection
-redmine wiki update MyPage --project myproject \
+rdflow wiki update MyPage --project myproject \
   --section 5 --section-hash abc123 \
   --text "h3. Updated Section Content"
 
 # Optimistic concurrency: fail if the page has been edited since version 7
-redmine wiki update MyPage --project myproject \
+rdflow wiki update MyPage --project myproject \
   --text "Updated content" --expect-version 7
 
 # Convenience: refetch the page first and reuse its current version
-redmine wiki update MyPage --project myproject \
+rdflow wiki update MyPage --project myproject \
   --text "Updated content" --ensure-current
 ```
 
@@ -185,12 +185,12 @@ Redmine answers with success even when it **silently ignores** the parent: chang
 
 New pages always accept a parent, so `create` of a new page needs no extra permission. Updates without `--parent` do not trigger the extra request.
 
-Redmine also follows rename redirects: `--parent Guide` lands under `User_Guide` if `Guide` was renamed to that. The API cannot resolve such a redirect, so in that case `update` succeeds with a warning on stderr instead of an error, and `create` succeeds silently; check the parent with `redmine wiki get`.
+Redmine also follows rename redirects: `--parent Guide` lands under `User_Guide` if `Guide` was renamed to that. The API cannot resolve such a redirect, so in that case `update` succeeds with a warning on stderr instead of an error, and `create` succeeds silently; check the parent with `rdflow wiki get`.
 
 When `--text` is omitted, the current text is resent unchanged and pinned to the page version just read, so an edit by someone else in between fails with `code: "conflict"` instead of being overwritten.
 
 ```bash
-$ redmine wiki update Installation --project myproject --parent "User Guide" -o json
+$ rdflow wiki update Installation --project myproject --parent "User Guide" -o json
 {"error":{"message":"Wiki page \"Installation\": parent was not changed to \"User Guide\"; it is now none (wiki root). Redmine silently ignores parent changes on existing pages unless you have the rename_wiki_pages permission.","code":"parent_not_applied"}}
 ```
 
@@ -199,7 +199,7 @@ $ redmine wiki update Installation --project myproject --parent "User Guide" -o 
 <Badge text="destructive" variant="caution" />
 
 ```bash
-redmine wiki delete <page> [flags]
+rdflow wiki delete <page> [flags]
 ```
 
 Aliases: `rm`. Permanently removes the page along with all its attachments and version history. Child pages are re-parented to the wiki root rather than deleted.
@@ -210,8 +210,8 @@ Aliases: `rm`. Permanently removes the page along with all its attachments and v
 | `-f, --force` | Skip the confirmation prompt |
 
 ```bash
-redmine wiki delete MyPage --project myproject
-redmine wiki delete MyPage --project myproject --force
+rdflow wiki delete MyPage --project myproject
+rdflow wiki delete MyPage --project myproject --force
 ```
 
 <Aside type="caution">

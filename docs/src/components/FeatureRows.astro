@@ -13,11 +13,11 @@ const features: { title: string; desc: string; href: string; lines: Line[] }[] =
     desc: t('capability.issues.desc'),
     href: `${base}/commands/issues/`,
     lines: [
-      { cmd: 'redmine issues list --assignee me --status open' },
+      { cmd: 'rdflow issues list --assignee me --status open' },
       { head: 'ID   TRACKER  STATUS       SUBJECT' },
       { out: `312  Bug      In Progress  ${t('terminal.subject1')}` },
       { out: `298  Feature  Open         ${t('terminal.subject2')}` },
-      { cmd: 'redmine issues update 312 --status Resolved' },
+      { cmd: 'rdflow issues update 312 --status Resolved' },
       { ok: t('features.issueUpdated', { id: '312' }) },
     ],
   },
@@ -26,9 +26,9 @@ const features: { title: string; desc: string; href: string; lines: Line[] }[] =
     desc: t('capability.time.desc'),
     href: `${base}/commands/time/`,
     lines: [
-      { cmd: 'redmine time log --issue 312 --hours 1.5' },
+      { cmd: 'rdflow time log --issue 312 --hours 1.5' },
       { ok: t('features.timeLogged', { hours: '1.5', id: '312' }) },
-      { cmd: 'redmine time summary --user me' },
+      { cmd: 'rdflow time summary --user me' },
       { head: 'PROJECT   ACTIVITY      HOURS' },
       { out: 'api       Development    12.5' },
       { out: 'platform  Review          3.0' },
@@ -39,11 +39,11 @@ const features: { title: string; desc: string; href: string; lines: Line[] }[] =
     desc: t('capability.projects.desc'),
     href: `${base}/commands/projects/`,
     lines: [
-      { cmd: 'redmine projects list' },
+      { cmd: 'rdflow projects list' },
       { head: 'ID  IDENTIFIER  NAME' },
       { out: '1   platform    Platform' },
       { out: '2   api         API' },
-      { cmd: 'redmine versions list --project api' },
+      { cmd: 'rdflow versions list --project api' },
       { head: 'VERSION  STATUS' },
       { out: '2.1.3    open' },
     ],
@@ -53,10 +53,10 @@ const features: { title: string; desc: string; href: string; lines: Line[] }[] =
     desc: t('capability.formats.desc'),
     href: `${base}/guides/output-formats/`,
     lines: [
-      { cmd: "redmine issues list --tracker Bug --jq '.[].id'" },
+      { cmd: "rdflow issues list --tracker Bug --jq '.[].id'" },
       { out: '312' },
       { out: '305' },
-      { cmd: 'redmine issues get 312 -o json' },
+      { cmd: 'rdflow issues get 312 -o json' },
       { out: `{ "id": 312, "status": { "name": "In Progress" }, … }` },
     ],
   },
@@ -76,7 +76,7 @@ const features: { title: string; desc: string; href: string; lines: Line[] }[] =
       <div class="rc-feature__term">
         {f.lines.map((l) =>
           l.cmd ? (
-            <div class="rc-feature__line"><span class="prompt">$</span> <span class="bin">redmine</span>{l.cmd.slice('redmine'.length)}</div>
+            <div class="rc-feature__line"><span class="prompt">$</span> <span class="bin">rdflow</span>{l.cmd.slice('rdflow'.length)}</div>
           ) : l.head ? (
             <div class="rc-feature__line header-line">{l.head}</div>
           ) : l.ok ? (

@@ -5,7 +5,7 @@ description: List, view, create, update and delete project news, including attac
 
 import { CardGrid, LinkCard, Aside } from '@astrojs/starlight/components';
 
-The `news` command manages the news items of a project. For full-text search across news use `redmine search news <query>`.
+The `news` command manages the news items of a project. For full-text search across news use `rdflow search news <query>`.
 
 <CardGrid>
   <LinkCard title="list" href="#list" description="List news for a project or across all projects." />
@@ -20,7 +20,7 @@ The project needs the `news` module enabled. Reading needs the "View news" permi
 ## list
 
 ```bash
-redmine news list [flags]
+rdflow news list [flags]
 ```
 
 Aliases: `ls`. News are listed newest first.
@@ -35,16 +35,16 @@ Aliases: `ls`. News are listed newest first.
 The table shows ID, project, title, author and creation time. When more news exist than were shown, a hint on stderr points to `--limit` and `--offset`.
 
 ```bash
-redmine news list --project myproject
-redmine news list
-redmine news list --project myproject --limit 10 --offset 10
-redmine news list --project myproject --jq '.[].title'
+rdflow news list --project myproject
+rdflow news list
+rdflow news list --project myproject --limit 10 --offset 10
+rdflow news list --project myproject --jq '.[].title'
 ```
 
 ## get
 
 ```bash
-redmine news get <id> [flags]
+rdflow news get <id> [flags]
 ```
 
 Aliases: `show`, `view`. Shows the project, title, summary, author, creation time and description.
@@ -57,9 +57,9 @@ Aliases: `show`, `view`. Shows the project, title, summary, author, creation tim
 With `--include comments` and `--include attachments` the table output adds a comment table (ID, author, comment) under a `Comments:` heading and an attachment table (ID, filename, size, content type) under an `Attachments:` heading. `-o json` returns the whole news object with the requested arrays. An unknown include value is rejected before any request is sent.
 
 ```bash
-redmine news get 12
-redmine news get 12 --include attachments,comments
-redmine news get 12 --include comments -o json
+rdflow news get 12
+rdflow news get 12 --include attachments,comments
+rdflow news get 12 --include comments -o json
 ```
 
 <Aside type="note" title="Reactions need Redmine 7.1+">
@@ -69,7 +69,7 @@ redmine news get 12 --include comments -o json
 ## create
 
 ```bash
-redmine news create --title <title> (--description <text> | --description-file <path>) [flags]
+rdflow news create --title <title> (--description <text> | --description-file <path>) [flags]
 ```
 
 Aliases: `new`.
@@ -85,21 +85,21 @@ Aliases: `new`.
 | `-o, --output`       | Output format |
 
 ```bash
-redmine news create --project myproject --title "Release 2.0" \
+rdflow news create --project myproject --title "Release 2.0" \
   --summary "Now available" --description "We shipped 2.0 today."
-redmine news create --project myproject --title "Release 2.0" --description-file news.textile
-redmine news create --project myproject --title "Roadmap" \
+rdflow news create --project myproject --title "Release 2.0" --description-file news.textile
+rdflow news create --project myproject --title "Roadmap" \
   --description "See the attached roadmap." --attach ./roadmap.pdf
 ```
 
 <Aside type="note" title="The ID is looked up after the create">
-  Redmine answers a news create with an empty `204 No Content`, so the new ID is not part of the response. The CLI reads it back: it lists the newest news of the project and picks the first item with the same title, summary and description written by you. With `-o json` the result is `{"ok": true, "action": "created", "resource": "news", "id": 42, ...}`. When no item matches (or the lookup fails) the create still succeeds, the `id` field is omitted and a warning is printed on stderr; run `redmine news list --project <project>` to find it. Do not repeat the create, that would publish a duplicate.
+  Redmine answers a news create with an empty `204 No Content`, so the new ID is not part of the response. The CLI reads it back: it lists the newest news of the project and picks the first item with the same title, summary and description written by you. With `-o json` the result is `{"ok": true, "action": "created", "resource": "news", "id": 42, ...}`. When no item matches (or the lookup fails) the create still succeeds, the `id` field is omitted and a warning is printed on stderr; run `rdflow news list --project <project>` to find it. Do not repeat the create, that would publish a duplicate.
 </Aside>
 
 ## update
 
 ```bash
-redmine news update <id> [flags]
+rdflow news update <id> [flags]
 ```
 
 Aliases: `edit`. Only the flags you pass are changed; at least one of `--title`, `--summary`, `--description`, `--description-file` or `--attach` is required.
@@ -113,15 +113,15 @@ Aliases: `edit`. Only the flags you pass are changed; at least one of `--title`,
 | `--attach`           | File to attach (repeatable) |
 
 ```bash
-redmine news update 12 --title "Release 2.0 (final)"
-redmine news update 12 --description-file news.textile
-redmine news update 12 --summary "" --attach ./notes.pdf
+rdflow news update 12 --title "Release 2.0 (final)"
+rdflow news update 12 --description-file news.textile
+rdflow news update 12 --summary "" --attach ./notes.pdf
 ```
 
 ## delete
 
 ```bash
-redmine news delete <id> [flags]
+rdflow news delete <id> [flags]
 ```
 
 Aliases: `rm`. Deletes the news item together with its comments. Asks for confirmation unless `--force` is given; declining prints `Delete cancelled` and changes nothing.
@@ -131,8 +131,8 @@ Aliases: `rm`. Deletes the news item together with its comments. Asks for confir
 | `-f, --force` | Skip the confirmation prompt |
 
 ```bash
-redmine news delete 12
-redmine news delete 12 --force
+rdflow news delete 12
+rdflow news delete 12 --force
 ```
 
 <Aside type="caution" title="News comments are read-only">

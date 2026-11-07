@@ -18,7 +18,7 @@ The `memberships` command (alias `m`) manages project memberships — the mappin
 ## list
 
 ```bash
-redmine memberships list --project <identifier> [flags]
+rdflow memberships list --project <identifier> [flags]
 ```
 
 | Flag | Description |
@@ -31,7 +31,7 @@ redmine memberships list --project <identifier> [flags]
 ## get
 
 ```bash
-redmine memberships get <id> [flags]
+rdflow memberships get <id> [flags]
 ```
 
 Aliases: `show`, `view`.
@@ -45,7 +45,7 @@ With `-o json` (and in the MCP membership tools) `roles[].inherited` is only sen
 ## create
 
 ```bash
-redmine memberships create [flags]
+rdflow memberships create [flags]
 ```
 
 Adds a user or group to a project with the specified roles.
@@ -60,13 +60,13 @@ Adds a user or group to a project with the specified roles.
 | `-o, --output` | Output format |
 
 <Aside type="note">
-  Exactly one of `--user-id` or `--group-id` must be supplied, and exactly one of `--role-ids` or `--roles` must be supplied. Use `redmine roles list` to discover valid role names and IDs.
+  Exactly one of `--user-id` or `--group-id` must be supplied, and exactly one of `--role-ids` or `--roles` must be supplied. Use `rdflow roles list` to discover valid role names and IDs.
 </Aside>
 
 ## update
 
 ```bash
-redmine memberships update <id> [flags]
+rdflow memberships update <id> [flags]
 ```
 
 Only the assigned roles can be changed on an existing membership.
@@ -80,7 +80,7 @@ Only the assigned roles can be changed on an existing membership.
 
 <Badge text="destructive" variant="caution" />
 ```bash
-redmine memberships delete <id> [flags]
+rdflow memberships delete <id> [flags]
 ```
 
 | Flag | Description |

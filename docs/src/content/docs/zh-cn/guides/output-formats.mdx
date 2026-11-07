@@ -12,7 +12,7 @@ import { Tabs, TabItem, Aside, CardGrid, LinkCard, Badge } from '@astrojs/starli
     默认格式，针对人类阅读优化。
 
     ```bash
-    redmine issues list --project myproject
+    rdflow issues list --project myproject
     ```
 
     ```
@@ -26,7 +26,7 @@ import { Tabs, TabItem, Aside, CardGrid, LinkCard, Badge } from '@astrojs/starli
     机器可读的输出格式，适合脚本编写和管道操作。
 
     ```bash
-    redmine issues list --project myproject -o json
+    rdflow issues list --project myproject -o json
     ```
 
     ```json
@@ -50,10 +50,10 @@ JSON 输出可与 `jq` 配合用于即席分析：
 
 ```bash
 # IDs of all open bugs
-redmine issues list --tracker Bug -o json | jq '.[].id'
+rdflow issues list --tracker Bug -o json | jq '.[].id'
 
 # Count issues by status
-redmine issues list --project myproject -o json \
+rdflow issues list --project myproject -o json \
   | jq 'group_by(.status.name) | map({status: .[0].status.name, count: length})'
 ```
 
@@ -67,10 +67,10 @@ CLI 不再提供 `csv` 输出格式。请改用内置 `--jq` 的 `@csv` 从 JSON
 
 ```bash
 # ID and subject of every issue, one CSV row each
-redmine issues list --project myproject -o json --jq '.[] | [.id, .subject] | @csv'
+rdflow issues list --project myproject -o json --jq '.[] | [.id, .subject] | @csv'
 
 # With a header row, nested fields, and all pages
-redmine issues list --project myproject --limit 0 -o json \
+rdflow issues list --project myproject --limit 0 -o json \
   --jq '["ID", "Status", "Subject"], (.[] | [.id, .status.name, .subject]) | @csv'
 ```
 
@@ -115,7 +115,7 @@ redmine issues list --project myproject --limit 0 -o json \
 {"error":{"message":"Resource not found.","code":"not_found"}}
 ```
 
-`code` 来自一组稳定且有限的值：`not_found`、`auth_failed`、`forbidden`、`validation_failed`、`conflict`、`server_error`、`jq_invalid`、`jq_failed`、`status_not_applied`、`parent_not_applied`、`timeout`、`already_exists`、`unknown`。校验错误和冲突错误还会包含 `details` 数组，其中列出 Redmine 返回的各项错误信息。当 CLI 在发送任何请求之前就拒绝某个参数时（例如项目标识符或 wiki 页面标题不是单个 URL 路径段，如 `../users/2`），也会使用不带 `details` 的 `validation_failed`。`timeout` 表示连接服务器或等待其响应超时（参见英文文档 [Timeouts and limits](/getting-started/configuration/#timeouts-and-limits)）；`already_exists` 表示下载目标已存在且未指定 `--clobber`。`jq_invalid` 表示 `--jq` 表达式为空或格式错误，命令未执行；`jq_failed` 表示命令本身已成功（写操作已经发生，请勿重试），只是 `--jq` 表达式在处理其输出时失败；例外是 `redmine api -i` 收到失败响应（4xx/5xx）时，消息为 `--jq failed on the error response: ...`，此时请求本身已失败。`status_not_applied` 表示 Redmine 接受了工单更新，却静默保留了原状态（参见英文文档 [Status changes are verified](/commands/issues/#status-changes-are-verified)）。其 `details` 列出允许的状态；如果请求还包含其他变更，还会提示这些变更可能已经生效。`parent_not_applied` 表示 Redmine 保存了 Wiki 页面，却静默保留了原父页面（参见[父页面变更会被校验](/zh-cn/commands/wiki/#父页面变更会被校验)）。其 `details` 会说明同时被丢弃的重命名；如果请求还包含其他变更，还会提示这些变更可能已经生效。
+`code` 来自一组稳定且有限的值：`not_found`、`auth_failed`、`forbidden`、`validation_failed`、`conflict`、`server_error`、`jq_invalid`、`jq_failed`、`status_not_applied`、`parent_not_applied`、`timeout`、`already_exists`、`unknown`。校验错误和冲突错误还会包含 `details` 数组，其中列出 Redmine 返回的各项错误信息。当 CLI 在发送任何请求之前就拒绝某个参数时（例如项目标识符或 wiki 页面标题不是单个 URL 路径段，如 `../users/2`），也会使用不带 `details` 的 `validation_failed`。`timeout` 表示连接服务器或等待其响应超时（参见英文文档 [Timeouts and limits](/getting-started/configuration/#timeouts-and-limits)）；`already_exists` 表示下载目标已存在且未指定 `--clobber`。`jq_invalid` 表示 `--jq` 表达式为空或格式错误，命令未执行；`jq_failed` 表示命令本身已成功（写操作已经发生，请勿重试），只是 `--jq` 表达式在处理其输出时失败；例外是 `rdflow api -i` 收到失败响应（4xx/5xx）时，消息为 `--jq failed on the error response: ...`，此时请求本身已失败。`status_not_applied` 表示 Redmine 接受了工单更新，却静默保留了原状态（参见英文文档 [Status changes are verified](/commands/issues/#status-changes-are-verified)）。其 `details` 列出允许的状态；如果请求还包含其他变更，还会提示这些变更可能已经生效。`parent_not_applied` 表示 Redmine 保存了 Wiki 页面，却静默保留了原父页面（参见[父页面变更会被校验](/zh-cn/commands/wiki/#父页面变更会被校验)）。其 `details` 会说明同时被丢弃的重命名；如果请求还包含其他变更，还会提示这些变更可能已经生效。
 
 <Aside type="caution" title="v2.14.0 变更">
   早期版本将 JSON 错误信封写到 `stdout`。从 `stdout` 解析错误的脚本需要改为读取 `stderr`。
@@ -126,7 +126,7 @@ redmine issues list --project myproject --limit 0 -o json \
 - 机器可读输出（JSON、表格行）始终写入 `stdout`。
 - 面向人的信息（非 JSON 模式下的成功确认、警告、进度 spinner、更新检查提示）始终写入 `stderr`。
 - 错误始终写入 `stderr`：普通模式下为 `Error: ...` 文本，JSON 模式下为 JSON 错误信封。失败时 `stdout` 为空。
-- 例外：`redmine api` 遇到 4xx 或 5xx 响应时，会把响应（响应体，使用 `-i` 时还包括状态和响应头）打印到 `stdout` 并以退出码 `1` 退出；设置 `--silent` 时不输出任何内容，但同样以退出码 `1` 退出。只有在 JSON 模式且未使用 `-i` 或 `--silent` 时，失败才会作为错误信封写入 `stderr`。
+- 例外：`rdflow api` 遇到 4xx 或 5xx 响应时，会把响应（响应体，使用 `-i` 时还包括状态和响应头）打印到 `stdout` 并以退出码 `1` 退出；设置 `--silent` 时不输出任何内容，但同样以退出码 `1` 退出。只有在 JSON 模式且未使用 `-i` 或 `--silent` 时，失败才会作为错误信封写入 `stderr`。
 
 这种分离是稳定的。脚本可以安全地把 `stdout` 重定向到文件，或者直接通过管道传给 `jq`，而不必担心状态提示混入输出。
 

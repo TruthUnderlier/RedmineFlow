@@ -18,7 +18,7 @@ The `versions` command (alias `v`) manages project versions — the Redmine equi
 ## create
 
 ```bash
-redmine versions create --name <name> [flags]
+rdflow versions create --name <name> [flags]
 ```
 
 Aliases: `new`.
@@ -36,16 +36,16 @@ Aliases: `new`.
 | `-o, --output`      | Output format |
 
 ```bash
-redmine versions create --project myproject --name 1.2.0 --due-date 2026-06-30
+rdflow versions create --project myproject --name 1.2.0 --due-date 2026-06-30
 
 # Custom field (the value is everything after the first =)
-redmine versions create --project myproject --name 1.3.0 --custom-field "Release Manager=Jane Doe"
+rdflow versions create --project myproject --name 1.3.0 --custom-field "Release Manager=Jane Doe"
 ```
 
 ## list
 
 ```bash
-redmine versions list --project <identifier> [flags]
+rdflow versions list --project <identifier> [flags]
 ```
 
 | Flag | Description |
@@ -57,13 +57,13 @@ redmine versions list --project <identifier> [flags]
 | `-o, --output` | Output format |
 
 ```bash
-redmine versions list --project myproject --status open
+rdflow versions list --project myproject --status open
 ```
 
 ## get
 
 ```bash
-redmine versions get <id-or-name> [flags]
+rdflow versions get <id-or-name> [flags]
 ```
 
 Aliases: `show`, `view`. Accepts a numeric ID or a version name.
@@ -81,7 +81,7 @@ With `-o json` (and in the MCP version tools) versions carry `custom_fields`. `e
 ## update
 
 ```bash
-redmine versions update <id-or-name> [flags]
+rdflow versions update <id-or-name> [flags]
 ```
 
 Aliases: `edit`. Accepts a numeric ID or a version name.
@@ -98,14 +98,14 @@ Aliases: `edit`. Accepts a numeric ID or a version name.
 | `--custom-field` | Custom field value as `name=value` or `id=value` (repeatable; repeat a field for multi-value fields, `name=` clears it). See [custom field values](/commands/issues/#custom-field-values) |
 
 ```bash
-redmine versions update 42 --status closed
-redmine versions update 1.2.0 --project myproject --due-date 2026-07-15
+rdflow versions update 42 --status closed
+rdflow versions update 1.2.0 --project myproject --due-date 2026-07-15
 ```
 
 ## delete
 
 ```bash
-redmine versions delete <id-or-name> [flags]
+rdflow versions delete <id-or-name> [flags]
 ```
 
 Aliases: `rm`. Accepts a numeric ID or a version name.
@@ -116,8 +116,8 @@ Aliases: `rm`. Accepts a numeric ID or a version name.
 | `--force`   | Delete without asking for confirmation |
 
 ```bash
-redmine versions delete 42
-redmine versions delete 1.2.0 --project myproject --force
+rdflow versions delete 42
+rdflow versions delete 1.2.0 --project myproject --force
 ```
 
 <Aside type="caution">

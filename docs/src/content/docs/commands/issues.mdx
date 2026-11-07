@@ -26,7 +26,7 @@ The `issues` command (alias `i`) manages Redmine issues end-to-end.
 ## list
 
 ```bash
-redmine issues list [flags]
+rdflow issues list [flags]
 ```
 
 | Flag | Description |
@@ -66,41 +66,41 @@ redmine issues list [flags]
 <Tabs syncKey="issues-list">
   <TabItem label="Mine">
     ```bash
-    redmine issues list --assignee me
+    rdflow issues list --assignee me
     ```
   </TabItem>
   <TabItem label="Project bugs">
     ```bash
-    redmine issues list --project myproject --tracker Bug
+    rdflow issues list --project myproject --tracker Bug
     ```
   </TabItem>
   <TabItem label="Unassigned">
     ```bash
-    redmine issues list --project myproject --assignee none
+    rdflow issues list --project myproject --assignee none
     ```
   </TabItem>
   <TabItem label="Recently closed">
     ```bash
-    redmine issues list --status closed --sort updated_on:desc
+    rdflow issues list --status closed --sort updated_on:desc
     ```
   </TabItem>
   <TabItem label="Epic children">
     ```bash
     # Every child of #1234, open and closed, in one call
     # (without --project, a configured default project narrows the results)
-    redmine issues list --parent 1234 --status "*"
+    rdflow issues list --parent 1234 --status "*"
     ```
   </TabItem>
   <TabItem label="Similar subjects">
     ```bash
     # Subject contains "[QA]" (~ means "contains")
-    redmine issues list --status "*" --filter subject='~[QA]'
+    rdflow issues list --status "*" --filter subject='~[QA]'
     ```
   </TabItem>
   <TabItem label="Created by me">
     ```bash
     # Most recent first (in the default project, if one is configured)
-    redmine issues list --author me --sort created_on:desc --limit 5
+    rdflow issues list --author me --sort created_on:desc --limit 5
     ```
   </TabItem>
 </Tabs>
@@ -108,7 +108,7 @@ redmine issues list [flags]
 ## get
 
 ```bash
-redmine issues get <id> [flags]
+rdflow issues get <id> [flags]
 ```
 
 Aliases: `show`, `view`.
@@ -133,26 +133,26 @@ Attachments of the same issue often share a filename (for example several `scree
   <TabItem label="Attachments">
     ```bash
     # List attachment IDs so you can download one
-    redmine issues get 123 --attachments
+    rdflow issues get 123 --attachments
     ```
   </TabItem>
   <TabItem label="Download all">
     ```bash
     # Pull every attachment into ./issue-123
-    redmine issues get 123 --download-attachments ./issue-123
+    rdflow issues get 123 --download-attachments ./issue-123
 
     # Refresh an earlier download, replacing the existing files
-    redmine issues get 123 --download-attachments ./issue-123 --clobber
+    rdflow issues get 123 --download-attachments ./issue-123 --clobber
     ```
   </TabItem>
   <TabItem label="Read fully">
     ```bash
     # History, files, children, and relations before investigating
-    redmine issues get 123 --journals --children --relations --download-attachments ./issue-123
-    redmine issues get 123 --include journals,attachments,children,relations -o json
+    rdflow issues get 123 --journals --children --relations --download-attachments ./issue-123
+    rdflow issues get 123 --include journals,attachments,children,relations -o json
 
     # Statuses the current user may move the issue to
-    redmine issues get 123 --include allowed_statuses -o json
+    rdflow issues get 123 --include allowed_statuses -o json
     ```
   </TabItem>
 </Tabs>
@@ -177,7 +177,7 @@ In the table view each comment header carries its journal ID, for example `--- A
 ## create
 
 ```bash
-redmine issues create [flags]
+rdflow issues create [flags]
 ```
 
 | Flag | Description |
@@ -202,34 +202,34 @@ redmine issues create [flags]
 | `--attach`          | File path to attach (repeatable) |
 
 ```bash
-redmine issues create --project myproject --subject "Add search" --tracker Feature --priority High
+rdflow issues create --project myproject --subject "Add search" --tracker Feature --priority High
 
-redmine issues create --project myproject --subject "Bug report" \
+rdflow issues create --project myproject --subject "Bug report" \
   --start-date 2026-05-01 --due-date 2026-05-15 \
   --watcher me --watcher "QA Bot" \
   --custom-field Severity=High \
   --attach /path/to/screenshot.png --attach /path/to/log.txt
 
 # Values with spaces: quote the whole pair and repeat the flag per field
-redmine issues create --project myproject --subject "Bug" \
+rdflow issues create --project myproject --subject "Bug" \
   --custom-field "2=Value for field 2" \
   --custom-field "61=Value for 61"
 
 # Multi-value field: repeat the flag with the same field
-redmine issues create --project myproject --subject "Cross-platform bug" \
+rdflow issues create --project myproject --subject "Cross-platform bug" \
   --custom-field Platforms=Linux --custom-field Platforms=macOS
 
 # Child issue under an epic, with a category
-redmine issues create --project myproject --parent 1234 --tracker Task \
+rdflow issues create --project myproject --parent 1234 --tracker Task \
   --category "Backend" --subject "Implement API endpoint"
 
 # Attach a screenshot and embed it inline in a Textile description (!filename!);
 # on servers using Markdown/CommonMark formatting write ![](screenshot.png) instead
-redmine issues create --project myproject --subject "Broken layout" \
+rdflow issues create --project myproject --subject "Broken layout" \
   --attach ./screenshot.png --description 'Layout breaks on resize: !screenshot.png!'
 
 # Long Textile/Markdown description from a file, no shell quoting needed
-redmine issues create --project myproject --subject "Spec" --description-file spec.textile
+rdflow issues create --project myproject --subject "Spec" --description-file spec.textile
 ```
 
 If Redmine starts the new issue in a different status than `--status` asked for (its workflow does not allow new issues of that tracker to start there for your role), the command prints a warning on stderr. It still exits `0`, because the issue was created and a retry would duplicate it.
@@ -239,7 +239,7 @@ If Redmine starts the new issue in a different status than `--status` asked for 
 `--custom-field` takes `key=value` pairs, where the key is a custom field name or its numeric ID.
 
 - Names resolve against `GET /custom_fields.json`, which is admin-only, and only among the custom fields of the resource's type. An issue command never picks a time entry field of the same name.
-- Non-admins must use numeric IDs. Find them in the `custom_fields` array of the JSON output, for example `redmine issues get 123 --jq '.custom_fields'`.
+- Non-admins must use numeric IDs. Find them in the `custom_fields` array of the JSON output, for example `rdflow issues get 123 --jq '.custom_fields'`.
 - The value is everything after the first `=`, verbatim. Spaces and further `=` characters are kept. Quote the whole pair and repeat the flag per field.
 - For a multi-value field, repeat the flag with the same field: `--custom-field Platforms=Linux --custom-field Platforms=macOS`. The order is kept.
 - A single-value field given several values fails. The CLI checks this when the field was given by name; when it was given by ID, Redmine answers `validation_failed` ("is invalid") and the error hint points at the repeated field.
@@ -251,16 +251,16 @@ If Redmine starts the new issue in a different status than `--status` asked for 
   fields required. When Redmine rejects a create or update with
   `validation_failed`, the error carries a hint (and a `hint` field in JSON
   mode) pointing at the commands that list valid values, for example
-  `redmine projects get myproject --include trackers,issue_categories,issue_custom_fields`,
-  `redmine versions list --project myproject --open`, and
-  `redmine memberships list --project myproject` (assignable users). Redmine's
+  `rdflow projects get myproject --include trackers,issue_categories,issue_custom_fields`,
+  `rdflow versions list --project myproject --open`, and
+  `rdflow memberships list --project myproject` (assignable users). Redmine's
   own messages are localized, so rely on the error `code`, not the message text.
 </Aside>
 
 ## update
 
 ```bash
-redmine issues update <id> [flags]
+rdflow issues update <id> [flags]
 ```
 
 Accepts the same flags as `create` (except `--project` and `--watcher`) plus:
@@ -278,24 +278,24 @@ Accepts the same flags as `create` (except `--project` and `--watcher`) plus:
 | `--attach`         | File path to attach (repeatable) |
 
 ```bash
-redmine issues update 123 --note "Fixed the bug" --attach /path/to/fixed_code.patch
+rdflow issues update 123 --note "Fixed the bug" --attach /path/to/fixed_code.patch
 
 # Private journal note visible only to staff
-redmine issues update 123 --note "Internal context" --private-notes
+rdflow issues update 123 --note "Internal context" --private-notes
 
 # Update custom field by name
-redmine issues update 123 --custom-field Severity=Critical
+rdflow issues update 123 --custom-field Severity=Critical
 
 # Clear a custom field
-redmine issues update 123 --custom-field Severity=
+rdflow issues update 123 --custom-field Severity=
 
 # Assign to a group by name, or clear the assignee
-redmine issues update 123 --assignee "Backend Team"
-redmine issues update 123 --assignee none
+rdflow issues update 123 --assignee "Backend Team"
+rdflow issues update 123 --assignee none
 
 # Long description from a file, note piped in on stdin
-redmine issues update 123 --description-file description.textile
-generate-report | redmine issues update 123 --note-file -
+rdflow issues update 123 --description-file description.textile
+generate-report | rdflow issues update 123 --note-file -
 ```
 
 ### Status changes are verified
@@ -311,19 +311,19 @@ Redmine answers an issue update with success even when it **silently ignores** t
 In JSON mode `stdout` stays empty and the envelope is a single line, the last line of `stderr`:
 
 ```bash
-$ redmine issues close 123 -o json 2>err.log
+$ rdflow issues close 123 -o json 2>err.log
 $ echo $?
 1
 $ tail -n1 err.log
 {"error":{"message":"Issue #123: status was not changed to \"Closed\" (ID 5); it is now \"New\" (ID 1). Redmine silently ignores status transitions that its workflow does not allow for your role and the issue's tracker, and refuses to close issues that have open subtasks or are blocked by open issues.","code":"status_not_applied","details":["Allowed statuses: New (1), In Progress (2), Resolved (3), Feedback (4)."]}}
 ```
 
-On success the action envelope is unchanged; to see the issue after an update, run `redmine issues get <id>`.
+On success the action envelope is unchanged; to see the issue after an update, run `rdflow issues get <id>`.
 
 ## close
 
 ```bash
-redmine issues close <id> [flags]
+rdflow issues close <id> [flags]
 ```
 
 | Flag | Description |
@@ -336,7 +336,7 @@ Sets the first closed status. The result is [verified](#status-changes-are-verif
 ## reopen
 
 ```bash
-redmine issues reopen <id> [flags]
+rdflow issues reopen <id> [flags]
 ```
 
 | Flag | Description |
@@ -349,15 +349,15 @@ Sets the first open status. The result is [verified](#status-changes-are-verifie
 ## assign
 
 ```bash
-redmine issues assign <id> <assignee> [flags]
+rdflow issues assign <id> <assignee> [flags]
 ```
 
 The assignee argument accepts a numeric ID, `me`, a user or group name, a login, or `none` to clear the assignee.
 
 ```bash
-redmine issues assign 123 me
-redmine issues assign 123 "Backend Team"   # a group that is a project member
-redmine issues assign 123 none             # unassign
+rdflow issues assign 123 me
+rdflow issues assign 123 "Backend Team"   # a group that is a project member
+rdflow issues assign 123 none             # unassign
 ```
 
 ### Assignee resolution
@@ -399,7 +399,7 @@ picking one.
 ## comment
 
 ```bash
-redmine issues comment <id> --message "Your comment" [flags]
+rdflow issues comment <id> --message "Your comment" [flags]
 ```
 
 | Flag | Description |
@@ -408,8 +408,8 @@ redmine issues comment <id> --message "Your comment" [flags]
 | `-F, --message-file` | Read the comment from a file (`-` reads standard input); mutually exclusive with `--message`; an empty or whitespace-only file is rejected |
 
 ```bash
-redmine issues comment 123 --message-file notes.textile
-git log -1 --format=%B | redmine issues comment 123 -F -
+rdflow issues comment 123 --message-file notes.textile
+git log -1 --format=%B | rdflow issues comment 123 -F -
 ```
 
 File contents are sent as read (UTF-8, no trimming; only a leading byte-order mark is dropped), so multi-line Textile or Markdown needs no shell quoting.
@@ -419,13 +419,13 @@ File contents are sent as read (UTF-8, no trimming; only a leading byte-order ma
 <Badge text="Redmine 5.0+" variant="note" />
 
 ```bash
-redmine issues comment edit <journal-id> [flags]
+rdflow issues comment edit <journal-id> [flags]
 ```
 
 Comments are identified by their **journal ID**, not the issue ID. Redmine has no endpoint to fetch a single journal, so list them from the issue:
 
 ```bash
-redmine issues get 123 --journals --jq '.journals[] | {id, notes}'
+rdflow issues get 123 --journals --jq '.journals[] | {id, notes}'
 ```
 
 | Flag | Description |
@@ -440,10 +440,10 @@ redmine issues get 123 --journals --jq '.journals[] | {id, notes}'
 At least one of these flags is required. The command prints an `updated` action for resource `journal`.
 
 ```bash
-redmine issues comment edit 456 --message "Corrected: deployed to production"
-redmine issues comment edit 456 --message-file notes.textile
-redmine issues comment edit 456 --private
-redmine issues comment edit 456 --clear --force
+rdflow issues comment edit 456 --message "Corrected: deployed to production"
+rdflow issues comment edit 456 --message-file notes.textile
+rdflow issues comment edit 456 --private
+rdflow issues comment edit 456 --clear --force
 ```
 
 <Aside type="note">
@@ -455,26 +455,26 @@ redmine issues comment edit 456 --clear --force
 ## watchers
 
 ```bash
-redmine issues watchers list <id>
-redmine issues watchers add <id> <user>
-redmine issues watchers remove <id> <user>
+rdflow issues watchers list <id>
+rdflow issues watchers add <id> <user>
+rdflow issues watchers remove <id> <user>
 ```
 
 `<user>` accepts a numeric ID, login, full name, or `me`. Names are matched against the issue's project members first (see [assignee resolution](#assignee-resolution)).
 
 ```bash
-redmine issues watchers add 123 me
-redmine issues watchers list 123
-redmine issues watchers remove 123 alice
+rdflow issues watchers add 123 me
+rdflow issues watchers list 123
+rdflow issues watchers remove 123 alice
 ```
 
 ## relations
 
 ```bash
-redmine issues relations list <id>
-redmine issues relations get <relation-id>
-redmine issues relations add <id> --to <other-id> --type <type> [--delay <days>]
-redmine issues relations remove <relation-id>
+rdflow issues relations list <id>
+rdflow issues relations get <relation-id>
+rdflow issues relations add <id> --to <other-id> --type <type> [--delay <days>]
+rdflow issues relations remove <relation-id>
 ```
 
 | Flag | Description |
@@ -498,11 +498,11 @@ Supported relation types (from the [Redmine REST docs](https://www.redmine.org/p
 | `copied_from` | This issue was copied from the target |
 
 ```bash
-redmine issues relations add 123 --to 124 --type blocks
-redmine issues relations add 123 --to 124 --type precedes --delay 5
-redmine issues relations list 123
-redmine issues relations get 42
-redmine issues relations remove 42
+rdflow issues relations add 123 --to 124 --type blocks
+rdflow issues relations add 123 --to 124 --type precedes --delay 5
+rdflow issues relations list 123
+rdflow issues relations get 42
+rdflow issues relations remove 42
 ```
 
 <Aside type="note">
@@ -513,7 +513,7 @@ redmine issues relations remove 42
 
 <Badge text="destructive" variant="caution" />
 ```bash
-redmine issues delete <id> [flags]
+rdflow issues delete <id> [flags]
 ```
 
 | Flag | Description |
@@ -527,13 +527,13 @@ redmine issues delete <id> [flags]
 ## open
 
 ```bash
-redmine issues open <id>
+rdflow issues open <id>
 ```
 
 Constructs the issue URL from your configured Redmine server and opens it in your default browser.
 
 ```bash
-redmine issues open 123   # → https://redmine.example.com/issues/123
+rdflow issues open 123   # → https://redmine.example.com/issues/123
 ```
 
 The URL must be an absolute `http` or `https` URL; anything else is refused. The browser is launched with `open` (macOS), `xdg-open` (Linux and BSD) or `rundll32 url.dll,FileProtocolHandler` (Windows), never through a shell.
@@ -541,7 +541,7 @@ The URL must be an absolute `http` or `https` URL; anything else is refused. The
 ## browse
 
 ```bash
-redmine issues browse [flags]
+rdflow issues browse [flags]
 ```
 
 Opens an interactive terminal browser for issues. Accepts the same filter flags as [`list`](#list).

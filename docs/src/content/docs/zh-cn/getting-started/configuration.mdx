@@ -12,7 +12,7 @@ import { Steps, Tabs, TabItem, Aside, FileTree, LinkCard, CardGrid, Badge } from
 1. 启动登录向导：
 
    ```bash
-   redmine auth login
+   rdflow auth login
    ```
 
 2. 提供你的 Redmine 服务器 URL 和身份验证方式（API 密钥或用户名/密码）。
@@ -23,33 +23,33 @@ import { Steps, Tabs, TabItem, Aside, FileTree, LinkCard, CardGrid, Badge } from
 
 </Steps>
 
-没有终端时（CI、脚本、AI 代理）可跳过向导：`echo "$KEY" | redmine auth login --server https://redmine.example.com --api-key-file -`。参见 [`auth login`](/zh-cn/commands/auth/#非交互式登录)。
+没有终端时（CI、脚本、AI 代理）可跳过向导：`echo "$KEY" | rdflow auth login --server https://redmine.example.com --api-key-file -`。参见 [`auth login`](/zh-cn/commands/auth/#非交互式登录)。
 
 ## 多个配置文件
 
-你可以对任意数量的 Redmine 实例进行身份验证。每次执行 `redmine auth login` 都会创建一个命名配置文件。
+你可以对任意数量的 Redmine 实例进行身份验证。每次执行 `rdflow auth login` 都会创建一个命名配置文件。
 
 <Tabs syncKey="profile-flow">
   <TabItem label="添加">
     ```bash
-    redmine auth login             # 第二个实例
-    redmine auth login --name work # 显式指定名称
+    rdflow auth login             # 第二个实例
+    rdflow auth login --name work # 显式指定名称
     ```
   </TabItem>
   <TabItem label="切换">
     ```bash
-    redmine auth list    # 查看所有配置文件
-    redmine auth switch  # 交互式选择器
+    rdflow auth list    # 查看所有配置文件
+    rdflow auth switch  # 交互式选择器
     ```
   </TabItem>
   <TabItem label="临时使用">
     ```bash
-    redmine --profile work issues list
+    rdflow --profile work issues list
     ```
   </TabItem>
   <TabItem label="状态">
     ```bash
-    redmine auth status
+    rdflow auth status
     ```
   </TabItem>
 </Tabs>
@@ -60,7 +60,7 @@ import { Steps, Tabs, TabItem, Aside, FileTree, LinkCard, CardGrid, Badge } from
 - ~/
   - **.redmine-flow.yaml** 活跃配置文件及所有配置数据
   - .local/bin/
-    - redmine 二进制文件（安装脚本目标路径）
+    - rdflow 二进制文件（安装脚本目标路径）
 </FileTree>
 
 ```yaml title="~/.redmine-flow.yaml"
@@ -92,7 +92,7 @@ profiles:
 1. 在登录时启用。当检测到终端上有可用的密钥环后端时，向导会询问是否使用密钥环。对于脚本化登录，请使用以下标志：
 
    ```bash
-   redmine auth login --keyring
+   rdflow auth login --keyring
    ```
 
 2. 该配置文件会记录 `credential_store: keyring`，密钥被写入密钥环而非文件。下次运行时会自动从密钥环读取该密钥。
@@ -151,7 +151,7 @@ export REDMINE_NO_KEYRING=1
 可通过三种方式启用（优先级：标志 > 环境变量 > 配置文件）：
 
 ```bash
-redmine --read-only issues list   # 单次调用
+rdflow --read-only issues list   # 单次调用
 export REDMINE_READ_ONLY=1        # 整个 shell 会话
 ```
 
@@ -188,13 +188,13 @@ profiles:
 单次调用时可传入 `--header`（可重复），它会覆盖配置文件中同名的请求头：
 
 ```bash
-redmine --header "User-Agent: Mozilla/5.0" issues list
+rdflow --header "User-Agent: Mozilla/5.0" issues list
 ```
 
-传给 `redmine auth login` 时，这些请求头会用于连接测试并保存到配置文件中，因此需要它们的服务器在首次登录时即可使用：
+传给 `rdflow auth login` 时，这些请求头会用于连接测试并保存到配置文件中，因此需要它们的服务器在首次登录时即可使用：
 
 ```bash
-redmine auth login --header "User-Agent: Mozilla/5.0"
+rdflow auth login --header "User-Agent: Mozilla/5.0"
 ```
 
 再次登录时，只要服务器主机不变，配置文件中的请求头会被保留。若将配置文件指向其他服务器，这些请求头会被丢弃，因为它们可能是属于旧服务器的机密信息。如需删除某个请求头，请直接在配置文件中将其删除。
@@ -266,7 +266,7 @@ profiles:
 ## 查看当前配置
 
 ```bash
-redmine config
+rdflow config
 ```
 
 输出活跃配置文件、服务器、身份验证方式、默认项目、输出格式、只读状态以及已配置请求头的名称（不显示值）。

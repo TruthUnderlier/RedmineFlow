@@ -19,7 +19,7 @@ The `users` command (alias `u`) manages Redmine users. All write operations requ
 ## list
 
 ```bash
-redmine users list [flags]
+rdflow users list [flags]
 ```
 
 | Flag | Description |
@@ -35,7 +35,7 @@ redmine users list [flags]
 ## get
 
 ```bash
-redmine users get <id-or-name> [flags]
+rdflow users get <id-or-name> [flags]
 ```
 
 Aliases: `show`, `view`. Accepts a numeric ID, login, full name, or `me`.
@@ -48,7 +48,7 @@ Aliases: `show`, `view`. Accepts a numeric ID, login, full name, or `me`.
 ## me
 
 ```bash
-redmine users me [flags]
+rdflow users me [flags]
 ```
 
 Shows the authenticated user's details — useful in scripts to resolve the current account.
@@ -72,7 +72,7 @@ With `-o json` (and in the MCP user tools) a user carries these optional keys. T
 ## create
 
 ```bash
-redmine users create [flags]
+rdflow users create [flags]
 ```
 
 | Flag | Description |
@@ -97,21 +97,21 @@ redmine users create [flags]
 ## update
 
 ```bash
-redmine users update <id-or-name> [flags]
+rdflow users update <id-or-name> [flags]
 ```
 
 Accepts the same flags as [`create`](#create) (all optional, except `--send-information` which is create-only). The user argument accepts a numeric ID, login, full name, or `me`. Only fields whose flags are explicitly set are sent to the server, so partial updates do not clobber other fields.
 
 ```bash
 # Multi-value custom field: repeat the flag
-redmine users update jdoe --custom-field Skills=Go --custom-field Skills=SQL
+rdflow users update jdoe --custom-field Skills=Go --custom-field Skills=SQL
 ```
 
 ## delete
 
 <Badge text="destructive" variant="caution" />
 ```bash
-redmine users delete <id-or-name> [flags]
+rdflow users delete <id-or-name> [flags]
 ```
 
 | Flag | Description |

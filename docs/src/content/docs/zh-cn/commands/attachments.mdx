@@ -17,14 +17,14 @@ import { CardGrid, LinkCard, Tabs, TabItem, Aside, Badge } from '@astrojs/starli
 
 <Aside type="tip">
   不知道附件 ID？用
-  [`redmine issues get <id> --attachments`](/zh-cn/commands/issues/#get)
+  [`rdflow issues get <id> --attachments`](/zh-cn/commands/issues/#get)
   列出工单的附件 - 它会打印每个附件的 ID、文件名、大小和内容类型。
 </Aside>
 
 ## get
 
 ```bash
-redmine attachments get <id> [flags]
+rdflow attachments get <id> [flags]
 ```
 
 别名：`show`、`view`、`metadata`。通过 `GET /attachments/:id.json` 获取附件的 ID、文件名、大小、内容类型、描述、作者和创建时间。表格输出还会显示下载 URL（若存在）；`json` 会返回所有字段，包括 `content_url`。
@@ -36,12 +36,12 @@ redmine attachments get <id> [flags]
 <Tabs syncKey="attachments-get">
   <TabItem label="表格">
     ```bash
-    redmine attachments get 42
+    rdflow attachments get 42
     ```
   </TabItem>
   <TabItem label="JSON">
     ```bash
-    redmine attachments get 42 -o json
+    rdflow attachments get 42 -o json
     ```
   </TabItem>
 </Tabs>
@@ -49,7 +49,7 @@ redmine attachments get <id> [flags]
 ## download
 
 ```bash
-redmine attachments download <id> [flags]
+rdflow attachments download <id> [flags]
 ```
 
 别名：`dl`、`get-file`。使用当前 profile 进行认证，将附件的原始字节流式写入磁盘（或 stdout）。响应是流式处理的，不会整体缓存在内存中，因此下载大文件也很安全。
@@ -106,46 +106,46 @@ failed to download attachment 42: refusing to save the hidden filename ".bashrc"
   <TabItem label="当前目录">
     ```bash
     # 保存为 ./<文件名>
-    redmine attachments download 42
+    rdflow attachments download 42
     ```
   </TabItem>
   <TabItem label="保存到目录">
     ```bash
-    redmine attachments download 42 --dir ./downloads
+    rdflow attachments download 42 --dir ./downloads
     ```
   </TabItem>
   <TabItem label="精确路径">
     ```bash
-    redmine attachments download 42 --path ./logo.png
+    rdflow attachments download 42 --path ./logo.png
     ```
   </TabItem>
   <TabItem label="覆盖">
     ```bash
     # 替换之前下载留下的副本
-    redmine attachments download 42 --dir ./downloads --clobber
+    rdflow attachments download 42 --dir ./downloads --clobber
     ```
   </TabItem>
   <TabItem label="管道到 stdout">
     ```bash
-    redmine attachments download 42 --path - | file -
+    rdflow attachments download 42 --path - | file -
     ```
   </TabItem>
   <TabItem label="JSON 结果">
     ```bash
-    redmine attachments download 42 --dir ./downloads -o json
+    rdflow attachments download 42 --dir ./downloads -o json
     ```
   </TabItem>
 </Tabs>
 
 <Aside type="tip">
   若要一次性获取某个工单的**所有**附件，请使用
-  [`redmine issues get <id> --download-attachments <dir>`](/zh-cn/commands/issues/#get)。
+  [`rdflow issues get <id> --download-attachments <dir>`](/zh-cn/commands/issues/#get)。
 </Aside>
 
 ## update
 
 ```bash
-redmine attachments update <id> [flags]
+rdflow attachments update <id> [flags]
 ```
 
 别名：`edit`。通过 `PUT /attachments/:id.json` 修改附件的元数据。至少需要一个标志；只会修改你传入的标志。
@@ -157,8 +157,8 @@ redmine attachments update <id> [flags]
 | `--content-type` | 新内容类型，例如 `image/png` |
 
 ```bash
-redmine attachments update 42 --filename report-final.pdf
-redmine attachments update 42 --description "Final version"
+rdflow attachments update 42 --filename report-final.pdf
+rdflow attachments update 42 --description "Final version"
 ```
 
 你需要拥有附件所属对象的编辑权限（对工单附件而言，即编辑该工单的权限）。
@@ -166,7 +166,7 @@ redmine attachments update 42 --description "Final version"
 ## delete
 
 ```bash
-redmine attachments delete <id> [flags]
+rdflow attachments delete <id> [flags]
 ```
 
 别名：`rm`。永久删除附件。除非传入 `--force`，否则会先请求确认；拒绝确认会打印 `Delete cancelled`，且不做任何更改。删除工单附件会记录在工单历史中。
@@ -176,14 +176,14 @@ redmine attachments delete <id> [flags]
 | `-f, --force` | 跳过确认提示 |
 
 ```bash
-redmine attachments delete 42
-redmine attachments delete 42 --force
+rdflow attachments delete 42
+rdflow attachments delete 42 --force
 ```
 
 ## thumbnail
 
 ```bash
-redmine attachments thumbnail <id> --path <file> [flags]
+rdflow attachments thumbnail <id> --path <file> [flags]
 ```
 
 别名：`thumb`。下载 Redmine 为图片附件（以及服务器支持时的 PDF）渲染的缩略图。
@@ -198,9 +198,9 @@ redmine attachments thumbnail <id> --path <file> [flags]
 没有 `--clobber` 时不会覆盖已有文件，请求失败也不会留下文件（与 [`download`](#download) 的安全写入行为一致）。使用 `--path -` 时，字节写入 stdout，确认信息写入 stderr，并且不支持 `--jq`。
 
 ```bash
-redmine attachments thumbnail 42 --path thumb.png
-redmine attachments thumbnail 42 --size 200 --path thumb.png --clobber
-redmine attachments thumbnail 42 --path - > thumb.png
+rdflow attachments thumbnail 42 --path thumb.png
+rdflow attachments thumbnail 42 --size 200 --path thumb.png --clobber
+rdflow attachments thumbnail 42 --path - > thumb.png
 ```
 
 <Aside type="note">

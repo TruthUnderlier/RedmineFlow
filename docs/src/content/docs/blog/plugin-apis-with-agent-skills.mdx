@@ -9,7 +9,7 @@ head:
     attrs:
       property: og:image:alt
       content: A Redmine issue with linked GitHub pull requests, showing review state, checks and diff stats
-description: Use redmine api and a short Agent Skill to let AI agents work with REST endpoints that Redmine plugins add, using the Pull Requests plugin as an example.
+description: Use rdflow api and a short Agent Skill to let AI agents work with REST endpoints that Redmine plugins add, using the Pull Requests plugin as an example.
 date: 2026-10-19
 authors: aarond
 tags:
@@ -20,7 +20,7 @@ tags:
 cover:
   alt: A Redmine issue with linked GitHub pull requests, showing review state, checks and diff stats
   image: ../../../assets/blog/redmine-pull-requests-hero.png
-excerpt: Redmine plugins often add their own REST endpoints. redmine-cli has no commands for them, and your agent has never heard of them. This post shows how to give your agent access with `redmine api` and a skill that fits on one screen.
+excerpt: Redmine plugins often add their own REST endpoints. redmine-cli has no commands for them, and your agent has never heard of them. This post shows how to give your agent access with `rdflow api` and a skill that fits on one screen.
 ---
 
 import { Aside, Steps } from '@astrojs/starlight/components';
@@ -31,7 +31,7 @@ Many Redmine instances run plugins, and some of those plugins add their own REST
 
 This post shows a setup with two pieces:
 
-1. `redmine api` sends authenticated requests to any endpoint, including plugin endpoints.
+1. `rdflow api` sends authenticated requests to any endpoint, including plugin endpoints.
 2. A short Agent Skill tells the agent which endpoints exist and how they behave.
 
 ## The example plugin
@@ -50,20 +50,20 @@ It's a good example because it has its own REST API, and that API does things yo
 
 An agent can't work any of this out by itself, so it goes into the skill.
 
-## Step 1. Explore the endpoint with `redmine api`
+## Step 1. Explore the endpoint with `rdflow api`
 
-`redmine api` sends a request to the configured server and prints the response. It reuses everything the active profile already has: the server URL, the API key or basic auth, [custom HTTP headers](/getting-started/configuration/#custom-http-headers) for reverse proxies, and [read-only mode](/getting-started/configuration/#read-only-mode). The API key never shows up on the command line, in shell history, or in the agent's context.
+`rdflow api` sends a request to the configured server and prints the response. It reuses everything the active profile already has: the server URL, the API key or basic auth, [custom HTTP headers](/getting-started/configuration/#custom-http-headers) for reverse proxies, and [read-only mode](/getting-started/configuration/#read-only-mode). The API key never shows up on the command line, in shell history, or in the agent's context.
 
 Start by looking at the raw response, including status and headers:
 
 ```bash
-redmine api /issues/1234/pull_requests.json -i
+rdflow api /issues/1234/pull_requests.json -i
 ```
 
 Once you know the shape, extract what you need with the built-in `--jq` filter. You don't need `jq` installed:
 
 ```bash
-redmine api /issues/1234/pull_requests.json \
+rdflow api /issues/1234/pull_requests.json \
   --jq '.pull_requests[] | "\(.reference)  \(.status)  \(.review_decision)  \(.checks.state)"'
 ```
 
@@ -72,14 +72,14 @@ acme/web#42  open  approved  pending
 acme/api#17  merged  approved  success
 ```
 
-On a 4xx or 5xx response, `redmine api` exits with code `1`. With `--jq` or `-o json`, it writes the error to stderr as the same JSON error envelope every other command uses, and stdout stays empty. Scripts and agents can rely on the exit code instead of parsing error text.
+On a 4xx or 5xx response, `rdflow api` exits with code `1`. With `--jq` or `-o json`, it writes the error to stderr as the same JSON error envelope every other command uses, and stdout stays empty. Scripts and agents can rely on the exit code instead of parsing error text.
 
 ## Step 2. Write data
 
 For writes, `-F` builds a JSON body from `key=value` pairs and switches the method to `POST`. Numbers, booleans, arrays and objects keep their JSON type. Anything else is sent as a string, including JSON with a typo in it, so check the quotes. A value that looks like a number is sent as one, so `-F 'name=1.10'` sends `1.1`. Inside a JSON object, strings stay strings. Linking two pull requests to issue 1234 looks like this:
 
 ```bash
-redmine api /issues/1234/pull_requests.json \
+rdflow api /issues/1234/pull_requests.json \
   -F 'pull_request={"urls":["https://github.com/acme/web/pull/42","https://gitlab.com/acme/platform/web/-/merge_requests/7"]}'
 ```
 
@@ -90,7 +90,7 @@ redmine api /issues/1234/pull_requests.json \
 For longer payloads, pipe the body in with `--input -`:
 
 ```bash
-redmine api /issues/1234/pull_requests.json --input - <<'EOF'
+rdflow api /issues/1234/pull_requests.json --input - <<'EOF'
 {
   "pull_request": {
     "urls": [
@@ -102,14 +102,14 @@ redmine api /issues/1234/pull_requests.json --input - <<'EOF'
 EOF
 ```
 
-Endpoints without a body need an explicit method, because `redmine api` only defaults to `POST` when there is a body:
+Endpoints without a body need an explicit method, because `rdflow api` only defaults to `POST` when there is a body:
 
 ```bash
 # Reload a pull request from GitHub (5 is the plugin's ID, not the PR number)
-redmine api -X POST /issues/1234/pull_requests/5/refresh.json
+rdflow api -X POST /issues/1234/pull_requests/5/refresh.json
 
 # Unlink it
-redmine api -X DELETE /issues/1234/pull_requests/5.json
+rdflow api -X DELETE /issues/1234/pull_requests/5.json
 ```
 
 ## Step 3. Write the skill
@@ -126,7 +126,7 @@ description: Read and manage GitHub pull requests and GitLab merge requests link
 
 # Redmine Pull Requests plugin
 
-The plugin has no dedicated CLI command. Use `redmine api`, which reuses the
+The plugin has no dedicated CLI command. Use `rdflow api`, which reuses the
 active profile's auth. Never call these endpoints with curl and never handle
 the API key yourself.
 
@@ -134,11 +134,11 @@ the API key yourself.
 
 | Purpose | Command |
 |---------|---------|
-| List PRs of an issue | `redmine api /issues/<issue>/pull_requests.json` |
-| One PR | `redmine api /issues/<issue>/pull_requests/<id>.json` |
-| Link PRs by URL | `redmine api /issues/<issue>/pull_requests.json -F 'pull_request={"urls":["<url>", ...]}'` |
-| Reload from GitHub/GitLab | `redmine api -X POST /issues/<issue>/pull_requests/<id>/refresh.json` |
-| Unlink | `redmine api -X DELETE /issues/<issue>/pull_requests/<id>.json` |
+| List PRs of an issue | `rdflow api /issues/<issue>/pull_requests.json` |
+| One PR | `rdflow api /issues/<issue>/pull_requests/<id>.json` |
+| Link PRs by URL | `rdflow api /issues/<issue>/pull_requests.json -F 'pull_request={"urls":["<url>", ...]}'` |
+| Reload from GitHub/GitLab | `rdflow api -X POST /issues/<issue>/pull_requests/<id>/refresh.json` |
+| Unlink | `rdflow api -X DELETE /issues/<issue>/pull_requests/<id>.json` |
 
 ## Rules
 
@@ -173,7 +173,7 @@ the API key yourself.
 ## "Is this issue ready to close?"
 
 Ready means at least one PR is linked and every linked PR has `state`
-`merged`. Combine with `redmine issues get <issue>` for the issue's own status.
+`merged`. Combine with `rdflow issues get <issue>` for the issue's own status.
 ```
 
 Skills follow an open standard, so the same file works in Claude Code, Codex, Gemini CLI, Cursor, Copilot and the other agents that support it. Only the folder differs. The cross-vendor `.agents/skills/` folder works for many agents, and some use their own, such as `.claude/skills/` or `.gemini/skills/`. Check your agent's documentation for the exact path. If you commit the skill to the repository, everyone on the team gets it.
@@ -189,9 +189,9 @@ A few things that make skills like this work well:
 
 ## Step 4. Limit what the agent can change
 
-`redmine api` can call any endpoint with any method, so decide what the agent should be allowed to do:
+`rdflow api` can call any endpoint with any method, so decide what the agent should be allowed to do:
 
-- A dedicated Redmine user limits the agent to what that user's role allows. For example, give the role *View pull requests* but not *Manage pull requests*. This only holds if the agent can't reach your own credentials. `--profile` and `redmine auth switch` are conventions the agent can ignore, and it can read `~/.redmine-flow.yaml` like any other file. Run the agent in a container or as a separate OS user whose config file only has the agent user's profile.
+- A dedicated Redmine user limits the agent to what that user's role allows. For example, give the role *View pull requests* but not *Manage pull requests*. This only holds if the agent can't reach your own credentials. `--profile` and `rdflow auth switch` are conventions the agent can ignore, and it can read `~/.redmine-flow.yaml` like any other file. Run the agent in a container or as a separate OS user whose config file only has the agent user's profile.
 - Read-only mode blocks every `POST`, `PUT`, `PATCH` and `DELETE` request before the CLI sends it. Set `read_only: true` on the agent's profile, or `REDMINE_READ_ONLY=1` for a session. It catches accidental writes, but it doesn't stop an agent that wants to write, because `--read-only=false` turns it off for a single command. That's why the skill above tells the agent never to pass it.
 
 <Aside type="note">
@@ -202,7 +202,7 @@ A few things that make skills like this work well:
 
 <Steps>
 
-1. Explore the plugin endpoint with `redmine api -i` and `--jq`.
+1. Explore the plugin endpoint with `rdflow api -i` and `--jq`.
 2. Work out the write payloads with `-F` JSON values or `--input -`.
 3. Write down endpoints, payloads, allowed values and pitfalls in a short `SKILL.md`.
 4. Give the agent its own Redmine user and no access to yours, and turn on read-only mode until you trust it with writes.

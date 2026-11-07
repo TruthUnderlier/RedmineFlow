@@ -18,7 +18,7 @@ import { CardGrid, LinkCard, Aside, Badge } from '@astrojs/starlight/components'
 ## create
 
 ```bash
-redmine versions create --name <name> [flags]
+rdflow versions create --name <name> [flags]
 ```
 
 别名：`new`。
@@ -36,16 +36,16 @@ redmine versions create --name <name> [flags]
 | `-o, --output`      | 输出格式 |
 
 ```bash
-redmine versions create --project myproject --name 1.2.0 --due-date 2026-06-30
+rdflow versions create --project myproject --name 1.2.0 --due-date 2026-06-30
 
 # 自定义字段（值为第一个 = 之后的全部内容）
-redmine versions create --project myproject --name 1.3.0 --custom-field "Release Manager=Jane Doe"
+rdflow versions create --project myproject --name 1.3.0 --custom-field "Release Manager=Jane Doe"
 ```
 
 ## list
 
 ```bash
-redmine versions list --project <identifier> [flags]
+rdflow versions list --project <identifier> [flags]
 ```
 
 | 标志 | 描述 |
@@ -57,13 +57,13 @@ redmine versions list --project <identifier> [flags]
 | `-o, --output` | 输出格式 |
 
 ```bash
-redmine versions list --project myproject --status open
+rdflow versions list --project myproject --status open
 ```
 
 ## get
 
 ```bash
-redmine versions get <id-or-name> [flags]
+rdflow versions get <id-or-name> [flags]
 ```
 
 别名：`show`、`view`。接受数字 ID 或版本名称。
@@ -81,7 +81,7 @@ redmine versions get <id-or-name> [flags]
 ## update
 
 ```bash
-redmine versions update <id-or-name> [flags]
+rdflow versions update <id-or-name> [flags]
 ```
 
 别名：`edit`。接受数字 ID 或版本名称。
@@ -98,14 +98,14 @@ redmine versions update <id-or-name> [flags]
 | `--custom-field` | 自定义字段值，格式为 `name=value` 或 `id=value`（可重复；多值字段请对同一字段重复使用该标志，`name=` 表示清空）。参见[自定义字段值](/zh-cn/commands/issues/#自定义字段值) |
 
 ```bash
-redmine versions update 42 --status closed
-redmine versions update 1.2.0 --project myproject --due-date 2026-07-15
+rdflow versions update 42 --status closed
+rdflow versions update 1.2.0 --project myproject --due-date 2026-07-15
 ```
 
 ## delete
 
 ```bash
-redmine versions delete <id-or-name> [flags]
+rdflow versions delete <id-or-name> [flags]
 ```
 
 别名：`rm`。接受数字 ID 或版本名称。
@@ -116,8 +116,8 @@ redmine versions delete <id-or-name> [flags]
 | `--force`   | 删除前不询问确认 |
 
 ```bash
-redmine versions delete 42
-redmine versions delete 1.2.0 --project myproject --force
+rdflow versions delete 42
+rdflow versions delete 1.2.0 --project myproject --force
 ```
 
 <Aside type="caution">

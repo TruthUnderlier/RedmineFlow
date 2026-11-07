@@ -16,7 +16,7 @@ import { CardGrid, LinkCard, Tabs, TabItem, Aside } from '@astrojs/starlight/com
 ## 通用搜索
 
 ```bash
-redmine search <query> [flags]
+rdflow search <query> [flags]
 ```
 
 | 标志 | 描述 |
@@ -41,17 +41,17 @@ redmine search <query> [flags]
 <Tabs syncKey="search-examples">
   <TabItem label="全部">
     ```bash
-    redmine search "login bug"
+    rdflow search "login bug"
     ```
   </TabItem>
   <TabItem label="项目范围">
     ```bash
-    redmine search "login bug" --project myproject --open-issues
+    rdflow search "login bug" --project myproject --open-issues
     ```
   </TabItem>
   <TabItem label="仅标题">
     ```bash
-    redmine search "login" --titles-only --issues
+    rdflow search "login" --titles-only --issues
     ```
   </TabItem>
 </Tabs>
@@ -61,11 +61,11 @@ redmine search <query> [flags]
 直接按指定资源类型搜索：
 
 ```bash
-redmine search issues   <query> [flags]
-redmine search projects <query> [flags]
-redmine search wiki     <query> [flags]
-redmine search news     <query> [flags]
-redmine search messages <query> [flags]
+rdflow search issues   <query> [flags]
+rdflow search projects <query> [flags]
+rdflow search wiki     <query> [flags]
+rdflow search news     <query> [flags]
+rdflow search messages <query> [flags]
 ```
 
 <Aside type="tip">
@@ -75,7 +75,7 @@ redmine search messages <query> [flags]
 ## 交互式浏览
 
 ```bash
-redmine search browse <query> [flags]
+rdflow search browse <query> [flags]
 ```
 
 在交互式终端浏览器中展示搜索结果。

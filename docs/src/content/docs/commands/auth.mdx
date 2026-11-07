@@ -20,9 +20,9 @@ The `auth` command manages authentication profiles for connecting to one or more
 Start an interactive login wizard:
 
 ```bash
-redmine auth login
-redmine auth login --name work   # explicit profile name
-redmine auth login --header "User-Agent: Mozilla/5.0"   # server behind a picky firewall
+rdflow auth login
+rdflow auth login --name work   # explicit profile name
+rdflow auth login --header "User-Agent: Mozilla/5.0"   # server behind a picky firewall
 ```
 
 | Flag | Description |
@@ -40,8 +40,8 @@ Logging in again keeps the profile's `read_only` and `mcp` settings.
 Without a terminal (CI, scripts, AI agents) the wizard cannot run. Pass the global `--server` together with `--api-key-file` (`-` reads standard input) or `--api-key`, and no prompt is shown: the URL is normalized, the connection is tested, and the profile is saved and activated.
 
 ```bash
-echo "$REDMINE_KEY" | redmine auth login --server https://redmine.example.com --api-key-file -
-redmine auth login --server redmine.example.com --api-key-file ~/.redmine-key --name work --default-project web -o json
+echo "$REDMINE_KEY" | rdflow auth login --server https://redmine.example.com --api-key-file -
+rdflow auth login --server redmine.example.com --api-key-file ~/.redmine-key --name work --default-project web -o json
 ```
 
 `-o json` prints the usual action envelope (`"action": "logged_in"`). With missing values and no terminal the command fails immediately and names the flags to pass. In a terminal, values given as flags are not asked for again.
@@ -57,13 +57,13 @@ redmine auth login --server redmine.example.com --api-key-file ~/.redmine-key --
 The URL is cleaned up before it is saved, and the wizard tells you when it changed it: surrounding whitespace, query, fragment and trailing slashes are dropped, `https://` is added when no scheme is given (an explicit `http://` is kept), and a Redmine page copied from the browser is reduced to the base URL (`https://host/projects/foo/issues` becomes `https://host`). A sub-path installation is preserved: `https://host/redmine/issues/5` becomes `https://host/redmine`. Server values from `REDMINE_SERVER` or a profile only get `https://` added when the scheme is missing.
 
 <Aside type="tip">
-  Run `redmine auth login` again at any time to add another profile — the wizard never overwrites an existing one without confirmation.
+  Run `rdflow auth login` again at any time to add another profile — the wizard never overwrites an existing one without confirmation.
 </Aside>
 
 ## list
 
 ```bash
-redmine auth list
+rdflow auth list
 ```
 
 Shows each profile's server URL and which one is currently active.
@@ -71,7 +71,7 @@ Shows each profile's server URL and which one is currently active.
 ## switch
 
 ```bash
-redmine auth switch
+rdflow auth switch
 ```
 
 Opens an interactive selector. The picked profile becomes the default for subsequent commands.
@@ -79,7 +79,7 @@ Opens an interactive selector. The picked profile becomes the default for subseq
 ## status
 
 ```bash
-redmine auth status
+rdflow auth status
 ```
 
 Displays the active profile name, server URL, authentication method, and the user the credentials resolve to.
@@ -98,8 +98,8 @@ With `-o json`, `active` is `false` and the payload adds `reason`, `message` and
 
 <Badge text="destructive" variant="caution" />
 ```bash
-redmine auth logout              # current profile
-redmine auth logout work         # named profile
+rdflow auth logout              # current profile
+rdflow auth logout work         # named profile
 ```
 
 You will be prompted to confirm before removal.
@@ -113,26 +113,26 @@ You will be prompted to confirm before removal.
 <Tabs syncKey="auth-flow">
   <TabItem label="Onboard">
     ```bash
-    redmine auth login
-    redmine auth login --name work
-    redmine auth list
+    rdflow auth login
+    rdflow auth login --name work
+    rdflow auth list
     ```
   </TabItem>
   <TabItem label="Switch profile">
     ```bash
-    redmine auth switch
-    redmine auth status
+    rdflow auth switch
+    rdflow auth status
     ```
   </TabItem>
   <TabItem label="One-off override">
     ```bash
-    redmine --profile work issues list
+    rdflow --profile work issues list
     ```
   </TabItem>
   <TabItem label="Offboard">
     ```bash
-    redmine auth logout
-    redmine auth logout work
+    rdflow auth logout
+    rdflow auth logout work
     ```
   </TabItem>
 </Tabs>

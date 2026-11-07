@@ -33,20 +33,20 @@ import { Tabs, TabItem } from '@astrojs/starlight/components';
   </TabItem>
 
   <TabItem label="Manual" icon="download">
-    Download the archive for your platform from [GitHub Releases](https://github.com/aarondpn/redmine-cli/releases/latest) and put `redmine` on your `PATH`.
+    Download the archive for your platform from [GitHub Releases](https://github.com/aarondpn/redmine-cli/releases/latest) and put `rdflow` on your `PATH`.
   </TabItem>
 </Tabs>
 
 Check that it works, then [log in](/getting-started/configuration/):
 
 ```bash
-redmine --version
+rdflow --version
 ```
 
 ## Update
 
 ```bash
-redmine update
+rdflow update
 ```
 
 Homebrew installs are updated with `brew upgrade`. For the Docker image, pull it and recreate the container (or restart your MCP client): `docker pull ghcr.io/aarondpn/redmine-mcp`, or `docker compose pull && docker compose up -d`. See [self-update](/commands/other/#self-update) for details.

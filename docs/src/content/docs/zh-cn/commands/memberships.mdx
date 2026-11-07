@@ -18,7 +18,7 @@ import { CardGrid, LinkCard, Aside, Badge } from '@astrojs/starlight/components'
 ## list
 
 ```bash
-redmine memberships list --project <identifier> [flags]
+rdflow memberships list --project <identifier> [flags]
 ```
 
 | 标志 | 描述 |
@@ -31,7 +31,7 @@ redmine memberships list --project <identifier> [flags]
 ## get
 
 ```bash
-redmine memberships get <id> [flags]
+rdflow memberships get <id> [flags]
 ```
 
 别名：`show`、`view`。
@@ -45,7 +45,7 @@ redmine memberships get <id> [flags]
 ## create
 
 ```bash
-redmine memberships create [flags]
+rdflow memberships create [flags]
 ```
 
 将用户或用户组以指定角色添加到项目中。
@@ -60,13 +60,13 @@ redmine memberships create [flags]
 | `-o, --output` | 输出格式 |
 
 <Aside type="note">
-  `--user-id` 与 `--group-id` 二者必须且只能提供其一；`--role-ids` 与 `--roles` 也必须且只能提供其一。可使用 `redmine roles list` 查看可用的角色名称与 ID。
+  `--user-id` 与 `--group-id` 二者必须且只能提供其一；`--role-ids` 与 `--roles` 也必须且只能提供其一。可使用 `rdflow roles list` 查看可用的角色名称与 ID。
 </Aside>
 
 ## update
 
 ```bash
-redmine memberships update <id> [flags]
+rdflow memberships update <id> [flags]
 ```
 
 对于已有的成员关系，只能修改其已分配的角色。
@@ -80,7 +80,7 @@ redmine memberships update <id> [flags]
 
 <Badge text="危险操作" variant="caution" />
 ```bash
-redmine memberships delete <id> [flags]
+rdflow memberships delete <id> [flags]
 ```
 
 | 标志 | 描述 |
