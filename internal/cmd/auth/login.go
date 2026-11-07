@@ -2,9 +2,11 @@ package auth
 
 import (
 	"context"
+	"crypto/x509"
 	"errors"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/charmbracelet/huh"
@@ -25,6 +27,8 @@ type loginOptions struct {
 	useKeyring     bool
 	keyringSet     bool
 	defaultProject string
+	caCert         string
+	caCertSet      bool
 }
 
 // loginNeedsTerminalError is returned when values are missing and there is no
@@ -54,9 +58,15 @@ A server URL without a scheme gets https://, and a URL pasted from the browser
 sub-path such as /redmine is kept.
 
 Headers passed with the global --header flag are used for the connection test
-and saved to the profile, for servers behind a firewall or proxy that require them.`,
+and saved to the profile, for servers behind a firewall or proxy that require them.
+
+For a server whose certificate is signed by a private or corporate CA, pass the
+CA certificate (PEM) with --ca-cert. It is used for the connection test and
+saved to the profile as ca_cert. Logging in again without --ca-cert keeps the
+profile's ca_cert; --ca-cert "" removes it.`,
 		Example: `  rdflow auth login
   rdflow auth login --name work
+  rdflow auth login --ca-cert ~/certs/company-ca.crt
   rdflow auth login --header "User-Agent: Mozilla/5.0"
   echo "$KEY" | rdflow auth login --server https://redmine.example.com --api-key-file -
   rdflow auth login --server redmine.example.com --api-key-file ~/.redmine-key --default-project web -o json`,
@@ -74,6 +84,7 @@ and saved to the profile, for servers behind a firewall or proxy that require th
 				f.OutputFormat = output.FormatTable
 			}
 			opts.keyringSet = cmd.Flags().Changed("keyring")
+			opts.caCertSet = cmd.Flags().Changed("ca-cert")
 			return runLogin(cmdutil.Context(cmd), f, opts, nonInteractive)
 		},
 	}
@@ -81,6 +92,7 @@ and saved to the profile, for servers behind a firewall or proxy that require th
 	cmd.Flags().StringVar(&opts.name, "name", "", "Profile name (default: derived from server hostname)")
 	cmd.Flags().BoolVar(&opts.useKeyring, "keyring", false, "Store credentials in the system keyring instead of the plaintext config file")
 	cmd.Flags().StringVar(&opts.defaultProject, "default-project", "", "Default project identifier to save in the profile")
+	cmd.Flags().StringVar(&opts.caCert, "ca-cert", "", `PEM file with the CA certificate of a server behind a private CA, saved to the profile ("" removes it)`)
 
 	return cmd
 }
@@ -105,6 +117,17 @@ func runLogin(ctx context.Context, f *cmdutil.Factory, opts loginOptions, nonInt
 	}
 	server := f.ServerOverride
 	f.ServerOverride, f.APIKeyOverride, f.APIKeyFile = "", "", ""
+
+	// Saved as an absolute path: the profile is used from any directory.
+	caCert := strings.TrimSpace(opts.caCert)
+	if caCert != "" {
+		if caCert, err = filepath.Abs(caCert); err != nil {
+			return fmt.Errorf("--ca-cert: %w", err)
+		}
+		if _, err := os.Stat(caCert); err != nil {
+			return fmt.Errorf("--ca-cert: %w", err)
+		}
+	}
 
 	var (
 		authMethod string
@@ -284,7 +307,10 @@ func runLogin(ctx context.Context, f *cmdutil.Factory, opts loginOptions, nonInt
 		Password:   password,
 		Headers:    headers,
 	}
-	if existing != nil {
+	switch {
+	case opts.caCertSet:
+		cfg.CACert = caCert
+	case existing != nil:
 		cfg.CACert = existing.CACert
 	}
 
@@ -305,7 +331,7 @@ func runLogin(ctx context.Context, f *cmdutil.Factory, opts loginOptions, nonInt
 			ui.fail("Connection", "failed")
 			fmt.Fprintln(f.IOStreams.ErrOut)
 		}
-		return loginConnectError(err, authMethod, assumedHTTPS)
+		return loginConnectError(err, authMethod, assumedHTTPS, cfg.CACert)
 	}
 
 	connectedAs := fmt.Sprintf("%s %s (%s)", user.FirstName, user.LastName, user.Login)
@@ -487,11 +513,26 @@ const loginUnreachableHint = `Check the server URL and that the host is reachabl
 // added https:// to a server URL typed without a scheme.
 const loginHTTPSAssumedHint = ` The URL had no scheme, so https:// was assumed; if the server only serves plain HTTP, pass http:// explicitly.`
 
+// loginUnknownCAHint is attached when the server's certificate is signed by a
+// CA the system does not trust and no --ca-cert was given.
+const loginUnknownCAHint = `The server's certificate is signed by a CA this machine does not trust, as is common for a private or corporate CA. Pass that CA certificate (PEM) with --ca-cert, e.g. rdflow auth login --ca-cert ~/certs/company-ca.crt; it is saved to the profile.`
+
+// loginWrongCAHint is attached when the certificate is not signed by the CA
+// given as ca_cert either.
+const loginWrongCAHint = `The server's certificate is not signed by the CA in %s. Check that --ca-cert points at the CA that issued the server's certificate.`
+
 // loginConnectError wraps a failed connection probe, attaching the
 // login-specific hints. authMethod selects the 401 wording; assumedHTTPS
-// reports that the scheme was added by the login.
-func loginConnectError(err error, authMethod string, assumedHTTPS bool) error {
+// reports that the scheme was added by the login; caCert is the CA file used.
+func loginConnectError(err error, authMethod string, assumedHTTPS bool, caCert string) error {
 	wrapped := fmt.Errorf("could not connect to Redmine server: %w", err)
+	var unknownCA x509.UnknownAuthorityError
+	if errors.As(err, &unknownCA) {
+		if caCert != "" {
+			return cmdutil.WithHint(wrapped, fmt.Sprintf(loginWrongCAHint, caCert))
+		}
+		return cmdutil.WithHint(wrapped, loginUnknownCAHint)
+	}
 	var apiErr *api.APIError
 	if !errors.As(err, &apiErr) {
 		hint := loginUnreachableHint

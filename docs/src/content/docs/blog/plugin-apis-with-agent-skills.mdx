@@ -191,7 +191,7 @@ A few things that make skills like this work well:
 
 `redmine api` can call any endpoint with any method, so decide what the agent should be allowed to do:
 
-- A dedicated Redmine user limits the agent to what that user's role allows. For example, give the role *View pull requests* but not *Manage pull requests*. This only holds if the agent can't reach your own credentials. `--profile` and `redmine auth switch` are conventions the agent can ignore, and it can read `~/.redmine-cli.yaml` like any other file. Run the agent in a container or as a separate OS user whose config file only has the agent user's profile.
+- A dedicated Redmine user limits the agent to what that user's role allows. For example, give the role *View pull requests* but not *Manage pull requests*. This only holds if the agent can't reach your own credentials. `--profile` and `redmine auth switch` are conventions the agent can ignore, and it can read `~/.redmine-flow.yaml` like any other file. Run the agent in a container or as a separate OS user whose config file only has the agent user's profile.
 - Read-only mode blocks every `POST`, `PUT`, `PATCH` and `DELETE` request before the CLI sends it. Set `read_only: true` on the agent's profile, or `REDMINE_READ_ONLY=1` for a session. It catches accidental writes, but it doesn't stop an agent that wants to write, because `--read-only=false` turns it off for a single command. That's why the skill above tells the agent never to pass it.
 
 <Aside type="note">

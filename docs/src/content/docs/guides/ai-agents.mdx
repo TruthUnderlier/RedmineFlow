@@ -113,11 +113,11 @@ VS Code prompts for the URL and API key and stores the key as a secret. Cursor i
 
 To enable writes or narrow the tool surface, add flags after the image name (`... ghcr.io/aarondpn/redmine-mcp --enable-writes --enable-groups issues,time`) or forward the matching `REDMINE_MCP_*` variable.
 
-Already have a `~/.redmine-cli.yaml` with profiles? Mount it read-only and pick a profile. `--user` keeps the file readable even though `redmine auth login` writes it with mode `0600`. Profiles that store their secret in the system keyring can't be read inside the container; supply `REDMINE_API_KEY` for those.
+Already have a `~/.redmine-flow.yaml` with profiles? Mount it read-only and pick a profile. `--user` keeps the file readable even though `redmine auth login` writes it with mode `0600`. Profiles that store their secret in the system keyring can't be read inside the container; supply `REDMINE_API_KEY` for those.
 
 ```bash
 docker run -i --rm --user "$(id -u):$(id -g)" \
-  -v "$HOME/.redmine-cli.yaml:/config.yaml:ro" \
+  -v "$HOME/.redmine-flow.yaml:/config.yaml:ro" \
   ghcr.io/aarondpn/redmine-mcp --config /config.yaml --profile work
 ```
 
@@ -213,7 +213,7 @@ To enable writes everywhere except destructive deletes, combine the flags:
 redmine mcp serve --enable-writes --disable-tools delete_issue,delete_project,delete_wiki_page
 ```
 
-The same defaults can live in `~/.redmine-cli.yaml` per profile, and CLI flags override them:
+The same defaults can live in `~/.redmine-flow.yaml` per profile, and CLI flags override them:
 
 ```yaml
 profiles:

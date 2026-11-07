@@ -7,7 +7,7 @@ ARG TARGETPLATFORM
 COPY $TARGETPLATFORM/redmine /usr/local/bin/redmine
 
 # No keyring or self-update inside a container: credentials come from
-# REDMINE_* variables or a mounted ~/.redmine-cli.yaml.
+# REDMINE_* variables or a mounted ~/.redmine-flow.yaml.
 ENV REDMINE_NO_KEYRING=1 \
     REDMINE_NO_UPDATE_CHECK=1
 

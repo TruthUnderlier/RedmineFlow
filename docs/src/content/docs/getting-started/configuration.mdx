@@ -19,7 +19,7 @@ import { Steps, Tabs, TabItem, Aside, FileTree, LinkCard, CardGrid, Badge } from
 
 3. Optionally set a default project — it is prepopulated in project-scoped commands.
 
-4. The wizard writes a profile to `~/.redmine-cli.yaml`. You are ready to go.
+4. The wizard writes a profile to `~/.redmine-flow.yaml`. You are ready to go.
 
 </Steps>
 
@@ -58,12 +58,12 @@ You can authenticate against as many Redmine instances as you like. Each `redmin
 
 <FileTree>
 - ~/
-  - **.redmine-cli.yaml** active profile + all profile data
+  - **.redmine-flow.yaml** active profile + all profile data
   - .local/bin/
     - redmine binary (install script target)
 </FileTree>
 
-```yaml title="~/.redmine-cli.yaml"
+```yaml title="~/.redmine-flow.yaml"
 active_profile: work
 profiles:
   work:
@@ -150,7 +150,7 @@ Flags take precedence over config values and environment variables.
 | `-k, --api-key` | API key for authentication (visible in process listings; see below) |
 | `--api-key-file` | Read the API key from a file, or from stdin with `-` |
 | `--profile`     | Use a specific auth profile |
-| `--config`      | Config file path (default `~/.redmine-cli.yaml`) |
+| `--config`      | Config file path (default `~/.redmine-flow.yaml`) |
 | `-o, --output`  | Output format: `table`, `json` (see [Output formats](/guides/output-formats/)) |
 | `-q, --jq`      | Filter JSON output with a jq expression; implies `-o json` (see [Filtering with --jq](/guides/output-formats/#filtering-with---jq)) |
 | `--no-color`    | Disable colored output |
@@ -200,7 +200,7 @@ redmine --read-only issues list   # single invocation
 export REDMINE_READ_ONLY=1        # whole shell session
 ```
 
-```yaml title="~/.redmine-cli.yaml"
+```yaml title="~/.redmine-flow.yaml"
 profiles:
   prod:
     server: https://redmine.example.com
@@ -219,7 +219,7 @@ Pass `--read-only=false` to override the environment variable or a `read_only: t
 
 Some servers sit behind a firewall or reverse proxy that expects extra request headers, for example a browser-like `User-Agent` or an access token. Add them per profile under `headers`:
 
-```yaml title="~/.redmine-cli.yaml"
+```yaml title="~/.redmine-flow.yaml"
 profiles:
   work:
     server: https://redmine.work.com
@@ -252,9 +252,47 @@ Headers are only sent to the configured server, never to hosts it redirects to. 
 
 ## Custom CA certificate
 
-If your Redmine server uses a certificate signed by a private or corporate CA, requests fail with `x509: certificate signed by unknown authority`. Point the profile at the CA certificate with `ca_cert`:
+If your Redmine server uses a certificate signed by a private or corporate CA (or a self-signed one), requests fail with `x509: certificate signed by unknown authority`, and browsers mark the site as "Not secure". Export the server's CA certificate first, then pass it to rdflow when you log in.
 
-```yaml title="~/.redmine-cli.yaml"
+### Exporting the certificate from a browser
+
+In Chrome, Chromium and Edge:
+
+1. Open your Redmine server (e.g. `https://redmine.example.com`) and click **Not secure** on the left of the address bar.
+2. Click **Certificate details** (or "Certificate is not valid").
+3. Switch to the **Details** tab. Under **Certificate hierarchy**, select the **topmost** entry: that is the root CA. If there is only one entry, the server uses a self-signed certificate; select that one.
+4. Click **Export** and choose **Base64-encoded ASCII, single certificate** as the file type (this is PEM). Do not pick DER binary or PKCS #7. In the Windows Certificate Export Wizard, choose **Base-64 encoded X.509 (.CER)**.
+5. Save it to a permanent location such as `~/certs/company-ca.crt` (on Windows e.g. `C:\certs\company-ca.crt`). Avoid Downloads or a temp folder: rdflow reads the file on every connection, so moving or deleting it breaks the connection.
+
+In Firefox, click the padlock in the address bar, then **Connection not secure** > **More information** > **View Certificate**. On the page that opens, switch to the rightmost tab (the root CA) and click **PEM (cert)** next to *Download* under *Miscellaneous*.
+
+Check the result: the first line must be `-----BEGIN CERTIFICATE-----`.
+
+```bash
+head -1 ~/certs/company-ca.crt
+```
+
+On a machine without a browser (for example a server you reach over SSH), save the certificates the server sends with `openssl`:
+
+```bash
+mkdir -p ~/certs
+openssl s_client -connect redmine.example.com:443 -showcerts </dev/null 2>/dev/null \
+  | awk '/BEGIN CERTIFICATE/,/END CERTIFICATE/' > ~/certs/company-ca.crt
+```
+
+<Aside type="caution">
+  rdflow trusts whatever certificate you export. Only export it while you are sure you are talking to the real server (for example on the company network); where possible, get the CA certificate from your IT department or compare its fingerprint with them.
+</Aside>
+
+### Logging in with the certificate
+
+```bash
+rdflow auth login --ca-cert ~/certs/company-ca.crt
+```
+
+The certificate is used for the connection test, and once the login succeeds it is saved to the profile as `ca_cert` (as an absolute path). Without `--ca-cert`, no `ca_cert` line is written. You can also set it in the config file directly:
+
+```yaml title="~/.redmine-flow.yaml"
 profiles:
   work:
     server: https://redmine.internal
@@ -267,8 +305,8 @@ profiles:
 - The file must be PEM encoded (text starting with `-----BEGIN CERTIFICATE-----`); the extension (`.crt`, `.pem`, `.cer`) does not matter. A file may hold several certificates. Convert a binary DER certificate first with `openssl x509 -inform der -in ca.cer -out ca.crt` or, on Windows, `certutil -encode ca.cer ca.crt`.
 - The certificates are trusted in addition to the system roots, so public servers keep working. They only apply to this CLI's connections to the Redmine server; the system trust store and other programs are not changed.
 - Without `ca_cert`, the system roots are used as before. A missing or unreadable file, or one without a PEM certificate, is reported as an error instead of being ignored.
-- Use an absolute path; a relative path is resolved against the current working directory, and `~` is not expanded.
-- `redmine auth login` keeps an existing `ca_cert` when you log in again. To log in to such a server for the first time, add `ca_cert` to the profile in the config file first, then run the login.
+- Use an absolute path when you edit the config file by hand: a relative path is resolved against the current working directory, and `~` is not expanded. `--ca-cert` converts the path to an absolute one for you.
+- `rdflow auth login` keeps an existing `ca_cert` when you log in again without `--ca-cert`; `--ca-cert ""` removes it.
 
 ## Connection security
 

@@ -19,7 +19,7 @@ import { Steps, Tabs, TabItem, Aside, FileTree, LinkCard, CardGrid, Badge } from
 
 3. 可选：设置默认项目——该项目会在项目范围的命令中自动填充。
 
-4. 向导将配置写入 `~/.redmine-cli.yaml`，之后即可开始使用。
+4. 向导将配置写入 `~/.redmine-flow.yaml`，之后即可开始使用。
 
 </Steps>
 
@@ -58,12 +58,12 @@ import { Steps, Tabs, TabItem, Aside, FileTree, LinkCard, CardGrid, Badge } from
 
 <FileTree>
 - ~/
-  - **.redmine-cli.yaml** 活跃配置文件及所有配置数据
+  - **.redmine-flow.yaml** 活跃配置文件及所有配置数据
   - .local/bin/
     - redmine 二进制文件（安装脚本目标路径）
 </FileTree>
 
-```yaml title="~/.redmine-cli.yaml"
+```yaml title="~/.redmine-flow.yaml"
 active_profile: work
 profiles:
   work:
@@ -138,7 +138,7 @@ export REDMINE_NO_KEYRING=1
 | `-s, --server`  | Redmine 服务器 URL |
 | `-k, --api-key` | 用于身份验证的 API 密钥 |
 | `--profile`     | 使用指定的身份验证配置文件 |
-| `--config`      | 配置文件路径（默认为 `~/.redmine-cli.yaml`） |
+| `--config`      | 配置文件路径（默认为 `~/.redmine-flow.yaml`） |
 | `--no-color`    | 禁用彩色输出 |
 | `--read-only`   | 拒绝所有修改服务器数据的请求 |
 | `--header`      | 额外的 HTTP 请求头，格式为 `"Name: value"`（可重复） |
@@ -155,7 +155,7 @@ redmine --read-only issues list   # 单次调用
 export REDMINE_READ_ONLY=1        # 整个 shell 会话
 ```
 
-```yaml title="~/.redmine-cli.yaml"
+```yaml title="~/.redmine-flow.yaml"
 profiles:
   prod:
     server: https://redmine.example.com
@@ -174,7 +174,7 @@ profiles:
 
 部分服务器位于防火墙或反向代理之后，要求附加请求头，例如类似浏览器的 `User-Agent` 或访问令牌。可在配置文件的 `headers` 下按配置文件添加：
 
-```yaml title="~/.redmine-cli.yaml"
+```yaml title="~/.redmine-flow.yaml"
 profiles:
   work:
     server: https://redmine.work.com
@@ -207,9 +207,47 @@ redmine auth login --header "User-Agent: Mozilla/5.0"
 
 ## 自定义 CA 证书
 
-如果你的 Redmine 服务器使用由私有或企业 CA 签发的证书，请求会报错 `x509: certificate signed by unknown authority`。可通过 `ca_cert` 为配置文件指定 CA 证书路径：
+如果你的 Redmine 服务器使用由私有或企业 CA 签发的证书（或自签名证书），请求会报错 `x509: certificate signed by unknown authority`，浏览器打开时地址栏也会显示"不安全"。这时需要先导出服务器的 CA 证书，再在登录时传给 rdflow。
 
-```yaml title="~/.redmine-cli.yaml"
+### 从浏览器导出证书
+
+以 Chrome、Chromium 和 Edge 为例：
+
+1. 打开 Redmine 网址（例如 `https://redmine.example.com`），点击地址栏左侧的 **不安全** 标记。
+2. 在弹出的面板中点击 **证书详细信息**（或"证书无效"）。
+3. 切换到 **详细信息** 标签页。在 **证书层次结构** 中选中**最上面**的一项，即根 CA。如果只有一项，说明服务器使用的是自签名证书，直接选它即可。
+4. 点击 **导出**，文件类型选择 **Base64 编码 ASCII，单一证书**（也就是 PEM 格式）。不要选 DER 二进制或 PKCS #7 格式。如果是 Windows 的"证书导出向导"，请选择 **Base64 编码 X.509 (.CER)**。
+5. 保存到一个长期不动的位置，例如 `~/certs/company-ca.crt`（Windows 可用 `C:\certs\company-ca.crt`）。不要放在"下载"目录或临时目录：rdflow 每次连接都会读取这个文件，文件被移动或删除后就连不上了。
+
+Firefox：点击地址栏左侧的锁形图标，依次选择 **连接不安全** > **更多信息** > **查看证书**，在打开的页面中切换到最右侧的标签（根 CA），然后在"杂项"的"下载"中点击 **PEM（证书）**。
+
+导出后检查一下格式，第一行应为 `-----BEGIN CERTIFICATE-----`：
+
+```bash
+head -1 ~/certs/company-ca.crt
+```
+
+没有浏览器的机器（例如通过 SSH 登录的服务器）可以用 `openssl` 直接保存服务器发来的证书：
+
+```bash
+mkdir -p ~/certs
+openssl s_client -connect redmine.example.com:443 -showcerts </dev/null 2>/dev/null \
+  | awk '/BEGIN CERTIFICATE/,/END CERTIFICATE/' > ~/certs/company-ca.crt
+```
+
+<Aside type="caution">
+  导出的证书会被 rdflow 视为可信。请只在确认连接的是真实服务器时导出（例如在公司内网中）；条件允许的话，最好向 IT 部门直接索取 CA 证书，或与其核对证书指纹。
+</Aside>
+
+### 登录时使用证书
+
+```bash
+rdflow auth login --ca-cert ~/certs/company-ca.crt
+```
+
+该证书用于连接测试，登录成功后以绝对路径写入配置的 `ca_cert`。不传 `--ca-cert` 时不会写入 `ca_cert` 这一行。也可以直接在配置文件中设置：
+
+```yaml title="~/.redmine-flow.yaml"
 profiles:
   work:
     server: https://redmine.internal
@@ -222,8 +260,8 @@ profiles:
 - 文件必须是 PEM 格式（以 `-----BEGIN CERTIFICATE-----` 开头的文本），与扩展名（`.crt`、`.pem`、`.cer`）无关。一个文件可包含多个证书。二进制 DER 证书需先转换：`openssl x509 -inform der -in ca.cer -out ca.crt`，Windows 上可用 `certutil -encode ca.cer ca.crt`。
 - 这些证书会在系统根证书之外额外被信任，因此公网服务器仍可正常访问。它们只作用于本 CLI 到 Redmine 服务器的连接，不会修改系统信任库，也不影响其他程序。
 - 未设置 `ca_cert` 时，行为与之前一致，仅使用系统根证书。文件不存在、无法读取或不含 PEM 证书时会直接报错，不会被静默忽略。
-- 请使用绝对路径；相对路径按当前工作目录解析，且不展开 `~`。
-- 再次执行 `redmine auth login` 时会保留已有的 `ca_cert`。首次登录此类服务器时，请先在配置文件对应的配置中写好 `ca_cert`，再执行登录。
+- 在配置文件中手动填写时请使用绝对路径：相对路径按当前工作目录解析，且不展开 `~`。`--ca-cert` 会自动转换为绝对路径。
+- 再次执行 `rdflow auth login` 且不传 `--ca-cert` 时会保留已有的 `ca_cert`；传 `--ca-cert ""` 会将其删除。
 
 ## 查看当前配置
 

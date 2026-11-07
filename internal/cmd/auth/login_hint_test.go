@@ -10,7 +10,7 @@ import (
 )
 
 func TestLoginConnectError_ForbiddenGetsLoginHint(t *testing.T) {
-	err := loginConnectError(&api.APIError{StatusCode: 403}, "apikey", false)
+	err := loginConnectError(&api.APIError{StatusCode: 403}, "apikey", false, "")
 
 	env := cmdutil.BuildErrorEnvelope(err)
 	if env.Error.Code != "forbidden" {
@@ -30,12 +30,12 @@ func TestLoginConnectError_ForbiddenGetsLoginHint(t *testing.T) {
 }
 
 func TestLoginConnectError_UnauthorizedGetsLoginHint(t *testing.T) {
-	err := loginConnectError(&api.APIError{StatusCode: 401}, "apikey", false)
+	err := loginConnectError(&api.APIError{StatusCode: 401}, "apikey", false, "")
 
 	if hint := cmdutil.ErrorHint(err); hint != loginUnauthorizedAPIKeyHint {
 		t.Errorf("hint = %q, want the login unauthorized hint", hint)
 	}
-	if hint := cmdutil.ErrorHint(loginConnectError(&api.APIError{StatusCode: 401}, "basic", false)); hint != loginUnauthorizedBasicHint {
+	if hint := cmdutil.ErrorHint(loginConnectError(&api.APIError{StatusCode: 401}, "basic", false, "")); hint != loginUnauthorizedBasicHint {
 		t.Errorf("basic hint = %q", hint)
 	}
 	if text := cmdutil.FormatError(err); strings.Count(text, "Hint:") != 1 || strings.Contains(text, "auth status") {
@@ -55,7 +55,7 @@ func TestLoginConnectError_Hints(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := loginConnectError(tt.err, "apikey", false)
+			err := loginConnectError(tt.err, "apikey", false, "")
 			if hint := cmdutil.ErrorHint(err); hint != tt.want {
 				t.Errorf("hint = %q, want %q", hint, tt.want)
 			}
@@ -67,7 +67,7 @@ func TestLoginConnectError_Hints(t *testing.T) {
 }
 
 func TestLoginConnectError_AssumedHTTPSHint(t *testing.T) {
-	err := loginConnectError(errors.New("dial tcp: connection refused"), "apikey", true)
+	err := loginConnectError(errors.New("dial tcp: connection refused"), "apikey", true, "")
 	if hint := cmdutil.ErrorHint(err); hint != loginUnreachableHint+loginHTTPSAssumedHint {
 		t.Errorf("hint = %q", hint)
 	}
