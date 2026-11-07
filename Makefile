@@ -1,4 +1,4 @@
-BINARY_NAME=redmine
+BINARY_NAME=rdflow
 VERSION ?= $(shell git describe --tags --always --dirty 2>/dev/null || echo "dev")
 # VERSION (from the environment or a git tag) ends up in a shell recipe, so
 # reduce it to version-string characters first. Single quotes are dropped

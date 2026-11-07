@@ -297,8 +297,8 @@ func TestNotWritableError(t *testing.T) {
 			name: "pins install.sh to the release tag",
 			tag:  "v9.8.7",
 			want: []string{
-				"curl -fsSL https://raw.githubusercontent.com/aarondpn/redmine-cli/v9.8.7/install.sh | REDMINE_CLI_VERSION=v9.8.7 bash",
-				"https://github.com/aarondpn/redmine-cli/releases/tag/v9.8.7",
+				"curl -fsSL https://raw.githubusercontent.com/TruthUnderlier/RedmineFlow/v9.8.7/install.sh | REDMINE_CLI_VERSION=v9.8.7 bash",
+				"https://github.com/TruthUnderlier/RedmineFlow/releases/tag/v9.8.7",
 			},
 			wantNot: []string{"/main/install.sh"},
 		},
@@ -312,7 +312,7 @@ func TestNotWritableError(t *testing.T) {
 			name:    "windows suggests install.ps1",
 			goos:    "windows",
 			tag:     "v9.8.7",
-			want:    []string{"$env:REDMINE_CLI_VERSION='v9.8.7'; irm https://raw.githubusercontent.com/aarondpn/redmine-cli/v9.8.7/install.ps1 | iex"},
+			want:    []string{"$env:REDMINE_CLI_VERSION='v9.8.7'; irm https://raw.githubusercontent.com/TruthUnderlier/RedmineFlow/v9.8.7/install.ps1 | iex"},
 			wantNot: []string{"curl", "install.sh"},
 		},
 		{
@@ -320,7 +320,7 @@ func TestNotWritableError(t *testing.T) {
 			// value into a command the user may copy into a shell.
 			name:    "unsafe tag falls back to the releases page",
 			tag:     "v1;touch /tmp/pwned",
-			want:    []string{"https://github.com/aarondpn/redmine-cli/releases/latest"},
+			want:    []string{"https://github.com/TruthUnderlier/RedmineFlow/releases/latest"},
 			wantNot: []string{"curl", "touch", "/main/install.sh"},
 		},
 	}

@@ -304,9 +304,9 @@ func TestJQ_RejectedForCommandsWithoutJSONOutput(t *testing.T) {
 		args []string
 		want string
 	}{
-		{[]string{"completion", "bash", "--jq", "."}, "--jq is not supported for redmine completion"},
-		{[]string{"mcp", "serve", "--jq", "."}, "--jq is not supported for redmine mcp serve"},
-		{[]string{"mcp", "tools", "--jq", "."}, "--jq is not supported for redmine mcp tools"},
+		{[]string{"completion", "bash", "--jq", "."}, "--jq is not supported for rdflow completion"},
+		{[]string{"mcp", "serve", "--jq", "."}, "--jq is not supported for rdflow mcp serve"},
+		{[]string{"mcp", "tools", "--jq", "."}, "--jq is not supported for rdflow mcp tools"},
 		{[]string{"attachments", "download", "1", "--path", "-", "--jq", "."}, "--jq is not supported with --path -"},
 	} {
 		t.Run(strings.Join(tc.args, "_"), func(t *testing.T) {

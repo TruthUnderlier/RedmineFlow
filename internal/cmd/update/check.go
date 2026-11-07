@@ -125,7 +125,7 @@ func PrintNotice(w io.Writer, currentVersion string, result *CheckResult) {
 		return
 	}
 	current := strings.TrimPrefix(currentVersion, "v")
-	fmt.Fprintf(w, "\nA new version of redmine is available: v%s → v%s\n%s\nRun \"redmine update\" to upgrade\n",
+	fmt.Fprintf(w, "\nA new version of rdflow is available: v%s → v%s\n%s\nRun \"rdflow update\" to upgrade\n",
 		current, result.NewVersion, result.ReleaseURL)
 }
 
@@ -138,7 +138,7 @@ func defaultCachePath() string {
 	if err != nil || home == "" {
 		return ""
 	}
-	return filepath.Join(home, ".redmine-cli-update-check.json")
+	return filepath.Join(home, ".rdflow-update-check.json")
 }
 
 const updateCheckCacheAge = 24 * time.Hour
@@ -220,7 +220,7 @@ func writeCache(cache *updateCheckCache) {
 		return
 	}
 
-	tmp, err := os.CreateTemp(dir, ".redmine-cli-update-check-*.tmp")
+	tmp, err := os.CreateTemp(dir, ".rdflow-update-check-*.tmp")
 	if err != nil {
 		return
 	}

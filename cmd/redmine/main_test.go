@@ -24,7 +24,7 @@ func TestWaitForStartupUpdate_FastResult_NoHint(t *testing.T) {
 	updateDone := make(chan *update.CheckResult, 1)
 	updateDone <- &update.CheckResult{
 		NewVersion: "2.0.0",
-		ReleaseURL: "https://github.com/aarondpn/redmine-cli/releases/tag/v2.0.0",
+		ReleaseURL: "https://github.com/TruthUnderlier/RedmineFlow/releases/tag/v2.0.0",
 	}
 
 	var buf bytes.Buffer
@@ -45,7 +45,7 @@ func TestWaitForStartupUpdate_SlowResult_PrintsHintAndNotice(t *testing.T) {
 		time.Sleep(20 * time.Millisecond)
 		updateDone <- &update.CheckResult{
 			NewVersion: "2.0.0",
-			ReleaseURL: "https://github.com/aarondpn/redmine-cli/releases/tag/v2.0.0",
+			ReleaseURL: "https://github.com/TruthUnderlier/RedmineFlow/releases/tag/v2.0.0",
 		}
 	}()
 
@@ -75,7 +75,7 @@ func TestWaitForStartupUpdate_SlowNilResult_PrintsHintOnly(t *testing.T) {
 	if !strings.Contains(out, "Checking for updates...") {
 		t.Fatalf("expected progress hint in output, got %q", out)
 	}
-	if strings.Contains(out, "A new version of redmine is available") {
+	if strings.Contains(out, "A new version of rdflow is available") {
 		t.Fatalf("did not expect update notice in output, got %q", out)
 	}
 }
@@ -103,7 +103,7 @@ func TestWaitForStartupUpdate_TimeoutCancelsCheck(t *testing.T) {
 	if !strings.Contains(out, "Checking for updates...") {
 		t.Fatalf("expected progress hint in output, got %q", out)
 	}
-	if strings.Contains(out, "A new version of redmine is available") {
+	if strings.Contains(out, "A new version of rdflow is available") {
 		t.Fatalf("did not expect update notice in output, got %q", out)
 	}
 }
@@ -357,18 +357,18 @@ func TestErrorsGoToStderrWithEmptyStdout(t *testing.T) {
 			name:     "interactive command rejects --jq as an envelope",
 			args:     []string{"issues", "browse", "--jq", "."},
 			wantJSON: true,
-			wantMsg:  `{"error":{"message":"--jq is not supported for redmine issues browse"`,
+			wantMsg:  `{"error":{"message":"--jq is not supported for rdflow issues browse"`,
 		},
 		{
 			name:     "interactive command rejects -o json as an envelope",
 			args:     []string{"issues", "browse", "-o", "json"},
 			wantJSON: true,
-			wantMsg:  `{"error":{"message":"--output is not supported for redmine issues browse"`,
+			wantMsg:  `{"error":{"message":"--output is not supported for rdflow issues browse"`,
 		},
 		{
 			name:    "interactive command rejects -o table as text",
 			args:    []string{"auth", "logout", "-o", "table"},
-			wantMsg: "Error: --output is not supported for redmine auth logout",
+			wantMsg: "Error: --output is not supported for rdflow auth logout",
 		},
 	}
 	for _, tt := range tests {

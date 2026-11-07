@@ -48,7 +48,7 @@ func stubBrewEnv(t *testing.T, execPath, prefix string, prefixErr error) {
 
 func TestDefaultCheckHomebrew_ExecUnderCaskDir(t *testing.T) {
 	skipHomebrewOnWindows(t)
-	stubBrewEnv(t, "/opt/homebrew/Caskroom/redmine/2.1.1/redmine", "/opt/homebrew", nil)
+	stubBrewEnv(t, "/opt/homebrew/Caskroom/redmine/2.1.1/rdflow", "/opt/homebrew", nil)
 	if !defaultCheckHomebrew() {
 		t.Error("expected true when exec path resolves into the redmine cask dir")
 	}
@@ -57,7 +57,7 @@ func TestDefaultCheckHomebrew_ExecUnderCaskDir(t *testing.T) {
 func TestDefaultCheckHomebrew_ExecOutsidePrefix(t *testing.T) {
 	// Simulates a curl- or go-install binary on a machine that also has the
 	// brew cask. Previously this returned true and misrouted to brew upgrade.
-	stubBrewEnv(t, "/Users/someone/.local/bin/redmine", "/opt/homebrew", nil)
+	stubBrewEnv(t, "/Users/someone/.local/bin/rdflow", "/opt/homebrew", nil)
 	if defaultCheckHomebrew() {
 		t.Error("expected false when exec path is outside brew prefix")
 	}
@@ -66,7 +66,7 @@ func TestDefaultCheckHomebrew_ExecOutsidePrefix(t *testing.T) {
 func TestDefaultCheckHomebrew_ExecUnderPrefixButOutsideCaskDir(t *testing.T) {
 	// A manually copied binary in /opt/homebrew/bin must not be treated as the
 	// brew-managed cask binary.
-	stubBrewEnv(t, "/opt/homebrew/bin/redmine", "/opt/homebrew", nil)
+	stubBrewEnv(t, "/opt/homebrew/bin/rdflow", "/opt/homebrew", nil)
 	if defaultCheckHomebrew() {
 		t.Error("expected false when exec path is under brew prefix but outside the cask dir")
 	}
@@ -74,15 +74,15 @@ func TestDefaultCheckHomebrew_ExecUnderPrefixButOutsideCaskDir(t *testing.T) {
 
 func TestDefaultCheckHomebrew_CaskDirPrefixMatch(t *testing.T) {
 	// Guards against naive string prefix match: "/opt/homebrew/Caskroom/redmine-sibling/..."
-	// must not count as being under "/opt/homebrew/Caskroom/redmine".
-	stubBrewEnv(t, "/opt/homebrew/Caskroom/redmine-sibling/2.1.1/redmine", "/opt/homebrew", nil)
+	// must not count as being under "/opt/homebrew/Caskroom/rdflow".
+	stubBrewEnv(t, "/opt/homebrew/Caskroom/redmine-sibling/2.1.1/rdflow", "/opt/homebrew", nil)
 	if defaultCheckHomebrew() {
 		t.Error("expected false for sibling dir sharing redmine cask dir as string prefix")
 	}
 }
 
 func TestDefaultCheckHomebrew_BrewNotInstalled(t *testing.T) {
-	stubBrewEnv(t, "/opt/homebrew/Caskroom/redmine/2.1.1/redmine", "", errors.New("brew not found"))
+	stubBrewEnv(t, "/opt/homebrew/Caskroom/redmine/2.1.1/rdflow", "", errors.New("brew not found"))
 	if defaultCheckHomebrew() {
 		t.Error("expected false when brew is unavailable")
 	}
@@ -470,7 +470,7 @@ func buildTarGz(t *testing.T, files map[string][]byte) []byte {
 func TestExtractBinary_TarGz(t *testing.T) {
 	expected := []byte("binary-content")
 	archive := buildTarGz(t, map[string][]byte{
-		"redmine": expected,
+		"rdflow": expected,
 	})
 
 	got, err := extractBinary(archive, "redmine-linux-amd64.tar.gz")
@@ -485,7 +485,7 @@ func TestExtractBinary_TarGz(t *testing.T) {
 func TestExtractBinary_TarGzWithPath(t *testing.T) {
 	expected := []byte("binary-in-subdir")
 	archive := buildTarGz(t, map[string][]byte{
-		"dist/redmine": expected,
+		"dist/rdflow": expected,
 	})
 
 	got, err := extractBinary(archive, "redmine-linux-amd64.tar.gz")
@@ -530,7 +530,7 @@ func buildZip(t *testing.T, files map[string][]byte) []byte {
 func TestExtractBinary_Zip(t *testing.T) {
 	expected := []byte("windows-binary")
 	archive := buildZip(t, map[string][]byte{
-		"redmine.exe": expected,
+		"rdflow.exe": expected,
 	})
 
 	got, err := extractBinary(archive, "redmine-windows-amd64.zip")

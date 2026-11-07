@@ -68,7 +68,7 @@ func NewRootCmdWithFactory(version string) (*cobra.Command, *cmdutil.Factory) {
 	)
 
 	cmd := &cobra.Command{
-		Use:   "redmine",
+		Use:   "rdflow",
 		Short: "CLI tool for the Redmine project management API",
 		Long:  "A command-line interface for interacting with Redmine's REST API.",
 		Example: `  # List open issues in a project

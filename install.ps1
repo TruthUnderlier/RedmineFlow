@@ -1,6 +1,6 @@
 # Installs the redmine CLI on Windows:
 #
-#   irm https://raw.githubusercontent.com/aarondpn/redmine-cli/main/install.ps1 | iex
+#   irm https://raw.githubusercontent.com/TruthUnderlier/RedmineFlow/main/install.ps1 | iex
 #
 # Environment variables:
 #   REDMINE_CLI_VERSION           Release tag to install (e.g. v2.14.1). Defaults
@@ -9,7 +9,7 @@
 #                                 behind a proxy that blocks Sigstore. Not
 #                                 recommended: only the checksums are verified.
 #   REDMINE_INSTALL_DIR           Target directory. Defaults to
-#                                 %LOCALAPPDATA%\Programs\redmine-cli.
+#                                 %LOCALAPPDATA%\Programs\rdflow.
 #   REDMINE_CLI_NO_MODIFY_PATH    1 or true leaves the user PATH unchanged.
 #
 # Everything runs in a script block so that `irm | iex` neither leaks variables
@@ -28,8 +28,8 @@
   $CallerHadExitCode = Test-Path variable:global:LASTEXITCODE
   $CallerExitCode = if ($CallerHadExitCode) { $global:LASTEXITCODE } else { $null }
 
-  $Repo = 'aarondpn/redmine-cli'
-  $Binary = 'redmine.exe'
+  $Repo = 'TruthUnderlier/RedmineFlow'
+  $Binary = 'rdflow.exe'
 
   function Write-Info([string]$Message) {
     Write-Host '==> ' -ForegroundColor Blue -NoNewline
@@ -142,8 +142,8 @@
   }
 
   $Version = $Tag.Substring(1)
-  $Archive = "redmine-cli-windows-${Arch}.zip"
-  $ChecksumsName = "redmine-cli_${Version}_checksums.txt"
+  $Archive = "rdflow-windows-${Arch}.zip"
+  $ChecksumsName = "rdflow_${Version}_checksums.txt"
   $BaseUrl = "https://github.com/$Repo/releases/download/$Tag"
 
   $TmpDir = Join-Path ([IO.Path]::GetTempPath()) ('redmine-cli-' + [Guid]::NewGuid())
@@ -218,7 +218,7 @@
     }
 
     $InstallDir = $env:REDMINE_INSTALL_DIR
-    if (-not $InstallDir) { $InstallDir = Join-Path $env:LOCALAPPDATA 'Programs\redmine-cli' }
+    if (-not $InstallDir) { $InstallDir = Join-Path $env:LOCALAPPDATA 'Programs\rdflow' }
     # A relative directory would end up as a relative, working-directory
     # dependent entry in the user PATH.
     $InstallDir = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($InstallDir)

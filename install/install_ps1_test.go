@@ -38,7 +38,7 @@ function Invoke-WebRequest {
   if ($Uri -like '*/releases/latest') {
     # The final URL after the redirect, in the shape Windows PowerShell
     # (ResponseUri) or, with RESPONSE_SHAPE=core, PowerShell 7 reports it.
-    $final = [uri]"https://github.com/aarondpn/redmine-cli/releases/tag/$($env:LATEST_TAG)"
+    $final = [uri]"https://github.com/TruthUnderlier/RedmineFlow/releases/tag/$($env:LATEST_TAG)"
     if ($env:RESPONSE_SHAPE -eq 'core') {
       return [pscustomobject]@{ BaseResponse = [pscustomobject]@{ RequestMessage = [pscustomobject]@{ RequestUri = $final } } }
     }
@@ -94,9 +94,9 @@ if (Test-Path variable:global:LASTEXITCODE) {
 }
 `
 
-const psArchive = "redmine-cli-windows-amd64.zip"
+const psArchive = "rdflow-windows-amd64.zip"
 
-var psBinary = []byte("fake redmine.exe")
+var psBinary = []byte("fake rdflow.exe")
 
 type psEnv struct {
 	workDir    string // working directory of the script, default the test's
@@ -145,7 +145,7 @@ func newPSEnv(t *testing.T, shell string) *psEnv {
 		t.Fatal(err)
 	}
 
-	archive := buildZip(t, "redmine.exe", psBinary)
+	archive := buildZip(t, "rdflow.exe", psBinary)
 	if err := os.WriteFile(filepath.Join(fixtureDir, psArchive), archive, 0o644); err != nil {
 		t.Fatal(err)
 	}
@@ -173,8 +173,8 @@ func buildZip(t *testing.T, name string, content []byte) []byte {
 
 func (e *psEnv) writeChecksums(t *testing.T, sum string) {
 	t.Helper()
-	name := "redmine-cli_" + strings.TrimPrefix(scriptFixtureTag, "v") + "_checksums.txt"
-	sums := fmt.Sprintf("%s  redmine-cli-linux-amd64.tar.gz\n%s  %s\n", strings.Repeat("1", 64), sum, psArchive)
+	name := "rdflow_" + strings.TrimPrefix(scriptFixtureTag, "v") + "_checksums.txt"
+	sums := fmt.Sprintf("%s  rdflow-linux-amd64.tar.gz\n%s  %s\n", strings.Repeat("1", 64), sum, psArchive)
 	if err := os.WriteFile(filepath.Join(e.dir, "fixture", name), []byte(sums), 0o644); err != nil {
 		t.Fatal(err)
 	}
@@ -224,7 +224,7 @@ func (e *psEnv) run(t *testing.T, withGh bool, extra map[string]string) (string,
 
 func (e *psEnv) installed(t *testing.T) bool {
 	t.Helper()
-	data, err := os.ReadFile(filepath.Join(e.installDir, "redmine.exe"))
+	data, err := os.ReadFile(filepath.Join(e.installDir, "rdflow.exe"))
 	if err != nil {
 		return false
 	}
@@ -241,8 +241,8 @@ func (e *psEnv) stubLog(t *testing.T) string {
 }
 
 func TestInstallPowerShellScript(t *testing.T) {
-	verifyArgs := psArchive + " --repo aarondpn/redmine-cli" +
-		" --signer-workflow aarondpn/redmine-cli/.github/workflows/release.yml" +
+	verifyArgs := psArchive + " --repo TruthUnderlier/RedmineFlow" +
+		" --signer-workflow TruthUnderlier/RedmineFlow/.github/workflows/release.yml" +
 		" --source-ref refs/tags/" + scriptFixtureTag
 
 	tests := []struct {
@@ -263,7 +263,7 @@ func TestInstallPowerShellScript(t *testing.T) {
 			wantInstalled: true,
 			wantOutput: []string{
 				"Latest version: " + scriptFixtureTag, "Checksum verified.", "Attestation verified.",
-				"is not in your PATH (REDMINE_CLI_NO_MODIFY_PATH is set)", "redmine.exe' auth login",
+				"is not in your PATH (REDMINE_CLI_NO_MODIFY_PATH is set)", "rdflow.exe' auth login",
 				"https://redmine-cli.dev/getting-started/configuration/",
 				"caller LASTEXITCODE: unset",
 			},
@@ -434,10 +434,10 @@ func TestInstallPowerShellScript_ReplacesExisting(t *testing.T) {
 				t.Fatal(err)
 			}
 			for name, content := range map[string]string{
-				"redmine.exe":         "old",
-				"redmine.exe.old":     "older",
-				"redmine.exe.old-abc": "renamed aside by an earlier update",
-				"redmine.exe.older":   "unrelated",
+				"rdflow.exe":         "old",
+				"rdflow.exe.old":     "older",
+				"rdflow.exe.old-abc": "renamed aside by an earlier update",
+				"rdflow.exe.older":   "unrelated",
 			} {
 				if err := os.WriteFile(filepath.Join(env.installDir, name), []byte(content), 0o755); err != nil {
 					t.Fatal(err)
@@ -448,14 +448,14 @@ func TestInstallPowerShellScript_ReplacesExisting(t *testing.T) {
 				t.Fatalf("install over an existing binary: %v\n%s", err, out)
 			}
 			if !env.installed(t) {
-				t.Errorf("redmine.exe was not replaced\n%s", out)
+				t.Errorf("rdflow.exe was not replaced\n%s", out)
 			}
-			for _, name := range []string{"redmine.exe.old", "redmine.exe.old-abc"} {
+			for _, name := range []string{"rdflow.exe.old", "rdflow.exe.old-abc"} {
 				if _, err := os.Stat(filepath.Join(env.installDir, name)); !os.IsNotExist(err) {
 					t.Errorf("%s left behind: %v", name, err)
 				}
 			}
-			if _, err := os.Stat(filepath.Join(env.installDir, "redmine.exe.older")); err != nil {
+			if _, err := os.Stat(filepath.Join(env.installDir, "rdflow.exe.older")); err != nil {
 				t.Errorf("an unrelated file was removed: %v", err)
 			}
 		})
@@ -475,7 +475,7 @@ func TestInstallPowerShellScript_RelativeInstallDir(t *testing.T) {
 				t.Fatalf("install: %v\n%s", err, out)
 			}
 			if !env.installed(t) {
-				t.Errorf("redmine.exe not installed to %s\n%s", env.installDir, out)
+				t.Errorf("rdflow.exe not installed to %s\n%s", env.installDir, out)
 			}
 			// Compared as files: the runner's TEMP may use the 8.3 short name
 			// (RUNNER~1) while PowerShell prints the long one.
@@ -487,12 +487,12 @@ func TestInstallPowerShellScript_RelativeInstallDir(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			want, err := os.Stat(filepath.Join(env.installDir, "redmine.exe"))
+			want, err := os.Stat(filepath.Join(env.installDir, "rdflow.exe"))
 			if err != nil {
 				t.Fatal(err)
 			}
 			if !os.SameFile(got, want) {
-				t.Errorf("installed to %s, want %s", m[1], filepath.Join(env.installDir, "redmine.exe"))
+				t.Errorf("installed to %s, want %s", m[1], filepath.Join(env.installDir, "rdflow.exe"))
 			}
 		})
 	}

@@ -1,8 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
-REPO="aarondpn/redmine-cli"
-BINARY="redmine"
+REPO="TruthUnderlier/RedmineFlow"
+BINARY="rdflow"
 INSTALL_DIR="${REDMINE_INSTALL_DIR:-$HOME/.local/bin}"
 # Release tag to install (e.g. v2.14.1). Defaults to the latest release. Not
 # REDMINE_VERSION: the official Redmine Docker image sets that to its Redmine
@@ -65,12 +65,12 @@ if ! [[ "$TAG" =~ ^v[0-9A-Za-z][0-9A-Za-z.+-]*$ ]]; then
 fi
 
 # Download
-ARCHIVE="redmine-cli-${OS}-${ARCH}.tar.gz"
+ARCHIVE="rdflow-${OS}-${ARCH}.tar.gz"
 URL="https://github.com/${REPO}/releases/download/${TAG}/${ARCHIVE}"
 TMPDIR=$(mktemp -d)
 trap 'rm -rf "$TMPDIR"' EXIT
 
-CHECKSUMS_URL="https://github.com/${REPO}/releases/download/${TAG}/redmine-cli_${TAG#v}_checksums.txt"
+CHECKSUMS_URL="https://github.com/${REPO}/releases/download/${TAG}/rdflow_${TAG#v}_checksums.txt"
 
 info "Downloading ${URL}..."
 curl -fsSL --retry 3 -o "${TMPDIR}/${ARCHIVE}" "$URL"

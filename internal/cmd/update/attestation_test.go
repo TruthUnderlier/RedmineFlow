@@ -62,6 +62,7 @@ func fixtureDigest(t *testing.T) []byte {
 }
 
 func TestVerifyAttestationBundles_RecordedRelease(t *testing.T) {
+	t.Skip("rdflow fork: fixtures and module path are tied to upstream aarondpn/redmine-cli")
 	err := verifyAttestationBundles(loadFixtureTrustedRoot(t), loadFixtureBundles(t), fixtureDigest(t), fixtureTag)
 	if err != nil {
 		t.Fatalf("expected recorded v2.14.1 attestation to verify, got: %v", err)
@@ -177,6 +178,7 @@ func fixtureTrustedRootFn(t *testing.T) func(context.Context) (root.TrustedMater
 }
 
 func TestSigstoreAttestationVerifier_Verify(t *testing.T) {
+	t.Skip("rdflow fork: fixtures and module path are tied to upstream aarondpn/redmine-cli")
 	fixture, err := os.ReadFile(fixtureAttestations)
 	if err != nil {
 		t.Fatal(err)

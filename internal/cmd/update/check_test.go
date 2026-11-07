@@ -122,12 +122,12 @@ func TestPrintNotice(t *testing.T) {
 	var buf bytes.Buffer
 	result := &CheckResult{
 		NewVersion: "2.0.0",
-		ReleaseURL: "https://github.com/aarondpn/redmine-cli/releases/tag/v2.0.0",
+		ReleaseURL: "https://github.com/TruthUnderlier/RedmineFlow/releases/tag/v2.0.0",
 	}
 	PrintNotice(&buf, "1.0.0", result)
 
 	out := buf.String()
-	for _, want := range []string{"v1.0.0", "v2.0.0", "redmine update", result.ReleaseURL} {
+	for _, want := range []string{"v1.0.0", "v2.0.0", "rdflow update", result.ReleaseURL} {
 		if !strings.Contains(out, want) {
 			t.Errorf("output missing %q:\n%s", want, out)
 		}
@@ -190,7 +190,7 @@ func TestCheckForUpdateCached_PositiveCacheHit(t *testing.T) {
 		CheckedAt:          time.Now(),
 		CheckedFromVersion: "1.0.0",
 		LatestVersion:      "2.0.0",
-		ReleaseURL:         "https://github.com/aarondpn/redmine-cli/releases/tag/v2.0.0",
+		ReleaseURL:         "https://github.com/TruthUnderlier/RedmineFlow/releases/tag/v2.0.0",
 		UpdateAvailable:    true,
 	})
 
@@ -218,7 +218,7 @@ func TestCheckForUpdateCached_VersionMismatch(t *testing.T) {
 		CheckedAt:          time.Now(),
 		CheckedFromVersion: "1.0.0",
 		LatestVersion:      "2.0.0",
-		ReleaseURL:         "https://github.com/aarondpn/redmine-cli/releases/tag/v2.0.0",
+		ReleaseURL:         "https://github.com/TruthUnderlier/RedmineFlow/releases/tag/v2.0.0",
 		UpdateAvailable:    true,
 	})
 
@@ -245,7 +245,7 @@ func TestCheckForUpdateCached_InvalidPositiveCacheFallsBackToFetch(t *testing.T)
 		CheckedAt:          time.Now(),
 		CheckedFromVersion: "1.0.0",
 		LatestVersion:      "1.0.0",
-		ReleaseURL:         "https://github.com/aarondpn/redmine-cli/releases/tag/v2.0.0",
+		ReleaseURL:         "https://github.com/TruthUnderlier/RedmineFlow/releases/tag/v2.0.0",
 		UpdateAvailable:    true,
 	})
 
@@ -280,7 +280,7 @@ func TestCheckForUpdateCached_NegativeCacheHit(t *testing.T) {
 		CheckedAt:          time.Now(),
 		CheckedFromVersion: "1.0.0",
 		LatestVersion:      "1.0.0",
-		ReleaseURL:         "https://github.com/aarondpn/redmine-cli/releases/tag/v1.0.0",
+		ReleaseURL:         "https://github.com/TruthUnderlier/RedmineFlow/releases/tag/v1.0.0",
 		UpdateAvailable:    false,
 	})
 
@@ -304,7 +304,7 @@ func TestCheckForUpdateCached_ExpiredCache(t *testing.T) {
 		CheckedAt:          time.Now().Add(-updateCheckCacheAge - time.Hour),
 		CheckedFromVersion: "1.0.0",
 		LatestVersion:      "1.0.0",
-		ReleaseURL:         "https://github.com/aarondpn/redmine-cli/releases/tag/v1.0.0",
+		ReleaseURL:         "https://github.com/TruthUnderlier/RedmineFlow/releases/tag/v1.0.0",
 		UpdateAvailable:    false,
 	})
 
@@ -451,7 +451,7 @@ func TestCheckForUpdateCached_CacheBypassByVersionMismatch(t *testing.T) {
 		CheckedAt:          time.Now(),
 		CheckedFromVersion: "1.0.0",
 		LatestVersion:      "1.0.0",
-		ReleaseURL:         "https://github.com/aarondpn/redmine-cli/releases/tag/v1.0.0",
+		ReleaseURL:         "https://github.com/TruthUnderlier/RedmineFlow/releases/tag/v1.0.0",
 		UpdateAvailable:    false,
 	})
 
@@ -479,7 +479,7 @@ func TestCheckForUpdateCached_PositiveCacheHitWithVPrefixVersion(t *testing.T) {
 		CheckedAt:          time.Now(),
 		CheckedFromVersion: "1.0.0",
 		LatestVersion:      "2.0.0",
-		ReleaseURL:         "https://github.com/aarondpn/redmine-cli/releases/tag/v2.0.0",
+		ReleaseURL:         "https://github.com/TruthUnderlier/RedmineFlow/releases/tag/v2.0.0",
 		UpdateAvailable:    true,
 	})
 

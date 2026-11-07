@@ -29,10 +29,12 @@ import (
 )
 
 const (
-	RepoOwner  = "aarondpn"
-	RepoName   = "redmine-cli"
-	binaryName = "redmine"
-	ReleaseURL = "https://api.github.com/repos/" + RepoOwner + "/" + RepoName + "/releases/latest"
+	RepoOwner  = "TruthUnderlier"
+	RepoName   = "RedmineFlow"
+	binaryName = "rdflow"
+	// assetPrefix names the release archives and checksums file.
+	assetPrefix = "rdflow"
+	ReleaseURL  = "https://api.github.com/repos/" + RepoOwner + "/" + RepoName + "/releases/latest"
 )
 
 const (
@@ -391,13 +393,13 @@ func expectedAssetName() string {
 	if runtime.GOOS == "windows" {
 		ext = ".zip"
 	}
-	return fmt.Sprintf("%s-%s-%s%s", RepoName, runtime.GOOS, runtime.GOARCH, ext)
+	return fmt.Sprintf("%s-%s-%s%s", assetPrefix, runtime.GOOS, runtime.GOARCH, ext)
 }
 
 // expectedChecksumsName returns the GoReleaser-default checksums filename
 // for the given release tag (e.g. "redmine-cli_1.2.3_checksums.txt").
 func expectedChecksumsName(tag string) string {
-	return fmt.Sprintf("%s_%s_checksums.txt", RepoName, strings.TrimPrefix(tag, "v"))
+	return fmt.Sprintf("%s_%s_checksums.txt", assetPrefix, strings.TrimPrefix(tag, "v"))
 }
 
 // getLimited fetches url with releaseHTTPClient and returns the status code

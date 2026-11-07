@@ -22,7 +22,7 @@ func TestHelperProcessSleep(t *testing.T) {
 
 // startRunningExecutable copies the test binary to dir/redmine.exe and runs it
 // until the test ends, so the file is locked the way a running redmine.exe is
-// during `redmine update`.
+// during `rdflow update`.
 func startRunningExecutable(t *testing.T, dir string) (string, *exec.Cmd) {
 	t.Helper()
 	self, err := os.Executable()

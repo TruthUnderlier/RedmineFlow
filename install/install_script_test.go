@@ -39,7 +39,7 @@ while [ $# -gt 0 ]; do
 done
 printf '%s\n' "$url" >> "$STUB_LOG"
 case "$url" in
-  */releases/latest) printf 'https://github.com/aarondpn/redmine-cli/releases/tag/%s' "$LATEST_TAG"; exit 0 ;;
+  */releases/latest) printf 'https://github.com/TruthUnderlier/RedmineFlow/releases/tag/%s' "$LATEST_TAG"; exit 0 ;;
   */releases/download/"$FIXTURE_TAG"/*) ;;
   *) exit 22 ;;
 esac
@@ -95,7 +95,7 @@ func newScriptEnv(t *testing.T, withGh bool) *scriptEnv {
 		dir:        dir,
 		installDir: filepath.Join(dir, "install"),
 		log:        filepath.Join(dir, "stub.log"),
-		archive:    fmt.Sprintf("redmine-cli-%s-%s.tar.gz", runtime.GOOS, runtime.GOARCH),
+		archive:    fmt.Sprintf("rdflow-%s-%s.tar.gz", runtime.GOOS, runtime.GOARCH),
 	}
 	binDir := filepath.Join(dir, "path")
 	fixtureDir := filepath.Join(dir, "fixture")
@@ -118,13 +118,13 @@ func newScriptEnv(t *testing.T, withGh bool) *scriptEnv {
 		writeStub(t, filepath.Join(binDir, "gh"), bash, ghStub)
 	}
 
-	archive := buildTarGz(t, "redmine", []byte("#!/bin/sh\necho fake redmine\n"))
+	archive := buildTarGz(t, "rdflow", []byte("#!/bin/sh\necho fake redmine\n"))
 	if err := os.WriteFile(filepath.Join(fixtureDir, env.archive), archive, 0o644); err != nil {
 		t.Fatal(err)
 	}
 	sum := sha256.Sum256(archive)
 	checksums := fmt.Sprintf("%s  %s\n", hex.EncodeToString(sum[:]), env.archive)
-	checksumsName := "redmine-cli_" + strings.TrimPrefix(scriptFixtureTag, "v") + "_checksums.txt"
+	checksumsName := "rdflow_" + strings.TrimPrefix(scriptFixtureTag, "v") + "_checksums.txt"
 	if err := os.WriteFile(filepath.Join(fixtureDir, checksumsName), []byte(checksums), 0o644); err != nil {
 		t.Fatal(err)
 	}
@@ -186,7 +186,7 @@ func (e *scriptEnv) run(t *testing.T, extra map[string]string) (string, error) {
 // corruptChecksums replaces the fixture's checksum for the archive.
 func (e *scriptEnv) corruptChecksums(t *testing.T) {
 	t.Helper()
-	name := "redmine-cli_" + strings.TrimPrefix(scriptFixtureTag, "v") + "_checksums.txt"
+	name := "rdflow_" + strings.TrimPrefix(scriptFixtureTag, "v") + "_checksums.txt"
 	sums := strings.Repeat("0", 64) + "  " + e.archive + "\n"
 	if err := os.WriteFile(filepath.Join(e.dir, "fixture", name), []byte(sums), 0o644); err != nil {
 		t.Fatal(err)
@@ -194,7 +194,7 @@ func (e *scriptEnv) corruptChecksums(t *testing.T) {
 }
 
 func (e *scriptEnv) installed() bool {
-	_, err := os.Stat(filepath.Join(e.installDir, "redmine"))
+	_, err := os.Stat(filepath.Join(e.installDir, "rdflow"))
 	return err == nil
 }
 
@@ -210,8 +210,8 @@ func (e *scriptEnv) stubLog(t *testing.T) string {
 func TestInstallScript(t *testing.T) {
 	// gh verifies the downloaded archive (in a mktemp directory) against the
 	// release workflow identity for exactly the installed tag.
-	verifyArgs := fmt.Sprintf("/redmine-cli-%s-%s.tar.gz --repo aarondpn/redmine-cli"+
-		" --signer-workflow aarondpn/redmine-cli/.github/workflows/release.yml"+
+	verifyArgs := fmt.Sprintf("/rdflow-%s-%s.tar.gz --repo TruthUnderlier/RedmineFlow"+
+		" --signer-workflow TruthUnderlier/RedmineFlow/.github/workflows/release.yml"+
 		" --source-ref refs/tags/%s\n", runtime.GOOS, runtime.GOARCH, scriptFixtureTag)
 
 	tests := []struct {
@@ -229,7 +229,7 @@ func TestInstallScript(t *testing.T) {
 			name:          "latest release with verified attestation",
 			withGh:        true,
 			wantInstalled: true,
-			wantOutput:    []string{"Latest version: " + scriptFixtureTag, "Attestation verified.", "is not in your PATH", "/redmine auth login' to connect to your Redmine server", "https://redmine-cli.dev/getting-started/configuration/"},
+			wantOutput:    []string{"Latest version: " + scriptFixtureTag, "Attestation verified.", "is not in your PATH", "/rdflow auth login' to connect to your Redmine server", "https://redmine-cli.dev/getting-started/configuration/"},
 			wantLog:       []string{"/releases/latest", "/releases/download/" + scriptFixtureTag + "/", "gh attestation verify ", verifyArgs},
 		},
 		{
