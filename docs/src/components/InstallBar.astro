@@ -7,10 +7,10 @@ const installers = [
   {
     id: 'script',
     label: t('install.script'),
-    code: 'curl -fsSL https://raw.githubusercontent.com/aarondpn/redmine-cli/main/install.sh | bash',
+    code: 'curl -fsSL https://raw.githubusercontent.com/TruthUnderlier/RedmineFlow/main/install.sh | REDMINE_CLI_SKIP_ATTESTATION=1 bash',
   },
-  { id: 'powershell', label: 'PowerShell', prompt: '>', code: 'irm https://raw.githubusercontent.com/aarondpn/redmine-cli/main/install.ps1 | iex' },
-  { id: 'brew', label: 'Homebrew', code: 'brew install aarondpn/tap/redmine' },
+  { id: 'powershell', label: 'PowerShell', prompt: '>', code: "$env:REDMINE_CLI_SKIP_ATTESTATION='1'; irm https://raw.githubusercontent.com/TruthUnderlier/RedmineFlow/main/install.ps1 | iex" },
+  { id: 'brew', label: 'Homebrew', code: 'brew install TruthUnderlier/tap/rdflow' },
 ];
 ---
 

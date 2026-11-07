@@ -187,11 +187,11 @@ rdflow update
 1. **校验和**：归档文件的 SHA256 必须与该版本的校验和文件一致。
 2. **证明（attestation）**：归档文件的 SHA256 必须具有 [GitHub artifact attestation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations)（SLSA 构建来源证明，经 Sigstore 签名并记录在其透明日志中），且由本仓库的 `release.yml` 工作流针对正在安装的这个版本标签签发。
 
-除仓库外，内置检查还会固定签名工作流和源引用，因此比单独运行 `gh attestation verify --repo aarondpn/redmine-cli` 更严格。等效的 `gh` 命令如下（Windows 归档文件以 `.zip` 结尾）。安装了较新且已登录的 `gh` 时，`install.sh` 和 `install.ps1` 会运行该命令；否则脚本只校验校验和后即安装，并打印该命令供你自行验证（参见[安装](/zh-cn/getting-started/installation/)）：
+除仓库外，内置检查还会固定签名工作流和源引用，因此比单独运行 `gh attestation verify --repo TruthUnderlier/RedmineFlow` 更严格。等效的 `gh` 命令如下（Windows 归档文件以 `.zip` 结尾）。安装了较新且已登录的 `gh` 时，`install.sh` 和 `install.ps1` 会运行该命令；否则脚本只校验校验和后即安装，并打印该命令供你自行验证（参见[安装](/zh-cn/getting-started/installation/)）：
 
 ```bash
-gh attestation verify redmine-cli-<os>-<arch>.tar.gz --repo aarondpn/redmine-cli \
-  --signer-workflow aarondpn/redmine-cli/.github/workflows/release.yml \
+gh attestation verify rdflow-<os>-<arch>.tar.gz --repo TruthUnderlier/RedmineFlow \
+  --signer-workflow TruthUnderlier/RedmineFlow/.github/workflows/release.yml \
   --source-ref refs/tags/<tag>
 ```
 
@@ -218,8 +218,8 @@ gh attestation verify redmine-cli-<os>-<arch>.tar.gz --repo aarondpn/redmine-cli
 每次执行命令时，`rdflow` 会在后台检查 GitHub 是否有新版本。如有新版本，会在命令输出后将提示信息打印至 stderr：
 
 ```text
-A new version of rdflow is available: v1.2.0 → v1.3.0
-https://github.com/aarondpn/redmine-cli/releases/tag/v1.3.0
+A new version of rdflow is available: v10.0.0 → v10.0.1
+https://github.com/TruthUnderlier/RedmineFlow/releases/tag/v10.0.1
 Run "rdflow update" to upgrade
 ```
 
@@ -229,7 +229,7 @@ Run "rdflow update" to upgrade
 - stderr 不是 TTY（管道输出或 CI 环境）；
 - `REDMINE_NO_UPDATE_CHECK` 的值为 `1` 或 `true`。
 
-检查结果会在 `~/.redmine-cli-update-check.json` 中缓存 24 小时（仅你本人可读）。如果缓存条目中的版本 URL 不是 `https://github.com/aarondpn/redmine-cli/releases/tag/` 下的版本页面，该条目会被忽略，因此被篡改的缓存无法向提示信息中注入链接。
+检查结果会在 `~/.rdflow-update-check.json` 中缓存 24 小时（仅你本人可读）。如果缓存条目中的版本 URL 不是 `https://github.com/TruthUnderlier/RedmineFlow/releases/tag/` 下的版本页面，该条目会被忽略，因此被篡改的缓存无法向提示信息中注入链接。
 
 如需永久禁用：
 

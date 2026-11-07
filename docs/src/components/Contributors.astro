@@ -18,7 +18,7 @@ if (token) headers.Authorization = `Bearer ${token}`;
 let contributors: Contributor[] = [];
 try {
   const res = await fetch(
-    'https://api.github.com/repos/aarondpn/redmine-cli/contributors?per_page=50',
+    'https://api.github.com/repos/TruthUnderlier/RedmineFlow/contributors?per_page=50',
     { headers },
   );
   if (res.ok) {
@@ -35,14 +35,14 @@ const t = Astro.locals.t;
 
 <SectionHead
   title={t('home.contributors')}
-  link={{ text: t('home.contribute'), href: 'https://github.com/aarondpn/redmine-cli' }}
+  link={{ text: t('home.contribute'), href: 'https://github.com/TruthUnderlier/RedmineFlow' }}
 />
 
 <div class="rc-crew not-content">
   {contributors.length === 0 ? (
     <p class="rc-crew__empty">
       {t('contributors.emptyBefore')}
-      <a href="https://github.com/aarondpn/redmine-cli/graphs/contributors">{t('contributors.emptyLink')}</a>.
+      <a href="https://github.com/TruthUnderlier/RedmineFlow/graphs/contributors">{t('contributors.emptyLink')}</a>.
     </p>
   ) : (
     <>

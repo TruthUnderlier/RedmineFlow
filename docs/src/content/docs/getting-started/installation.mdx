@@ -12,7 +12,7 @@ import { Tabs, TabItem } from '@astrojs/starlight/components';
     macOS and Linux. Includes shell completions.
 
     ```bash
-    brew install aarondpn/tap/redmine
+    brew install TruthUnderlier/tap/rdflow
     ```
   </TabItem>
 
@@ -20,20 +20,20 @@ import { Tabs, TabItem } from '@astrojs/starlight/components';
     macOS and Linux. Installs to `~/.local/bin`.
 
     ```bash
-    curl -fsSL https://raw.githubusercontent.com/aarondpn/redmine-cli/main/install.sh | bash
+    curl -fsSL https://raw.githubusercontent.com/TruthUnderlier/RedmineFlow/main/install.sh | REDMINE_CLI_SKIP_ATTESTATION=1 bash
     ```
   </TabItem>
 
   <TabItem label="PowerShell" icon="seti:powershell">
-    Windows. Installs to `%LOCALAPPDATA%\Programs\redmine-cli` and adds it to your `PATH`.
+    Windows. Installs to `%LOCALAPPDATA%\Programs\rdflow` and adds it to your `PATH`.
 
     ```powershell
-    irm https://raw.githubusercontent.com/aarondpn/redmine-cli/main/install.ps1 | iex
+    $env:REDMINE_CLI_SKIP_ATTESTATION='1'; irm https://raw.githubusercontent.com/TruthUnderlier/RedmineFlow/main/install.ps1 | iex
     ```
   </TabItem>
 
   <TabItem label="Manual" icon="download">
-    Download the archive for your platform from [GitHub Releases](https://github.com/aarondpn/redmine-cli/releases/latest) and put `rdflow` on your `PATH`.
+    Download the archive for your platform from [GitHub Releases](https://github.com/TruthUnderlier/RedmineFlow/releases/latest) and put `rdflow` on your `PATH`.
   </TabItem>
 </Tabs>
 
@@ -49,15 +49,15 @@ rdflow --version
 rdflow update
 ```
 
-Homebrew installs are updated with `brew upgrade`. For the Docker image, pull it and recreate the container (or restart your MCP client): `docker pull ghcr.io/aarondpn/redmine-mcp`, or `docker compose pull && docker compose up -d`. See [self-update](/commands/other/#self-update) for details.
+Homebrew installs are updated with `brew upgrade`. See [self-update](/commands/other/#self-update) for details.
 
 ## Script options
 
-Both install scripts verify the release checksum, and the build attestation when a logged-in [GitHub CLI](https://cli.github.com) is installed. Set these environment variables before running a script:
+Both install scripts verify the release checksum, and the build attestation when a logged-in [GitHub CLI](https://cli.github.com) is installed. rdflow releases do not carry build attestations yet, so the commands on this page set `REDMINE_CLI_SKIP_ATTESTATION=1`; without it, the install fails on a machine with a logged-in GitHub CLI. Set these environment variables before running a script:
 
 | Variable | Effect |
 |---|---|
-| `REDMINE_CLI_VERSION` | Install a specific release, e.g. `v2.17.0` |
+| `REDMINE_CLI_VERSION` | Install a specific release, e.g. `v10.0.1` |
 | `REDMINE_CLI_SKIP_ATTESTATION=1` | Skip the attestation check (not recommended) |
 | `REDMINE_INSTALL_DIR` | Install to another directory |
 | `REDMINE_CLI_NO_MODIFY_PATH=1` | PowerShell only: leave `PATH` unchanged |
@@ -65,9 +65,9 @@ Both install scripts verify the release checksum, and the build attestation when
 The variable goes to the shell that runs the script, not to `curl`:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/aarondpn/redmine-cli/main/install.sh | REDMINE_CLI_VERSION=v2.17.0 bash
+curl -fsSL https://raw.githubusercontent.com/TruthUnderlier/RedmineFlow/main/install.sh | REDMINE_CLI_VERSION=v10.0.1 REDMINE_CLI_SKIP_ATTESTATION=1 bash
 ```
 
 ```powershell
-$env:REDMINE_CLI_VERSION = 'v2.17.0'; irm https://raw.githubusercontent.com/aarondpn/redmine-cli/main/install.ps1 | iex
+$env:REDMINE_CLI_VERSION = 'v10.0.1'; $env:REDMINE_CLI_SKIP_ATTESTATION = '1'; irm https://raw.githubusercontent.com/TruthUnderlier/RedmineFlow/main/install.ps1 | iex
 ```

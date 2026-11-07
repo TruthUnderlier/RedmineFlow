@@ -196,11 +196,11 @@ Checks GitHub for the latest release, downloads it, and replaces the current bin
 1. **Checksum** — the archive's SHA256 must match the release's checksums file.
 2. **Attestation** — the archive's SHA256 must have a [GitHub artifact attestation](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations) (SLSA build provenance, signed through Sigstore and recorded in its transparency log) issued by this repository's `release.yml` workflow for exactly the release tag being installed.
 
-Besides the repository, the built-in check pins the signer workflow and the source ref, so it is stricter than `gh attestation verify --repo aarondpn/redmine-cli` alone. The equivalent `gh` command is below (Windows archives end in `.zip`). `install.sh` and `install.ps1` run it when a recent `gh` is installed and logged in; otherwise they install after the checksum check only and print the command so you can run it yourself (see [Installation](/getting-started/installation/)):
+Besides the repository, the built-in check pins the signer workflow and the source ref, so it is stricter than `gh attestation verify --repo TruthUnderlier/RedmineFlow` alone. The equivalent `gh` command is below (Windows archives end in `.zip`). `install.sh` and `install.ps1` run it when a recent `gh` is installed and logged in; otherwise they install after the checksum check only and print the command so you can run it yourself (see [Installation](/getting-started/installation/)):
 
 ```bash
-gh attestation verify redmine-cli-<os>-<arch>.tar.gz --repo aarondpn/redmine-cli \
-  --signer-workflow aarondpn/redmine-cli/.github/workflows/release.yml \
+gh attestation verify rdflow-<os>-<arch>.tar.gz --repo TruthUnderlier/RedmineFlow \
+  --signer-workflow TruthUnderlier/RedmineFlow/.github/workflows/release.yml \
   --source-ref refs/tags/<tag>
 ```
 
@@ -227,8 +227,8 @@ If the binary's directory is not writable, the error suggests reinstalling with 
 On every invocation, `rdflow` checks GitHub for a newer release in the background. When one is available, a notice is printed to stderr after the command output:
 
 ```text
-A new version of rdflow is available: v1.2.0 → v1.3.0
-https://github.com/aarondpn/redmine-cli/releases/tag/v1.3.0
+A new version of rdflow is available: v10.0.0 → v10.0.1
+https://github.com/TruthUnderlier/RedmineFlow/releases/tag/v10.0.1
 Run "rdflow update" to upgrade
 ```
 
@@ -238,7 +238,7 @@ The check starts in the background together with the command and gives up 2 seco
 - stderr is not a TTY (piped output, CI);
 - `REDMINE_NO_UPDATE_CHECK` is `1` or `true`.
 
-The result is cached for 24 hours in `~/.redmine-cli-update-check.json` (readable only by you). A cache entry whose release URL is not a release page under `https://github.com/aarondpn/redmine-cli/releases/tag/` is ignored, so a tampered cache cannot inject a link into the notice.
+The result is cached for 24 hours in `~/.rdflow-update-check.json` (readable only by you). A cache entry whose release URL is not a release page under `https://github.com/TruthUnderlier/RedmineFlow/releases/tag/` is ignored, so a tampered cache cannot inject a link into the notice.
 
 To disable permanently:
 

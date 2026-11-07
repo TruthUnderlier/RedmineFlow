@@ -4,7 +4,7 @@
 type Repo = { stargazers_count?: number; license?: { spdx_id?: string } | null };
 type Release = { tag_name?: string; published_at?: string };
 
-const repoUrl = 'https://api.github.com/repos/aarondpn/redmine-cli';
+const repoUrl = 'https://api.github.com/repos/TruthUnderlier/RedmineFlow';
 const releaseUrl = `${repoUrl}/releases/latest`;
 // Set in CI, where shared runner IPs exhaust the unauthenticated rate limit.
 const token = process.env.GITHUB_TOKEN;
@@ -53,7 +53,7 @@ const t = Astro.locals.t;
   {stars !== null && (
     <a
       class="status-cell status-cell--link"
-      href="https://github.com/aarondpn/redmine-cli/stargazers"
+      href="https://github.com/TruthUnderlier/RedmineFlow/stargazers"
       target="_blank"
       rel="noopener"
     >

@@ -20,17 +20,16 @@ For most hosts you want both. Several major hosts (Claude Code, Codex CLI, Gemin
 - **Any agent** uses the [skills.sh](https://skills.sh) installer (`npx skills add`), which detects your agent and writes `SKILL.md` to the right location (`.claude/skills/`, `.codex/skills/`, `.gemini/skills/`, or the cross-vendor `.agents/skills/` fallback). The bundled wrapper is `rdflow install-skill [--global]`.
 - **Claude Code / Codex CLI / Gemini CLI** bundle the skill and MCP server in a single plugin install. After installing, run `/reload-plugins` (Claude) or restart the CLI to activate.
 - **MCP host** is the manual route for Cursor, VS Code, Zed, Claude Desktop, and other MCP-aware hosts. Add `rdflow mcp serve` (with optional `--profile`, `--enable-writes`, `--enable-groups`, ...) to your host's MCP config; see your host's MCP setup docs for the exact file path and JSON shape.
-- **Docker** runs the MCP server from the `ghcr.io/aarondpn/redmine-mcp` image without installing `rdflow` at all. See [Run with Docker](#run-with-docker).
 
 <Aside type="note">
-  Prerequisite for the non-Docker paths: `rdflow` must be on the host's `PATH` and you must have logged in once via `rdflow auth login`. The skill-only path additionally needs Node.js for `npx skills add`.
+  Prerequisite: `rdflow` must be on the host's `PATH` and you must have logged in once via `rdflow auth login`. The skill-only path additionally needs Node.js for `npx skills add`.
 </Aside>
 
 ## Agent Skill
 
 The skill teaches the agent what `--help` cannot: output formats, pagination, filtering, name resolution, and common workflows. After installing it the agent knows to extract fields with `--jq`, check exit codes instead of parsing errors from stdout, inspect attachments, and fall back to `--help` instead of guessing flags.
 
-The full skill source: [`skills/redmine-cli/SKILL.md`](https://github.com/aarondpn/redmine-cli/blob/main/skills/redmine-cli/SKILL.md). Copy directly into your agent's instructions if you prefer not to run an installer.
+The full skill source: [`skills/redmine-cli/SKILL.md`](https://github.com/TruthUnderlier/RedmineFlow/blob/main/skills/redmine-cli/SKILL.md). Copy directly into your agent's instructions if you prefer not to run an installer.
 
 ## MCP Server
 
@@ -64,96 +63,6 @@ The full skill source: [`skills/redmine-cli/SKILL.md`](https://github.com/aarond
 
 <Aside type="caution">
   Write tools are destructive. Prefer leaving them disabled unless the host surfaces a per-call approval UI you trust.
-</Aside>
-
-### Run with Docker
-
-The `ghcr.io/aarondpn/redmine-mcp` image (linux/amd64 and linux/arm64) runs `rdflow mcp serve` directly. You don't need a local install, a profile, or a keyring. Pass the server URL and API key as environment variables instead. Every `REDMINE_*` variable and every `rdflow mcp serve` flag works the same way inside the container. Flags go after the image name.
-
-| Tag | Tracks |
-|---|---|
-| `latest` | Newest stable release |
-| `2`, `2.13`, `2.13.0` | Major, minor, or exact release |
-
-#### Local: stdio
-
-The MCP host starts a fresh container per session and talks to it over stdin/stdout. `-i` is required; `--rm` cleans up afterwards. The `-e NAME` form (without `=value`) forwards the variable from the host's environment, so the key never lands in the args list.
-
-**Claude Code:**
-
-```bash
-claude mcp add redmine \
-  -e REDMINE_SERVER=https://redmine.example.com \
-  -e REDMINE_API_KEY=your-api-key \
-  -- docker run -i --rm -e REDMINE_SERVER -e REDMINE_API_KEY ghcr.io/aarondpn/redmine-mcp
-```
-
-**Claude Desktop, Cursor, Windsurf, and other hosts using the `mcpServers` JSON shape:**
-
-```json
-{
-  "mcpServers": {
-    "redmine": {
-      "command": "docker",
-      "args": ["run", "-i", "--rm", "-e", "REDMINE_SERVER", "-e", "REDMINE_API_KEY", "ghcr.io/aarondpn/redmine-mcp"],
-      "env": {
-        "REDMINE_SERVER": "https://redmine.example.com",
-        "REDMINE_API_KEY": "your-api-key"
-      }
-    }
-  }
-}
-```
-
-**One-click install:**
-
-[![Install in VS Code](https://img.shields.io/badge/VS_Code-Install_Server-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://vscode.dev/redirect/mcp/install?name=redmine&inputs=%5B%7B%22type%22%3A%22promptString%22%2C%22id%22%3A%22redmine_server%22%2C%22description%22%3A%22Redmine%20URL%2C%20e.g.%20https%3A%2F%2Fredmine.example.com%22%7D%2C%7B%22type%22%3A%22promptString%22%2C%22id%22%3A%22redmine_api_key%22%2C%22description%22%3A%22Redmine%20API%20key%20%28My%20account%20-%3E%20API%20access%20key%29%22%2C%22password%22%3Atrue%7D%5D&config=%7B%22command%22%3A%22docker%22%2C%22args%22%3A%5B%22run%22%2C%22-i%22%2C%22--rm%22%2C%22-e%22%2C%22REDMINE_SERVER%22%2C%22-e%22%2C%22REDMINE_API_KEY%22%2C%22ghcr.io%2Faarondpn%2Fredmine-mcp%22%5D%2C%22env%22%3A%7B%22REDMINE_SERVER%22%3A%22%24%7Binput%3Aredmine_server%7D%22%2C%22REDMINE_API_KEY%22%3A%22%24%7Binput%3Aredmine_api_key%7D%22%7D%7D) [![Add to Cursor](https://cursor.com/deeplink/mcp-install-dark.svg)](cursor://anysphere.cursor-deeplink/mcp/install?name=redmine&config=eyJjb21tYW5kIjoiZG9ja2VyIiwiYXJncyI6WyJydW4iLCItaSIsIi0tcm0iLCItZSIsIlJFRE1JTkVfU0VSVkVSIiwiLWUiLCJSRURNSU5FX0FQSV9LRVkiLCJnaGNyLmlvL2Fhcm9uZHBuL3JlZG1pbmUtbWNwIl0sImVudiI6eyJSRURNSU5FX1NFUlZFUiI6Imh0dHBzOi8vcmVkbWluZS5leGFtcGxlLmNvbSIsIlJFRE1JTkVfQVBJX0tFWSI6InlvdXItYXBpLWtleSJ9fQ==)
-
-VS Code prompts for the URL and API key and stores the key as a secret. Cursor installs placeholder values: open the server in Cursor's MCP settings and replace `REDMINE_SERVER` and `REDMINE_API_KEY` afterwards.
-
-To enable writes or narrow the tool surface, add flags after the image name (`... ghcr.io/aarondpn/redmine-mcp --enable-writes --enable-groups issues,time`) or forward the matching `REDMINE_MCP_*` variable.
-
-Already have a `~/.redmine-flow.yaml` with profiles? Mount it read-only and pick a profile. `--user` keeps the file readable even though `rdflow auth login` writes it with mode `0600`. Profiles that store their secret in the system keyring can't be read inside the container; supply `REDMINE_API_KEY` for those.
-
-```bash
-docker run -i --rm --user "$(id -u):$(id -g)" \
-  -v "$HOME/.redmine-flow.yaml:/config.yaml:ro" \
-  ghcr.io/aarondpn/redmine-mcp --config /config.yaml --profile work
-```
-
-#### Shared: HTTP server with Docker Compose
-
-To run one server for a whole team, use the HTTP transport. The repository ships a ready-made [`compose.yaml`](https://github.com/aarondpn/redmine-cli/blob/main/docker/compose.yaml) and [`.env.example`](https://github.com/aarondpn/redmine-cli/blob/main/docker/.env.example):
-
-```bash
-curl -fsSLO https://raw.githubusercontent.com/aarondpn/redmine-cli/main/docker/compose.yaml
-curl -fsSL https://raw.githubusercontent.com/aarondpn/redmine-cli/main/docker/.env.example -o .env
-# set REDMINE_SERVER, REDMINE_API_KEY and REDMINE_MCP_AUTH_TOKEN (openssl rand -hex 32) in .env
-docker compose up -d
-```
-
-Then point clients at the server with the token:
-
-```bash
-claude mcp add --transport http redmine http://localhost:8080/ \
-  --header "Authorization: Bearer $REDMINE_MCP_AUTH_TOKEN"
-```
-
-The compose file only publishes the port on `127.0.0.1`. Set `REDMINE_MCP_PUBLISH=0.0.0.0:8080` in `.env` to reach it from other machines, and put a TLS-terminating reverse proxy in front so the bearer token isn't sent in clear text.
-
-Without Compose, the same server is a single command. `REDMINE_MCP_HTTP` replaces the `--http` flag:
-
-```bash
-docker run -d --name redmine-mcp -p 127.0.0.1:8080:8080 \
-  -e REDMINE_SERVER -e REDMINE_API_KEY -e REDMINE_MCP_AUTH_TOKEN \
-  -e REDMINE_MCP_HTTP=0.0.0.0:8080 \
-  ghcr.io/aarondpn/redmine-mcp
-```
-
-If you leave out `REDMINE_MCP_AUTH_TOKEN`, the server generates a token at startup and prints it to the container log (`docker logs redmine-mcp`). That token changes on every restart, so set your own for anything long-lived.
-
-<Aside type="caution">
-  The HTTP server authenticates to Redmine with a single API key, so every client acts as that Redmine user. Use a dedicated account whose project permissions match what the agents should be able to do.
 </Aside>
 
 ### HTTP transport
@@ -199,6 +108,10 @@ Pass the token with `--auth-token-file <path>`, or `--auth-token-file -` to read
   The bearer token is the only thing standing between any HTTP-reachable client and your Redmine instance through this server. Generate it with a CSPRNG, never reuse it across deployments, and prefer terminating TLS in front of the server (reverse proxy) when binding outside loopback.
 </Aside>
 
+<Aside type="caution">
+  The HTTP server authenticates to Redmine with a single API key, so every client acts as that Redmine user. Use a dedicated account whose project permissions match what the agents should be able to do.
+</Aside>
+
 ### Narrowing the exposed tools
 
 For an issue-only assistant, drop everything but the issues group:
@@ -230,7 +143,7 @@ Environment variables (`REDMINE_MCP_ENABLE_GROUPS`, `REDMINE_MCP_DISABLE_GROUPS`
 
 ### Prerequisite
 
-`rdflow` must be on the host's `PATH` and a profile must already be logged in (`rdflow auth login`). No Node.js required. With [Docker](#run-with-docker), you only need Docker and an API key.
+`rdflow` must be on the host's `PATH` and a profile must already be logged in (`rdflow auth login`). No Node.js required.
 
 ### Troubleshooting
 
@@ -238,7 +151,7 @@ Environment variables (`REDMINE_MCP_ENABLE_GROUPS`, `REDMINE_MCP_DISABLE_GROUPS`
 
 1. **Host reports "command not found".** The spawned process inherits the host's `PATH`, which often differs from your shell. Use an absolute path (`which rdflow`) in the `command` field.
 
-2. **Plugin's MCP server shows "Failed to connect".** The Claude Code, Codex and Gemini plugins start the server with the `rdflow` binary; this error usually means it is not on the host's `PATH` (other startup errors, see item 6, give the same message). Apps launched from the GUI often get a minimal `PATH`. [Install `rdflow`](/getting-started/installation/) (`brew install aarondpn/tap/redmine` or the `install.sh` one-liner) and make sure its directory (`/opt/homebrew/bin`, `/usr/local/bin`, `~/.local/bin`, `$GOBIN` or `~/go/bin`) is on the app's `PATH`. For an MCP server you configure yourself, the launcher [`scripts/redmine-mcp.sh`](https://github.com/aarondpn/redmine-cli/blob/main/scripts/redmine-mcp.sh) checks those locations automatically: use `sh` as the `command` and `["/path/to/redmine-mcp.sh", "mcp", "serve"]` as the `args`.
+2. **Plugin's MCP server shows "Failed to connect".** The Claude Code, Codex and Gemini plugins start the server with the `rdflow` binary; this error usually means it is not on the host's `PATH` (other startup errors, see item 6, give the same message). Apps launched from the GUI often get a minimal `PATH`. [Install `rdflow`](/getting-started/installation/) (`brew install TruthUnderlier/tap/rdflow` or the `install.sh` one-liner) and make sure its directory (`/opt/homebrew/bin`, `/usr/local/bin`, `~/.local/bin`, `$GOBIN` or `~/go/bin`) is on the app's `PATH`. For an MCP server you configure yourself, the launcher [`scripts/redmine-mcp.sh`](https://github.com/TruthUnderlier/RedmineFlow/blob/main/scripts/redmine-mcp.sh) checks those locations automatically: use `sh` as the `command` and `["/path/to/redmine-mcp.sh", "mcp", "serve"]` as the `args`.
 
 3. **Tools list is empty or missing mutations.** `--enable-writes` was not passed, the surface was narrowed via `--enable-groups` / `--enable-tools`, or the host cached an older `tools/list`. Run `rdflow mcp tools` to see the full catalog and restart the host after changing args.
 

@@ -12,7 +12,7 @@ import { Tabs, TabItem } from '@astrojs/starlight/components';
     适用于 macOS 和 Linux，包含 shell 补全。
 
     ```bash
-    brew install aarondpn/tap/redmine
+    brew install TruthUnderlier/tap/rdflow
     ```
   </TabItem>
 
@@ -20,20 +20,20 @@ import { Tabs, TabItem } from '@astrojs/starlight/components';
     适用于 macOS 和 Linux，安装到 `~/.local/bin`。
 
     ```bash
-    curl -fsSL https://raw.githubusercontent.com/aarondpn/redmine-cli/main/install.sh | bash
+    curl -fsSL https://raw.githubusercontent.com/TruthUnderlier/RedmineFlow/main/install.sh | REDMINE_CLI_SKIP_ATTESTATION=1 bash
     ```
   </TabItem>
 
   <TabItem label="PowerShell" icon="seti:powershell">
-    适用于 Windows，安装到 `%LOCALAPPDATA%\Programs\redmine-cli` 并加入 `PATH`。
+    适用于 Windows，安装到 `%LOCALAPPDATA%\Programs\rdflow` 并加入 `PATH`。
 
     ```powershell
-    irm https://raw.githubusercontent.com/aarondpn/redmine-cli/main/install.ps1 | iex
+    $env:REDMINE_CLI_SKIP_ATTESTATION='1'; irm https://raw.githubusercontent.com/TruthUnderlier/RedmineFlow/main/install.ps1 | iex
     ```
   </TabItem>
 
   <TabItem label="手动安装" icon="download">
-    从 [GitHub Releases](https://github.com/aarondpn/redmine-cli/releases/latest) 下载适合你平台的压缩包，并将 `rdflow` 放到 `PATH` 中。
+    从 [GitHub Releases](https://github.com/TruthUnderlier/RedmineFlow/releases/latest) 下载适合你平台的压缩包，并将 `rdflow` 放到 `PATH` 中。
   </TabItem>
 </Tabs>
 
@@ -49,15 +49,15 @@ rdflow --version
 rdflow update
 ```
 
-通过 Homebrew 安装时使用 `brew upgrade` 更新。Docker 镜像需拉取后重新创建容器（或重启 MCP 客户端）：`docker pull ghcr.io/aarondpn/redmine-mcp`，或 `docker compose pull && docker compose up -d`。详见[自更新](/zh-cn/commands/other/#自动更新)。
+通过 Homebrew 安装时使用 `brew upgrade` 更新。详见[自更新](/zh-cn/commands/other/#自动更新)。
 
 ## 脚本选项
 
-两个安装脚本都会校验发布版本的校验和；若安装了已登录的 [GitHub CLI](https://cli.github.com)，还会验证构建证明。运行脚本前可设置以下环境变量：
+两个安装脚本都会校验发布版本的校验和；若安装了已登录的 [GitHub CLI](https://cli.github.com)，还会验证构建证明。rdflow 的发布版本目前还没有构建证明，所以本页的命令都设置了 `REDMINE_CLI_SKIP_ATTESTATION=1`；不加的话，在已登录 GitHub CLI 的机器上安装会失败。运行脚本前可设置以下环境变量：
 
 | 变量 | 作用 |
 |---|---|
-| `REDMINE_CLI_VERSION` | 安装指定版本，例如 `v2.17.0` |
+| `REDMINE_CLI_VERSION` | 安装指定版本，例如 `v10.0.1` |
 | `REDMINE_CLI_SKIP_ATTESTATION=1` | 跳过构建证明检查（不推荐） |
 | `REDMINE_INSTALL_DIR` | 安装到其他目录 |
 | `REDMINE_CLI_NO_MODIFY_PATH=1` | 仅 PowerShell：不修改 `PATH` |
@@ -65,9 +65,9 @@ rdflow update
 变量要传给运行脚本的 shell，而不是 `curl`：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/aarondpn/redmine-cli/main/install.sh | REDMINE_CLI_VERSION=v2.17.0 bash
+curl -fsSL https://raw.githubusercontent.com/TruthUnderlier/RedmineFlow/main/install.sh | REDMINE_CLI_VERSION=v10.0.1 REDMINE_CLI_SKIP_ATTESTATION=1 bash
 ```
 
 ```powershell
-$env:REDMINE_CLI_VERSION = 'v2.17.0'; irm https://raw.githubusercontent.com/aarondpn/redmine-cli/main/install.ps1 | iex
+$env:REDMINE_CLI_VERSION = 'v10.0.1'; $env:REDMINE_CLI_SKIP_ATTESTATION = '1'; irm https://raw.githubusercontent.com/TruthUnderlier/RedmineFlow/main/install.ps1 | iex
 ```

@@ -20,17 +20,16 @@ redmine-cli 提供两种互补的集成方式，二者均与厂商无关：
 - **任意代理** 使用 [skills.sh](https://skills.sh) 安装器（`npx skills add`），它会检测你的代理并将 `SKILL.md` 写入正确位置（`.claude/skills/`、`.codex/skills/`、`.gemini/skills/`，或跨厂商通用的 `.agents/skills/` 兜底路径）。CLI 自带的封装是 `rdflow install-skill [--global]`。
 - **Claude Code / Codex CLI / Gemini CLI** 通过单次插件安装同时打包 skill 与 MCP 服务器。安装后运行 `/reload-plugins`（Claude）或重启 CLI 以激活。
 - **MCP 宿主** 是 Cursor、VS Code、Zed、Claude Desktop 以及其他 MCP 兼容宿主的手动接入路径。在你的宿主 MCP 配置中添加 `rdflow mcp serve`（可选 `--profile`、`--enable-writes`、`--enable-groups` 等），具体配置文件路径与 JSON 结构请参阅各宿主的 MCP 设置文档。
-- **Docker** 通过 `ghcr.io/aarondpn/redmine-mcp` 镜像运行 MCP 服务器，完全无需安装 `rdflow`。参见[使用 Docker 运行](#使用-docker-运行)。
 
 <Aside type="note">
-  非 Docker 路径的前置条件：`rdflow` 必须位于宿主的 `PATH`，且已通过 `rdflow auth login` 完成一次登录。仅安装 skill 的路径还需要 Node.js 以运行 `npx skills add`。
+  前置条件：`rdflow` 必须位于宿主的 `PATH`，且已通过 `rdflow auth login` 完成一次登录。仅安装 skill 的路径还需要 Node.js 以运行 `npx skills add`。
 </Aside>
 
 ## 代理 Skill
 
 该 skill 教给代理的是 `--help` 无法传达的内容：输出格式、分页、过滤、名称解析以及常用工作流。安装后，代理便知道用 `--jq` 提取字段、检查退出码而不是从 stdout 解析错误、查看附件，并在不确定时查阅 `--help` 而不是猜测标志。
 
-完整的 skill 源文件：[`skills/redmine-cli/SKILL.md`](https://github.com/aarondpn/redmine-cli/blob/main/skills/redmine-cli/SKILL.md)。如果不想运行安装器，可直接复制到代理的指令文件中。
+完整的 skill 源文件：[`skills/redmine-cli/SKILL.md`](https://github.com/TruthUnderlier/RedmineFlow/blob/main/skills/redmine-cli/SKILL.md)。如果不想运行安装器，可直接复制到代理的指令文件中。
 
 ## MCP 服务器
 
@@ -52,96 +51,6 @@ redmine-cli 提供两种互补的集成方式，二者均与厂商无关：
 
 <Aside type="caution">
   写入工具具有破坏性。除非宿主提供你信任的逐次审批界面，否则建议保持禁用。
-</Aside>
-
-### 使用 Docker 运行
-
-`ghcr.io/aarondpn/redmine-mcp` 镜像（linux/amd64 与 linux/arm64）直接运行 `rdflow mcp serve`。无需本地安装、配置档或密钥环，只需通过环境变量传入服务器 URL 与 API 密钥。所有 `REDMINE_*` 变量和 `rdflow mcp serve` 的所有标志在容器内的用法完全相同；标志写在镜像名之后。
-
-| 标签 | 对应版本 |
-|---|---|
-| `latest` | 最新稳定版本 |
-| `2`、`2.13`、`2.13.0` | 主版本、次版本或精确版本 |
-
-#### 本地：stdio
-
-MCP 宿主为每个会话启动一个新容器，并通过 stdin/stdout 通信。`-i` 必不可少；`--rm` 负责事后清理。`-e NAME`（不带 `=value`）会从宿主环境转发该变量，因此密钥不会出现在参数列表中。
-
-**Claude Code：**
-
-```bash
-claude mcp add redmine \
-  -e REDMINE_SERVER=https://redmine.example.com \
-  -e REDMINE_API_KEY=your-api-key \
-  -- docker run -i --rm -e REDMINE_SERVER -e REDMINE_API_KEY ghcr.io/aarondpn/redmine-mcp
-```
-
-**Claude Desktop、Cursor、Windsurf 及其他使用 `mcpServers` JSON 结构的宿主：**
-
-```json
-{
-  "mcpServers": {
-    "redmine": {
-      "command": "docker",
-      "args": ["run", "-i", "--rm", "-e", "REDMINE_SERVER", "-e", "REDMINE_API_KEY", "ghcr.io/aarondpn/redmine-mcp"],
-      "env": {
-        "REDMINE_SERVER": "https://redmine.example.com",
-        "REDMINE_API_KEY": "your-api-key"
-      }
-    }
-  }
-}
-```
-
-**一键安装：**
-
-[![在 VS Code 中安装](https://img.shields.io/badge/VS_Code-Install_Server-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://vscode.dev/redirect/mcp/install?name=redmine&inputs=%5B%7B%22type%22%3A%22promptString%22%2C%22id%22%3A%22redmine_server%22%2C%22description%22%3A%22Redmine%20URL%2C%20e.g.%20https%3A%2F%2Fredmine.example.com%22%7D%2C%7B%22type%22%3A%22promptString%22%2C%22id%22%3A%22redmine_api_key%22%2C%22description%22%3A%22Redmine%20API%20key%20%28My%20account%20-%3E%20API%20access%20key%29%22%2C%22password%22%3Atrue%7D%5D&config=%7B%22command%22%3A%22docker%22%2C%22args%22%3A%5B%22run%22%2C%22-i%22%2C%22--rm%22%2C%22-e%22%2C%22REDMINE_SERVER%22%2C%22-e%22%2C%22REDMINE_API_KEY%22%2C%22ghcr.io%2Faarondpn%2Fredmine-mcp%22%5D%2C%22env%22%3A%7B%22REDMINE_SERVER%22%3A%22%24%7Binput%3Aredmine_server%7D%22%2C%22REDMINE_API_KEY%22%3A%22%24%7Binput%3Aredmine_api_key%7D%22%7D%7D) [![添加到 Cursor](https://cursor.com/deeplink/mcp-install-dark.svg)](cursor://anysphere.cursor-deeplink/mcp/install?name=redmine&config=eyJjb21tYW5kIjoiZG9ja2VyIiwiYXJncyI6WyJydW4iLCItaSIsIi0tcm0iLCItZSIsIlJFRE1JTkVfU0VSVkVSIiwiLWUiLCJSRURNSU5FX0FQSV9LRVkiLCJnaGNyLmlvL2Fhcm9uZHBuL3JlZG1pbmUtbWNwIl0sImVudiI6eyJSRURNSU5FX1NFUlZFUiI6Imh0dHBzOi8vcmVkbWluZS5leGFtcGxlLmNvbSIsIlJFRE1JTkVfQVBJX0tFWSI6InlvdXItYXBpLWtleSJ9fQ==)
-
-VS Code 会提示输入 URL 与 API 密钥，并将密钥作为机密保存。Cursor 会写入占位值：安装后请在 Cursor 的 MCP 设置中打开该服务器，替换 `REDMINE_SERVER` 与 `REDMINE_API_KEY`。
-
-如需启用写入或收窄工具范围，可在镜像名之后添加标志（`... ghcr.io/aarondpn/redmine-mcp --enable-writes --enable-groups issues,time`），或转发对应的 `REDMINE_MCP_*` 变量。
-
-已有包含配置档的 `~/.redmine-flow.yaml`？以只读方式挂载并选择配置档。`rdflow auth login` 以 `0600` 权限写入该文件，`--user` 可确保容器内仍能读取。将密钥保存在系统密钥环中的配置档无法在容器内读取，请为其提供 `REDMINE_API_KEY`。
-
-```bash
-docker run -i --rm --user "$(id -u):$(id -g)" \
-  -v "$HOME/.redmine-flow.yaml:/config.yaml:ro" \
-  ghcr.io/aarondpn/redmine-mcp --config /config.yaml --profile work
-```
-
-#### 共享：使用 Docker Compose 运行 HTTP 服务器
-
-若要为整个团队运行一个服务器，请使用 HTTP 传输。仓库提供了现成的 [`compose.yaml`](https://github.com/aarondpn/redmine-cli/blob/main/docker/compose.yaml) 与 [`.env.example`](https://github.com/aarondpn/redmine-cli/blob/main/docker/.env.example)：
-
-```bash
-curl -fsSLO https://raw.githubusercontent.com/aarondpn/redmine-cli/main/docker/compose.yaml
-curl -fsSL https://raw.githubusercontent.com/aarondpn/redmine-cli/main/docker/.env.example -o .env
-# 在 .env 中设置 REDMINE_SERVER、REDMINE_API_KEY 与 REDMINE_MCP_AUTH_TOKEN（openssl rand -hex 32）
-docker compose up -d
-```
-
-然后让客户端携带令牌连接到服务器：
-
-```bash
-claude mcp add --transport http redmine http://localhost:8080/ \
-  --header "Authorization: Bearer $REDMINE_MCP_AUTH_TOKEN"
-```
-
-Compose 文件默认只在 `127.0.0.1` 上发布端口。在 `.env` 中设置 `REDMINE_MCP_PUBLISH=0.0.0.0:8080` 即可从其他机器访问；此时请在前面放置一个终止 TLS 的反向代理，避免以明文发送 bearer 令牌。
-
-不使用 Compose 时，同样的服务器只需一条命令。`REDMINE_MCP_HTTP` 替代 `--http` 标志：
-
-```bash
-docker run -d --name redmine-mcp -p 127.0.0.1:8080:8080 \
-  -e REDMINE_SERVER -e REDMINE_API_KEY -e REDMINE_MCP_AUTH_TOKEN \
-  -e REDMINE_MCP_HTTP=0.0.0.0:8080 \
-  ghcr.io/aarondpn/redmine-mcp
-```
-
-如果省略 `REDMINE_MCP_AUTH_TOKEN`，服务器会在启动时生成一个令牌并输出到容器日志（`docker logs redmine-mcp`）。该令牌每次重启都会变化，因此长期运行时请自行设置。
-
-<Aside type="caution">
-  HTTP 服务器使用单个 API 密钥向 Redmine 认证，因此所有客户端都以该 Redmine 用户的身份操作。请使用一个专用账号，并使其项目权限与代理应具备的能力相匹配。
 </Aside>
 
 ### HTTP 传输
@@ -189,6 +98,10 @@ Content-Type: application/json
   Bearer 令牌是任何可达 HTTP 客户端与你的 Redmine 实例之间唯一的屏障。请使用 CSPRNG 生成令牌，不要在不同部署间复用，并尽量在服务器之前用反向代理终止 TLS（特别是当绑定到回环以外时）。
 </Aside>
 
+<Aside type="caution">
+  HTTP 服务器使用单个 API 密钥向 Redmine 认证，因此所有客户端都以该 Redmine 用户的身份操作。请使用一个专用账号，并使其项目权限与代理应具备的能力相匹配。
+</Aside>
+
 ### 收窄暴露的工具范围
 
 对于只处理 issue 的助手，仅保留 issues 组：
@@ -220,7 +133,7 @@ profiles:
 
 ### 前置条件
 
-`rdflow` 必须位于宿主的 `PATH`，并且已有配置文件完成登录（`rdflow auth login`）。无需 Node.js。使用 [Docker](#使用-docker-运行) 时，只需要 Docker 和一个 API 密钥。
+`rdflow` 必须位于宿主的 `PATH`，并且已有配置文件完成登录（`rdflow auth login`）。无需 Node.js。
 
 ### 故障排查
 
@@ -228,7 +141,7 @@ profiles:
 
 1. **宿主报告 “command not found”。** 生成的进程继承宿主的 `PATH`，这通常与你的 shell 不同。请在 `command` 字段中使用绝对路径（`which rdflow`）。
 
-2. **插件的 MCP 服务器显示 “Failed to connect”。** Claude Code、Codex 和 Gemini 插件通过 `rdflow` 可执行文件启动服务器；出现该错误通常说明它不在宿主的 `PATH` 中（其他启动错误，见第 6 项，也会显示同样的信息）。从图形界面启动的应用通常只有精简的 `PATH`。请[安装 `rdflow`](/zh-cn/getting-started/installation/)（`brew install aarondpn/tap/redmine` 或 `install.sh` 一行命令），并确保其所在目录（`/opt/homebrew/bin`、`/usr/local/bin`、`~/.local/bin`、`$GOBIN` 或 `~/go/bin`）位于该应用的 `PATH` 中。对于自行配置的 MCP 服务器，启动脚本 [`scripts/redmine-mcp.sh`](https://github.com/aarondpn/redmine-cli/blob/main/scripts/redmine-mcp.sh) 会自动检查这些位置：将 `command` 设为 `sh`，`args` 设为 `["/path/to/redmine-mcp.sh", "mcp", "serve"]`。
+2. **插件的 MCP 服务器显示 “Failed to connect”。** Claude Code、Codex 和 Gemini 插件通过 `rdflow` 可执行文件启动服务器；出现该错误通常说明它不在宿主的 `PATH` 中（其他启动错误，见第 6 项，也会显示同样的信息）。从图形界面启动的应用通常只有精简的 `PATH`。请[安装 `rdflow`](/zh-cn/getting-started/installation/)（`brew install TruthUnderlier/tap/rdflow` 或 `install.sh` 一行命令），并确保其所在目录（`/opt/homebrew/bin`、`/usr/local/bin`、`~/.local/bin`、`$GOBIN` 或 `~/go/bin`）位于该应用的 `PATH` 中。对于自行配置的 MCP 服务器，启动脚本 [`scripts/redmine-mcp.sh`](https://github.com/TruthUnderlier/RedmineFlow/blob/main/scripts/redmine-mcp.sh) 会自动检查这些位置：将 `command` 设为 `sh`，`args` 设为 `["/path/to/redmine-mcp.sh", "mcp", "serve"]`。
 
 3. **工具列表为空或缺少修改类工具。** 未传入 `--enable-writes`，暴露范围被 `--enable-groups` / `--enable-tools` 收窄，或宿主缓存了旧的 `tools/list`。运行 `rdflow mcp tools` 查看完整目录，并在修改参数后重启宿主。
 
