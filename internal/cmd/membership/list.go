@@ -28,10 +28,10 @@ func newCmdMembershipList(f *cmdutil.Factory) *cobra.Command {
 		Short:   "List project memberships",
 		Long:    "List all memberships for a project.",
 		Example: `  # List memberships for a project
-  redmine memberships list --project myproject
+  rdflow memberships list --project myproject
 
   # Output as JSON
-  redmine memberships list --project myproject -o json`,
+  rdflow memberships list --project myproject -o json`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			client, err := f.ApiClient()
 			if err != nil {

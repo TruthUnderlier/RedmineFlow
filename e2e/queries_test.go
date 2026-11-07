@@ -14,7 +14,7 @@ import (
 const seededQueryName = "E2E All Open Issues"
 
 // TestQueries_ListIncludesSeededFixture asserts that the saved query the
-// bootstrap script seeds is visible to `redmine queries list`. Together with
+// bootstrap script seeds is visible to `rdflow queries list`. Together with
 // the issues-list test below this gives end-to-end coverage of both the
 // `queries` group and the `--query`/`--query-id` filter wiring.
 func TestQueries_ListIncludesSeededFixture(t *testing.T) {

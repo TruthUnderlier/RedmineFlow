@@ -96,13 +96,13 @@ func NewCmdSearch(f *cmdutil.Factory) *cobra.Command {
 			"Without type flags, Redmine searches every resource type (including changesets);\n" +
 			"pass --issues, --wiki-pages, etc. to narrow the results.",
 		Example: `  # Search issue titles only (in the default project, if one is configured)
-  redmine search "login timeout" --issues --titles-only
+  rdflow search "login timeout" --issues --titles-only
 
   # Search every project you can see, not just the default project
-  redmine search "login timeout" --scope all --issues
+  rdflow search "login timeout" --scope all --issues
 
   # Search a specific project
-  redmine search "deploy checklist" --project myproject --wiki-pages`,
+  rdflow search "deploy checklist" --project myproject --wiki-pages`,
 		Args: cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			query := strings.Join(args, " ")

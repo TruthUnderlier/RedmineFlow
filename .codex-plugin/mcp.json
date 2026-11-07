@@ -1,6 +1,6 @@
 {
   "redmine": {
-    "command": "redmine",
+    "command": "rdflow",
     "args": ["mcp", "serve"]
   }
 }

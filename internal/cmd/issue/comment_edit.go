@@ -26,25 +26,25 @@ func newCmdCommentEdit(f *cmdutil.Factory) *cobra.Command {
 		Short: "Edit an issue comment (journal)",
 		Long: "Edit the text or privacy of an existing issue comment. Requires Redmine 5.0 or later.\n\n" +
 			"Comments are identified by their journal ID, not the issue ID. List them with:\n" +
-			"  redmine issues get 123 --journals --jq '.journals[] | {id, notes}'\n" +
+			"  rdflow issues get 123 --journals --jq '.journals[] | {id, notes}'\n" +
 			"The table view of `issues get --journals` also prints [journal N] in each comment header.\n\n" +
 			"Editing the text needs the \"Edit issue notes\" permission (or \"Edit own issue notes\" for your own\n" +
 			"comments); --private/--public needs \"Set notes as private\" and is silently ignored without it.\n" +
 			"--clear removes the comment's text: Redmine removes the comment from the issue history (some versions delete it entirely, others keep an\n" +
 			"empty row the API no longer lists). It asks for confirmation unless --force.",
 		Example: `  # Change the text of a comment
-  redmine issues comment edit 456 --message "Corrected: deployed to production"
+  rdflow issues comment edit 456 --message "Corrected: deployed to production"
 
   # Read the new text from a file or standard input
-  redmine issues comment edit 456 --message-file notes.textile
-  echo "Updated text" | redmine issues comment edit 456 -F -
+  rdflow issues comment edit 456 --message-file notes.textile
+  echo "Updated text" | rdflow issues comment edit 456 -F -
 
   # Make a comment private (or public again)
-  redmine issues comment edit 456 --private
-  redmine issues comment edit 456 --public
+  rdflow issues comment edit 456 --private
+  rdflow issues comment edit 456 --public
 
   # Remove the text of a comment
-  redmine issues comment edit 456 --clear --force`,
+  rdflow issues comment edit 456 --clear --force`,
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			id, err := strconv.Atoi(args[0])

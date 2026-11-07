@@ -653,7 +653,7 @@ var moveRunningBinaryAside = runtime.GOOS == "windows"
 func swapMovingAside(tmpPath, execPath string) error {
 	oldPath := execPath + ".old"
 	removeOldBinaries(execPath)
-	// A previous binary that still runs (e.g. a long-lived `redmine mcp
+	// A previous binary that still runs (e.g. a long-lived `rdflow mcp
 	// serve`) cannot be deleted, but a running image can be renamed.
 	if _, err := os.Lstat(oldPath); err == nil {
 		aside := fmt.Sprintf("%s.old-%d", execPath, time.Now().UnixNano())

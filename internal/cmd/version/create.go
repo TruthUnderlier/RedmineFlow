@@ -30,13 +30,13 @@ func newCmdVersionCreate(f *cmdutil.Factory) *cobra.Command {
 		Short:   "Create a project version",
 		Long:    "Create a Redmine project version (milestone).",
 		Example: `  # Create an open version in the default project
-  redmine versions create --name 1.2.0
+  rdflow versions create --name 1.2.0
 
   # Create a version for a specific project
-  redmine versions create --project myproject --name 1.2.0 --due-date 2026-06-30 --description "Release 1.2.0"
+  rdflow versions create --project myproject --name 1.2.0 --due-date 2026-06-30 --description "Release 1.2.0"
 
   # Set version custom fields (repeat a field for multi-value fields)
-  redmine versions create --project myproject --name 1.3.0 --custom-field "Release Manager=Jane Doe"`,
+  rdflow versions create --project myproject --name 1.3.0 --custom-field "Release Manager=Jane Doe"`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			client, err := f.ApiClient()
 			if err != nil {

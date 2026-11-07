@@ -43,19 +43,19 @@ func newCmdThumbnail(f *cmdutil.Factory) *cobra.Command {
 			"Note: -o/--output controls the confirmation output (json prints a result object). It does\n" +
 			"NOT change where the bytes go; use --path for that.",
 		Example: `  # Save the default-size thumbnail
-  redmine attachments thumbnail 42 --path thumb.png
+  rdflow attachments thumbnail 42 --path thumb.png
 
   # Request a larger thumbnail
-  redmine attachments thumbnail 42 --size 200 --path thumb.png
+  rdflow attachments thumbnail 42 --size 200 --path thumb.png
 
   # Replace an earlier thumbnail
-  redmine attachments thumbnail 42 --path thumb.png --clobber
+  rdflow attachments thumbnail 42 --path thumb.png --clobber
 
   # Stream to stdout
-  redmine attachments thumbnail 42 --path - > thumb.png
+  rdflow attachments thumbnail 42 --path - > thumb.png
 
   # Print a JSON result describing the saved file
-  redmine attachments thumbnail 42 --path thumb.png -o json`,
+  rdflow attachments thumbnail 42 --path thumb.png -o json`,
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			id, err := strconv.Atoi(args[0])

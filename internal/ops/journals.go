@@ -12,7 +12,7 @@ import (
 // JournalEditHint explains 401/404 answers: Redmine before 5.0 has no journal
 // update endpoint.
 const JournalEditHint = "Editing comments through the REST API needs Redmine 5.0 or later; older servers reject the request. " +
-	"Check the journal ID with get_issue (includes=[\"journals\"]) or `redmine issues get <issue> --journals`."
+	"Check the journal ID with get_issue (includes=[\"journals\"]) or `rdflow issues get <issue> --journals`."
 
 // JournalEditForbiddenHint explains 403 answers. Redmine 4.2 ignores the API key
 // for this endpoint and answers 403 to the anonymous request, so it names both

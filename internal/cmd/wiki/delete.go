@@ -22,10 +22,10 @@ func newCmdDelete(f *cmdutil.Factory) *cobra.Command {
 		Short:   "Delete a wiki page",
 		Long:    "Delete a Redmine wiki page.\n\nThis also removes all attachments and the page history.\nAny child pages will be re-parented to the wiki root.",
 		Example: `  # Delete with confirmation prompt
-  redmine wiki delete MyPage --project myproject
+  rdflow wiki delete MyPage --project myproject
 
   # Skip confirmation
-  redmine wiki delete MyPage --project myproject --force`,
+  rdflow wiki delete MyPage --project myproject --force`,
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmdutil.Context(cmd)

@@ -25,13 +25,13 @@ groups), which works without admin privileges; logins and users outside the
 project fall back to the admin-only users list. Assigning a group requires
 Redmine's "Allow issue assignment to groups" setting.`,
 		Example: `  # Assign to yourself
-  redmine issues assign 123 me
+  rdflow issues assign 123 me
 
   # Assign to a group or user by name
-  redmine issues assign 123 "Backend Team"
+  rdflow issues assign 123 "Backend Team"
 
   # Clear the assignee
-  redmine issues assign 123 none`,
+  rdflow issues assign 123 none`,
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			id, err := strconv.Atoi(args[0])
@@ -59,7 +59,7 @@ Redmine's "Allow issue assignment to groups" setting.`,
 				return nil
 			}
 
-			if err := checkAssigneeID(args[1], fmt.Sprintf("use 'redmine issues assign %d none' to unassign", id)); err != nil {
+			if err := checkAssigneeID(args[1], fmt.Sprintf("use 'rdflow issues assign %d none' to unassign", id)); err != nil {
 				return err
 			}
 			userID, err := resolveIssuePrincipal(ctx, client, id, args[1])

@@ -161,7 +161,7 @@ func TestUpdateIssue_RoutesAssignedToID(t *testing.T) {
 }
 
 // TestListIssues_EmptyResultIsArray pins that an empty list encodes as
-// "issues":[] rather than null, matching `redmine issues list -o json`.
+// "issues":[] rather than null, matching `rdflow issues list -o json`.
 func TestListIssues_EmptyResultIsArray(t *testing.T) {
 	apiClient, closeTS := newTestAPIClient(t, http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -193,7 +193,7 @@ func TestListIssues_EmptyResultIsArray(t *testing.T) {
 }
 
 // TestGetIssue_EmptyIncludedCollectionsAreArrays pins the JSON contract shared
-// with `redmine issues get -o json`: collections that were requested but are
+// with `rdflow issues get -o json`: collections that were requested but are
 // empty encode as [], while unrequested ones stay absent.
 func TestGetIssue_EmptyIncludedCollectionsAreArrays(t *testing.T) {
 	var gotInclude string

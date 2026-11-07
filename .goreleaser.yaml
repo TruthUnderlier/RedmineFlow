@@ -9,9 +9,9 @@ project_name: rdflow
 before:
   hooks:
     - mkdir -p completions
-    - sh -c "go run ./cmd/redmine completion bash > completions/redmine.bash"
-    - sh -c "go run ./cmd/redmine completion zsh > completions/redmine.zsh"
-    - sh -c "go run ./cmd/redmine completion fish > completions/redmine.fish"
+    - sh -c "go run ./cmd/redmine completion bash > completions/rdflow.bash"
+    - sh -c "go run ./cmd/redmine completion zsh > completions/rdflow.zsh"
+    - sh -c "go run ./cmd/redmine completion fish > completions/rdflow.fish"
 
 builds:
   - binary: rdflow
@@ -91,9 +91,9 @@ homebrew_casks:
     binaries:
       - redmine
     completions:
-      bash: completions/redmine.bash
-      zsh: completions/redmine.zsh
-      fish: completions/redmine.fish
+      bash: completions/rdflow.bash
+      zsh: completions/rdflow.zsh
+      fish: completions/rdflow.fish
     # Homebrew 7.0.4 deprecated `postflight` in favour of `postflight_steps`.
     # The stanza is written through `custom_block`. GoReleaser 2.19+ can also
     # emit it via `hooks.post.install_steps` with `{{ .StagedPath }}`; moving

@@ -27,10 +27,10 @@ func newCmdCategoryDelete(f *cmdutil.Factory) *cobra.Command {
 			"another category of the same project, which receives them. Accepts a numeric ID or category name " +
 			"(uses the default project, or pass --project).",
 		Example: `  # Delete a category (asks for confirmation)
-  redmine categories delete 12
+  rdflow categories delete 12
 
   # Move its issues to another category, skipping the confirmation
-  redmine categories delete Backend --project myproject --reassign-to Platform --force`,
+  rdflow categories delete Backend --project myproject --reassign-to Platform --force`,
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			client, err := f.ApiClient()

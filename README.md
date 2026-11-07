@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="docs/public/favicon.svg" alt="redmine-cli logo" width="120" />
+  <img src="docs/public/favicon.svg" alt="rdflow logo" width="120" />
 </p>
 
-<h1 align="center">redmine-cli</h1>
+<h1 align="center">rdflow</h1>
 
 <p align="center">
   A command-line interface for <a href="https://www.redmine.org/">Redmine</a> project management.
@@ -15,90 +15,120 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/aarondpn/redmine-cli/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/aarondpn/redmine-cli/ci.yml?style=for-the-badge&logo=githubactions&logoColor=white&label=CI" alt="CI"></a>
-  <a href="https://github.com/aarondpn/redmine-cli/releases/latest"><img src="https://img.shields.io/github/v/release/aarondpn/redmine-cli?style=for-the-badge&logo=github&logoColor=white" alt="Release"></a>
-  <a href="https://go.dev/"><img src="https://img.shields.io/github/go-mod/go-version/aarondpn/redmine-cli?style=for-the-badge&logo=go&logoColor=white" alt="Go"></a>
+  <a href="https://github.com/TruthUnderlier/RedmineFlow/releases/latest"><img src="https://img.shields.io/github/v/release/TruthUnderlier/RedmineFlow?style=for-the-badge&logo=github&logoColor=white" alt="Release"></a>
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge&logo=opensourceinitiative&logoColor=white" alt="License"></a>
-</p>
-
-<p align="center">
-  <a href="https://www.redmine.org/projects/redmine/wiki/changelog"><img src="https://img.shields.io/badge/Redmine-4.x-B32024?style=for-the-badge&logo=redmine&logoColor=white" alt="Redmine 4.x"></a>
-  <a href="https://www.redmine.org/projects/redmine/wiki/changelog"><img src="https://img.shields.io/badge/Redmine-5.x-B32024?style=for-the-badge&logo=redmine&logoColor=white" alt="Redmine 5.x"></a>
-  <a href="https://www.redmine.org/projects/redmine/wiki/changelog"><img src="https://img.shields.io/badge/Redmine-6.x-B32024?style=for-the-badge&logo=redmine&logoColor=white" alt="Redmine 6.x"></a>
-  <a href="https://www.redmine.org/projects/redmine/wiki/changelog"><img src="https://img.shields.io/badge/Redmine-7.x-B32024?style=for-the-badge&logo=redmine&logoColor=white" alt="Redmine 7.x"></a>
 </p>
 
 <p align="center">
   <a href="#installation">Installation</a> ·
   <a href="#getting-started">Getting Started</a> ·
+  <a href="#custom-ca-certificate">Custom CA certificate</a> ·
   <a href="#ai-agents">AI Agents</a>
 </p>
 
+rdflow is an independent fork of [aarondpn/redmine-cli](https://github.com/aarondpn/redmine-cli). It adds:
+
+- **Custom CA certificates** per profile (`ca_cert`), for Redmine servers behind a private or corporate CA.
+- **Working DNS behind VPN DNS proxies** such as Sangfor, which reject EDNS0 queries (`no such host`).
+
+The command is `rdflow` and its config file is `~/.redmine-flow.yaml`, so it can be installed next to the upstream `redmine` without either affecting the other.
+
 ## Installation
-
-**Homebrew** (macOS, Linux):
-
-```bash
-brew install aarondpn/tap/redmine
-```
 
 **Install script** (macOS, Linux):
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/aarondpn/redmine-cli/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/TruthUnderlier/RedmineFlow/main/install.sh | REDMINE_CLI_SKIP_ATTESTATION=1 bash
 ```
 
 **PowerShell** (Windows):
 
 ```powershell
-irm https://raw.githubusercontent.com/aarondpn/redmine-cli/main/install.ps1 | iex
+$env:REDMINE_CLI_SKIP_ATTESTATION='1'; irm https://raw.githubusercontent.com/TruthUnderlier/RedmineFlow/main/install.ps1 | iex
 ```
 
-Or download a binary from [GitHub Releases](https://github.com/aarondpn/redmine-cli/releases/latest). Update with `redmine update`. More options: [installation docs](https://redmine-cli.dev/getting-started/installation/).
+Or download an archive from [GitHub Releases](https://github.com/TruthUnderlier/RedmineFlow/releases/latest) and put `rdflow` (`rdflow.exe` on Windows) on your `PATH`:
+
+| System | Archive |
+|---|---|
+| Linux x86_64 | `rdflow-linux-amd64.tar.gz` |
+| Linux ARM64 | `rdflow-linux-arm64.tar.gz` |
+| macOS Intel | `rdflow-darwin-amd64.tar.gz` |
+| macOS Apple silicon | `rdflow-darwin-arm64.tar.gz` |
+| Windows x86_64 | `rdflow-windows-amd64.zip` |
+
+Update with `rdflow update --skip-attestation`. Releases are published without GitHub build attestations, so installing and updating skip that check; the SHA-256 checksums are still verified.
 
 ## Getting Started
 
 ```bash
 # Configure your Redmine server and API key
-redmine auth login
+rdflow auth login
 
 # List issues
-redmine issues list
+rdflow issues list
 
 # View a specific issue
-redmine issues view 123
+rdflow issues view 123
 
 # Log time
-redmine time log
+rdflow time log
 
 # Script it: JSON output filtered with the built-in --jq
-redmine issues list --project myproject --jq '.[].id'
-redmine issues get 123 --jq '.status.name'
+rdflow issues list --project myproject --jq '.[].id'
+rdflow issues get 123 --jq '.status.name'
 ```
 
-Run `redmine --help` to see all available commands.
+Run `rdflow --help` to see all available commands.
 
-`-o json` prints machine-readable JSON, and `-q/--jq <expression>` filters it (strings are printed raw, everything else as JSON). Errors always go to stderr; in JSON mode they are a single-line `{"error": {...}}` envelope on the last line of stderr, stdout stays empty and the exit code is non-zero. See [Output formats](https://redmine-cli.dev/guides/output-formats/).
+`-o json` prints machine-readable JSON, and `-q/--jq <expression>` filters it (strings are printed raw, everything else as JSON). Errors always go to stderr; in JSON mode they are a single-line `{"error": {...}}` envelope on the last line of stderr, stdout stays empty and the exit code is non-zero.
+
+## Custom CA certificate
+
+If your server's certificate is signed by a private or corporate CA, requests fail with `x509: certificate signed by unknown authority`. Point the profile at the CA certificate in `~/.redmine-flow.yaml`:
+
+```yaml
+profiles:
+  work:
+    server: https://redmine.internal
+    auth_method: apikey
+    api_key: your-api-key
+    ca_cert: /etc/ssl/certs/company-ca.crt      # Windows: 'C:\certs\company-ca.crt' or C:/certs/company-ca.crt
+```
+
+- The file must be PEM encoded (starts with `-----BEGIN CERTIFICATE-----`); the extension does not matter. Convert a binary DER certificate with `openssl x509 -inform der -in ca.cer -out ca.crt`, or on Windows `certutil -encode ca.cer ca.crt`.
+- The certificates are trusted in addition to the system roots and only for rdflow's connections to the Redmine server; the system trust store and other programs are not changed.
+- Add `ca_cert` to the profile before running `rdflow auth login` for the first time; logging in again keeps it.
+
+## Documentation
+
+The upstream documentation at [redmine-cli.dev](https://redmine-cli.dev) applies to rdflow as well. Replace `redmine` with `rdflow` in its commands, and `~/.redmine-cli.yaml` with `~/.redmine-flow.yaml`.
 
 <a name="ai-agents"></a>
 
 ## Using with AI Agents
 
-redmine-cli ships an [Agent Skill](https://agentskills.io) (the open `SKILL.md` standard, supported by 35+ agents) and a built-in MCP server. Both are vendor-neutral - pick the one-liner that matches your tool:
+rdflow ships an [Agent Skill](https://agentskills.io) and a built-in MCP server:
 
-| Tool | One-line install |
+| Tool | Install |
 |---|---|
-| **Any agent (skill)** | `npx skills add aarondpn/redmine-cli` |
-| **Any MCP host** | `redmine mcp serve` (then add to host config) |
-| **Docker (MCP only)** | `docker run -i --rm -e REDMINE_SERVER -e REDMINE_API_KEY ghcr.io/aarondpn/redmine-mcp` |
-| **Claude Code** | `/plugin marketplace add aarondpn/redmine-cli` then `/plugin install redmine` |
-| **Codex CLI** | `codex plugin marketplace add aarondpn/redmine-cli` then `/plugins` (install **Redmine** from the added marketplace) |
-| **Gemini CLI** | `gemini extensions install https://github.com/aarondpn/redmine-cli` |
+| **Any agent (skill)** | `npx skills add TruthUnderlier/RedmineFlow` |
+| **Any MCP host** | `rdflow mcp serve` (then add to host config) |
+| **Claude Code** | `/plugin marketplace add TruthUnderlier/RedmineFlow` then `/plugin install redmine` |
+| **Codex CLI** | `codex plugin marketplace add TruthUnderlier/RedmineFlow` then `/plugins` |
+| **Gemini CLI** | `gemini extensions install https://github.com/TruthUnderlier/RedmineFlow` |
 
-The skill teaches the agent the non-obvious parts of the CLI (output formats, name resolution, pagination, common workflows). The MCP server exposes the same operations as typed tool calls, read-only by default, with per-group / per-tool allow- and deny-lists.
-
-Full configuration, host-specific snippets (Claude Desktop, Cursor, Zed, VS Code), and write-tool gating: see the [AI Agent Integration guide](https://redmine-cli.dev/guides/ai-agents/).
+The MCP server is read-only by default, with per-group / per-tool allow- and deny-lists. See the upstream [AI Agent Integration guide](https://redmine-cli.dev/guides/ai-agents/) for host-specific configuration.
 
 ## Development
 
-Local E2E testing against a real Redmine instance (Docker, supported on Redmine `4.2`, `5.1`, `6.1`, `7.0`): see [e2e/README.md](e2e/README.md).
+```bash
+make build   # builds bin/rdflow
+make test
+```
+
+Local E2E testing against a real Redmine instance (Docker): see [e2e/README.md](e2e/README.md).
+
+## License
+
+MIT. rdflow is based on [redmine-cli](https://github.com/aarondpn/redmine-cli) by Aaron Döppner; see [LICENSE](LICENSE).

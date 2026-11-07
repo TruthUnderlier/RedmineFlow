@@ -23,7 +23,7 @@ func newCmdGroupCreate(f *cmdutil.Factory) *cobra.Command {
 		Short:   "Create a new group",
 		Aliases: []string{"new"},
 		Example: `  # Create a group with a custom field
-  redmine groups create --name Backend --custom-field "Cost Center=CC-42"`,
+  rdflow groups create --name Backend --custom-field "Cost Center=CC-42"`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			client, err := f.ApiClient()
 			if err != nil {

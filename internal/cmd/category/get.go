@@ -22,13 +22,13 @@ func newCmdCategoryGet(f *cmdutil.Factory) *cobra.Command {
 		Short:   "Get issue category details",
 		Long:    "Display an issue category: its project and default assignee. Accepts a numeric ID or category name (uses the default project, or pass --project).",
 		Example: `  # By ID
-  redmine categories get 12
+  rdflow categories get 12
 
   # By name within a project
-  redmine categories get "Backend" --project myproject
+  rdflow categories get "Backend" --project myproject
 
   # JSON output
-  redmine categories get 12 -o json`,
+  rdflow categories get 12 -o json`,
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			client, err := f.ApiClient()

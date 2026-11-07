@@ -50,22 +50,22 @@ func newCmdDownload(f *cmdutil.Factory) *cobra.Command {
 			"(json prints a result object; otherwise a human-readable line is written to\n" +
 			"stderr). It does NOT change where the bytes go; use --path/--dir for that.",
 		Example: `  # Save to ./<filename> in the current directory
-  redmine attachments download 42
+  rdflow attachments download 42
 
   # Save into a directory, keeping the real filename
-  redmine attachments download 42 --dir ./downloads
+  rdflow attachments download 42 --dir ./downloads
 
   # Save to an explicit path
-  redmine attachments download 42 --path ./logo.png
+  rdflow attachments download 42 --path ./logo.png
 
   # Replace a file left over from an earlier download
-  redmine attachments download 42 --clobber
+  rdflow attachments download 42 --clobber
 
   # Stream to stdout (pipe into another tool)
-  redmine attachments download 42 --path - > logo.png
+  rdflow attachments download 42 --path - > logo.png
 
   # Print a JSON result describing the saved file
-  redmine attachments download 42 --dir ./downloads -o json`,
+  rdflow attachments download 42 --dir ./downloads -o json`,
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			id, err := strconv.Atoi(args[0])

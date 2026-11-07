@@ -13,7 +13,7 @@ func NewCmdNews(f *cmdutil.Factory) *cobra.Command {
 		Use:   "news",
 		Short: "Manage project news",
 		Long: "List, view, create, update, and delete Redmine project news.\n\n" +
-			"Use `redmine search news` for full-text search across news. News comments are " +
+			"Use `rdflow search news` for full-text search across news. News comments are " +
 			"read-only over the REST API: `news get --include comments` shows them, but they " +
 			"cannot be created or deleted from here.",
 	}

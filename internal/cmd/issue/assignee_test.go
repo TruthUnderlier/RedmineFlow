@@ -332,8 +332,8 @@ func TestCmdIssueAssign_ZeroPointsToNone(t *testing.T) {
 	if err == nil {
 		t.Fatal("expected error")
 	}
-	if !strings.Contains(err.Error(), "redmine issues assign 5 none") {
-		t.Errorf("error = %q, want CLI hint 'redmine issues assign 5 none'", err)
+	if !strings.Contains(err.Error(), "rdflow issues assign 5 none") {
+		t.Errorf("error = %q, want CLI hint 'rdflow issues assign 5 none'", err)
 	}
 	if strings.Contains(err.Error(), "update_issue") {
 		t.Errorf("error = %q, must not point CLI users at the MCP tool", err)

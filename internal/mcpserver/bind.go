@@ -7,7 +7,7 @@ import (
 	"github.com/aarondpn/redmine-cli/v2/internal/api"
 )
 
-// NormalizeBindAddr applies the convenience defaults used by `redmine mcp
+// NormalizeBindAddr applies the convenience defaults used by `rdflow mcp
 // serve --http <addr>`:
 //
 //   - An empty string returns "" with isLoopback=false (caller skips HTTP).

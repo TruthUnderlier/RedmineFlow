@@ -27,7 +27,7 @@ func newCmdTimeUpdate(f *cmdutil.Factory) *cobra.Command {
 		Aliases: []string{"edit"},
 		Short:   "Update a time entry",
 		Example: `  # Change the hours and set a time entry custom field
-  redmine time update 42 --hours 2 --custom-field "Billing Code=ACME-43"`,
+  rdflow time update 42 --hours 2 --custom-field "Billing Code=ACME-43"`,
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			id, err := strconv.Atoi(args[0])

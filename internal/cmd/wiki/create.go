@@ -27,21 +27,21 @@ func newCmdCreate(f *cmdutil.Factory) *cobra.Command {
 		Short:   "Create a wiki page",
 		Long:    "Create a new Redmine wiki page (or overwrite an existing one).",
 		Example: `  # Create a new wiki page
-  redmine wiki create MyPage --project myproject --text "h1. Hello World"
+  rdflow wiki create MyPage --project myproject --text "h1. Hello World"
 
   # Store the page under a different title, with a change comment
-  redmine wiki create MyPage --project myproject --text "Content here" \
+  rdflow wiki create MyPage --project myproject --text "Content here" \
     --title "My Page" --comments "Initial draft"
 
   # Nest the new page under an existing page
-  redmine wiki create Installation --project myproject \
+  rdflow wiki create Installation --project myproject \
     --text "h1. Installation" --parent "User Guide"
 
   # Read the page content from a file (or from stdin with "-")
-  redmine wiki create MyPage --project myproject --text-file page.textile
+  rdflow wiki create MyPage --project myproject --text-file page.textile
 
   # Attach a file
-  redmine wiki create MyPage --project myproject --text "See diagram" \
+  rdflow wiki create MyPage --project myproject --text "See diagram" \
     --attach ./diagram.png`,
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {

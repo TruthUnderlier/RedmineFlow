@@ -26,7 +26,7 @@ func NewCmdInstallSkill(f *cmdutil.Factory) *cobra.Command {
 
 			printer := f.Printer("")
 
-			skillArgs := []string{"-y", "skills", "add", "aarondpn/redmine-cli", "--skill", "redmine-cli", "-y"}
+			skillArgs := []string{"-y", "skills", "add", "TruthUnderlier/RedmineFlow", "--skill", "redmine-cli", "-y"}
 			if global {
 				skillArgs = append(skillArgs, "-g")
 			}

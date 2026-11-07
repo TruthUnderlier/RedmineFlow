@@ -48,41 +48,41 @@ func newCmdUpdate(f *cmdutil.Factory) *cobra.Command {
 			"not change (or warns, if the parent may have been resolved through a " +
 			"rename redirect).",
 		Example: `  # Update page content
-  redmine wiki update MyPage --project myproject --text "Updated content"
+  rdflow wiki update MyPage --project myproject --text "Updated content"
 
   # Replace the page content with a file (or stdin with "-")
-  redmine wiki update MyPage --project myproject --text-file page.textile
+  rdflow wiki update MyPage --project myproject --text-file page.textile
 
   # Update with a change comment (text is preserved when omitted)
-  redmine wiki update MyPage --project myproject --comments "Fixed typo"
+  rdflow wiki update MyPage --project myproject --comments "Fixed typo"
 
   # Rename a page
-  redmine wiki update MyPage --project myproject --title "New Title"
+  rdflow wiki update MyPage --project myproject --title "New Title"
 
   # Move a page under another page
-  redmine wiki update MyPage --project myproject --parent "User Guide"
+  rdflow wiki update MyPage --project myproject --parent "User Guide"
 
   # Move a page back to the wiki root
-  redmine wiki update MyPage --project myproject --parent ""
+  rdflow wiki update MyPage --project myproject --parent ""
 
   # Attach a file
-  redmine wiki update MyPage --project myproject --attach ./screenshot.png
+  rdflow wiki update MyPage --project myproject --attach ./screenshot.png
 
   # Update only section 5 of the page
-  redmine wiki update MyPage --project myproject \
+  rdflow wiki update MyPage --project myproject \
     --section 5 --text "h3. Updated Section Content"
 
   # Section update with conflict detection
-  redmine wiki update MyPage --project myproject \
+  rdflow wiki update MyPage --project myproject \
     --section 5 --section-hash abc123 \
     --text "h3. Updated Section Content"
 
   # Optimistic concurrency: fail if the page has been edited since version 7
-  redmine wiki update MyPage --project myproject \
+  rdflow wiki update MyPage --project myproject \
     --text "Updated content" --expect-version 7
 
   # Convenience: refetch the page first and reuse its current version
-  redmine wiki update MyPage --project myproject \
+  rdflow wiki update MyPage --project myproject \
     --text "Updated content" --ensure-current`,
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {

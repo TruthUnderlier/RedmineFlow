@@ -1,7 +1,7 @@
-// Package attachment implements the `redmine attachments` command group, which
+// Package attachment implements the `rdflow attachments` command group, which
 // surfaces the Redmine REST Attachments API so users (and agents) can inspect
 // attachment metadata and download the raw bytes without dropping down to
-// `redmine api` plus a manual `curl` with a hand-extracted API key.
+// `rdflow api` plus a manual `curl` with a hand-extracted API key.
 package attachment
 
 import (
@@ -18,9 +18,9 @@ func NewCmdAttachments(f *cmdutil.Factory) *cobra.Command {
 		Short:   "Inspect, edit, download and delete Redmine attachments",
 		Long: "Inspect attachment metadata, download attachment files or thumbnails, rename or\n" +
 			"describe attachments, and delete them.\n\n" +
-			"Discover attachment IDs with `redmine issues get <id> --attachments`, then\n" +
-			"fetch metadata with `redmine attachments get <id>` or download the file with\n" +
-			"`redmine attachments download <id>`. Use `update` to change the filename, description\n" +
+			"Discover attachment IDs with `rdflow issues get <id> --attachments`, then\n" +
+			"fetch metadata with `rdflow attachments get <id>` or download the file with\n" +
+			"`rdflow attachments download <id>`. Use `update` to change the filename, description\n" +
 			"or content type, `delete` to remove an attachment and `thumbnail` to fetch a rendered\n" +
 			"preview image. Downloads reuse the active profile's server and API key, so there is\n" +
 			"no need to extract the key or shell out to curl.",

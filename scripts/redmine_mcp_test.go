@@ -9,7 +9,7 @@ import (
 	"testing"
 )
 
-// writeStub installs an executable "redmine" in dir that prints its origin
+// writeStub installs an executable "rdflow" in dir that prints its origin
 // and arguments.
 func writeStub(t *testing.T, dir, origin string) {
 	t.Helper()
@@ -17,7 +17,7 @@ func writeStub(t *testing.T, dir, origin string) {
 		t.Fatal(err)
 	}
 	body := "#!/bin/sh\necho \"" + origin + " $*\"\n"
-	if err := os.WriteFile(filepath.Join(dir, "redmine"), []byte(body), 0o755); err != nil {
+	if err := os.WriteFile(filepath.Join(dir, "rdflow"), []byte(body), 0o755); err != nil {
 		t.Fatal(err)
 	}
 }
@@ -97,7 +97,7 @@ func TestLauncher(t *testing.T) {
 			setup: func(home, pathDir string) []string {
 				dir := filepath.Join(home, ".local", "bin")
 				writeStub(t, dir, "local")
-				if err := os.Chmod(filepath.Join(dir, "redmine"), 0o644); err != nil {
+				if err := os.Chmod(filepath.Join(dir, "rdflow"), 0o644); err != nil {
 					t.Fatal(err)
 				}
 				return []string{"PATH=" + pathDir, "HOME=" + home, "_REDMINE_MCP_TEST_SYSTEM_DIRS=" + filepath.Join(home, "none")}
@@ -127,7 +127,7 @@ func TestLauncher(t *testing.T) {
 				if err == nil {
 					t.Fatalf("expected failure, got stdout %q", stdout)
 				}
-				for _, s := range []string{"brew install aarondpn/tap/redmine", "install.sh", "https://redmine-cli.dev/getting-started/installation/"} {
+				for _, s := range []string{"install.sh", "https://github.com/TruthUnderlier/RedmineFlow"} {
 					if !strings.Contains(stderr, s) {
 						t.Errorf("stderr missing %q: %s", s, stderr)
 					}

@@ -18,7 +18,7 @@ import (
 // API requests follow the same destination policy as attachment downloads.
 
 // TestClient_RefusesRedirectToInternalHost reproduces the review PoC: the
-// server answers `redmine api` with a 302 to a service on localhost, which
+// server answers `rdflow api` with a 302 to a service on localhost, which
 // must not be fetched and returned.
 func TestClient_RefusesRedirectToInternalHost(t *testing.T) {
 	var internalHits atomic.Int32

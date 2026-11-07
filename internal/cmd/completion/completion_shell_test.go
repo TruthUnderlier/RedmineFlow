@@ -14,10 +14,10 @@ import (
 )
 
 // completionScript generates the completion script for shell from a minimal
-// "redmine" command tree with one flag that has dynamic completions.
+// "rdflow" command tree with one flag that has dynamic completions.
 func completionScript(t *testing.T, shell string) string {
 	t.Helper()
-	root := &cobra.Command{Use: "redmine"}
+	root := &cobra.Command{Use: "rdflow"}
 	issues := &cobra.Command{Use: "issues", Run: func(*cobra.Command, []string) {}}
 	issues.Flags().String("tracker", "", "")
 	_ = issues.RegisterFlagCompletionFunc("tracker", func(*cobra.Command, []string, string) ([]string, cobra.ShellCompDirective) {
@@ -31,14 +31,14 @@ func completionScript(t *testing.T, shell string) string {
 	if err := root.Execute(); err != nil {
 		t.Fatal(err)
 	}
-	path := filepath.Join(t.TempDir(), "redmine."+shell)
+	path := filepath.Join(t.TempDir(), "rdflow."+shell)
 	if err := os.WriteFile(path, out.Bytes(), 0o644); err != nil {
 		t.Fatal(err)
 	}
 	return path
 }
 
-// fakeRedmine puts a "redmine" executable on PATH that answers every
+// fakeRedmine puts an "rdflow" executable on PATH that answers every
 // __complete request with candidates that are shell code (as a tracker,
 // version or member name on the server could be), plus one plain candidate.
 // It returns the marker file the shell code would create.
@@ -48,7 +48,7 @@ func fakeRedmine(t *testing.T) string {
 	marker := filepath.Join(dir, "pwned")
 	script := "#!/bin/sh\n" +
 		"printf '%s\\n' 'plain-candidate' '$(touch${IFS}" + marker + ")' '`touch${IFS}" + marker + "`' '$(touch${IFS}" + marker + ")\tdescription' ':4'\n"
-	if err := os.WriteFile(filepath.Join(dir, "redmine"), []byte(script), 0o755); err != nil {
+	if err := os.WriteFile(filepath.Join(dir, "rdflow"), []byte(script), 0o755); err != nil {
 		t.Fatal(err)
 	}
 	t.Setenv("PATH", dir+string(os.PathListSeparator)+os.Getenv("PATH"))
@@ -62,7 +62,7 @@ func TestCompletionScripts_DoNotEvaluateCandidates(t *testing.T) {
 	tests := []struct {
 		shell string
 		// driver sources the script at $1 and triggers completion of
-		// "redmine issues --tracker <cur>", printing the resulting
+		// "rdflow issues --tracker <cur>", printing the resulting
 		// candidates.
 		driver string
 	}{
@@ -76,10 +76,10 @@ if ! declare -F _get_comp_words_by_ref >/dev/null; then
 fi
 source "$1"
 for cur in "" '$(' '` + "`" + `'; do
-  COMP_WORDS=(redmine issues --tracker "$cur"); COMP_CWORD=3
-  COMP_LINE="redmine issues --tracker $cur"; COMP_POINT=${#COMP_LINE}
+  COMP_WORDS=(rdflow issues --tracker "$cur"); COMP_CWORD=3
+  COMP_LINE="rdflow issues --tracker $cur"; COMP_POINT=${#COMP_LINE}
   COMP_TYPE=9; COMP_KEY=9; COMPREPLY=()
-  __start_redmine
+  __start_rdflow
   printf '%s\n' "${COMPREPLY[@]}"
 done
 `},
@@ -90,8 +90,8 @@ _arguments() { :; }
 _describe() { print -rl -- "${completions[@]}"; }
 source "$1"
 for cur in "" '$(' '` + "`" + `'; do
-  words=(redmine issues --tracker "$cur"); CURRENT=4
-  _redmine
+  words=(rdflow issues --tracker "$cur"); CURRENT=4
+  _rdflow
 done
 `},
 	}

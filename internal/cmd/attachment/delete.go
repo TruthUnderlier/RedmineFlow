@@ -21,10 +21,10 @@ func newCmdDelete(f *cmdutil.Factory) *cobra.Command {
 		Long: "Permanently delete an attachment. Requires permission to edit the object the attachment\n" +
 			"belongs to; deleting an issue attachment is recorded in the issue history.",
 		Example: `  # Delete an attachment (asks for confirmation)
-  redmine attachments delete 42
+  rdflow attachments delete 42
 
   # Skip the confirmation prompt
-  redmine attachments delete 42 --force`,
+  rdflow attachments delete 42 --force`,
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			id, err := strconv.Atoi(args[0])

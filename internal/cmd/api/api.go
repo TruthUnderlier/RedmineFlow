@@ -50,22 +50,22 @@ as a string. A value that looks like a number is sent as one ('1.10' becomes
 'issue[subject]' are not expanded, so pass nested objects as JSON:
 -F 'issue={"subject":"Bug"}'.`,
 		Example: `  # GET the current user
-  redmine api /users/current.json
+  rdflow api /users/current.json
 
   # GET issues with query parameters
-  redmine api /issues.json -f project_id=myproject -f limit=5
+  rdflow api /issues.json -f project_id=myproject -f limit=5
 
   # POST with a nested JSON field
-  redmine api /issues.json -F 'issue={"subject":"Bug report","project_id":1}'
+  rdflow api /issues.json -F 'issue={"subject":"Bug report","project_id":1}'
 
   # POST from a file
-  redmine api /issues.json --input body.json
+  rdflow api /issues.json --input body.json
 
   # DELETE an issue
-  redmine api -X DELETE /issues/123.json
+  rdflow api -X DELETE /issues/123.json
 
   # Show response headers
-  redmine api /issues.json -i`,
+  rdflow api /issues.json -i`,
 		Args:         cobra.ExactArgs(1),
 		SilenceUsage: true,
 		RunE: func(cmd *cobra.Command, args []string) error {

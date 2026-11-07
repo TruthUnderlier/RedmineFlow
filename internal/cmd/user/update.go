@@ -31,7 +31,7 @@ func newCmdUserUpdate(f *cmdutil.Factory) *cobra.Command {
 		Long:    "Update a user. Accepts a numeric ID, login, full name, or 'me'.",
 		Aliases: []string{"edit"},
 		Example: `  # Set a multi-value custom field
-  redmine users update jdoe --custom-field Skills=Go --custom-field Skills=SQL`,
+  rdflow users update jdoe --custom-field Skills=Go --custom-field Skills=SQL`,
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if cmd.Flags().Changed("mail-notification") {

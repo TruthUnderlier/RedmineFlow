@@ -215,7 +215,7 @@ func (t *authTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 // (scheme and host:port, see authTransport.attachesTo).
 func NewClient(cfg *config.Config, log *debug.Logger) (*Client, error) {
 	if cfg.Server == "" {
-		return nil, fmt.Errorf("server URL not configured. Run 'redmine auth login' to set up")
+		return nil, fmt.Errorf("server URL not configured. Run 'rdflow auth login' to set up")
 	}
 	headerTimeout, err := responseHeaderTimeout()
 	if err != nil {

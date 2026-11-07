@@ -21,12 +21,12 @@ func newCmdGet(f *cmdutil.Factory) *cobra.Command {
 		Short:   "Show attachment metadata",
 		Long: "Display metadata for a single attachment: filename, size, content type, " +
 			"description, author, creation time, and download URL.\n\n" +
-			"Use `redmine attachments download <id>` to fetch the file itself.",
+			"Use `rdflow attachments download <id>` to fetch the file itself.",
 		Example: `  # Show metadata in a table
-  redmine attachments get 42
+  rdflow attachments get 42
 
   # JSON output (for scripting)
-  redmine attachments get 42 -o json`,
+  rdflow attachments get 42 -o json`,
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			id, err := strconv.Atoi(args[0])

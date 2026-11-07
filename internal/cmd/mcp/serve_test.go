@@ -216,7 +216,7 @@ func TestServeHelp_EnableGroupsUsageRendersNormally(t *testing.T) {
 	}
 
 	help := out.String()
-	if strings.Contains(help, "--enable-groups redmine mcp tools") {
+	if strings.Contains(help, "--enable-groups rdflow mcp tools") {
 		t.Fatalf("help output used command text as value placeholder:\n%s", help)
 	}
 	if !strings.Contains(help, "--enable-groups strings") {

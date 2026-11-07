@@ -115,7 +115,7 @@ func TestIssueCreate_RepeatedCustomFieldValidationHint(t *testing.T) {
 	if !strings.Contains(hint, "multi-value") {
 		t.Errorf("hint lacks multi-value text: %q", hint)
 	}
-	if !strings.Contains(hint, "redmine projects get demo") {
+	if !strings.Contains(hint, "rdflow projects get demo") {
 		t.Errorf("hint lost the lookup text: %q", hint)
 	}
 

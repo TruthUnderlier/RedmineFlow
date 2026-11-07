@@ -26,13 +26,13 @@ func newCmdCategoryCreate(f *cmdutil.Factory) *cobra.Command {
 		Long: "Create an issue category in a project. The optional default assignee (a user or group " +
 			"that is a project member) is preselected for new issues in this category.",
 		Example: `  # Create a category in the default project
-  redmine categories create --name Backend
+  rdflow categories create --name Backend
 
   # With a default assignee
-  redmine categories create --project myproject --name Backend --assignee me
+  rdflow categories create --project myproject --name Backend --assignee me
 
   # JSON output
-  redmine categories create --project myproject --name Backend -o json`,
+  rdflow categories create --project myproject --name Backend -o json`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			client, err := f.ApiClient()
 			if err != nil {

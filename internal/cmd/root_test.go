@@ -38,11 +38,11 @@ func TestRootCmdGeneratesCompletions(t *testing.T) {
 func TestRootCmd_PersistentOutputFlag_InheritedByLeafCommands(t *testing.T) {
 	root := NewRootCmd("test")
 	optedOut := map[string]bool{
-		"redmine auth login":    true,
-		"redmine auth logout":   true,
-		"redmine auth switch":   true,
-		"redmine issues browse": true,
-		"redmine search browse": true,
+		"rdflow auth login":    true,
+		"rdflow auth logout":   true,
+		"rdflow auth switch":   true,
+		"rdflow issues browse": true,
+		"rdflow search browse": true,
 	}
 
 	// The persistent flag must be registered on the root.

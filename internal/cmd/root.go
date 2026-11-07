@@ -72,16 +72,16 @@ func NewRootCmdWithFactory(version string) (*cobra.Command, *cmdutil.Factory) {
 		Short: "CLI tool for the Redmine project management API",
 		Long:  "A command-line interface for interacting with Redmine's REST API.",
 		Example: `  # List open issues in a project
-  redmine issues list --project myproject
+  rdflow issues list --project myproject
 
   # Print the IDs of matching issues, one per line
-  redmine issues list --project myproject --jq '.[].id'
+  rdflow issues list --project myproject --jq '.[].id'
 
   # Print a single field of an issue
-  redmine issues get 123 --jq '.status.name'
+  rdflow issues get 123 --jq '.status.name'
 
   # Capture the ID of a newly created issue
-  redmine issues create --project myproject --tracker Bug --subject "Crash on save" --jq '.id'`,
+  rdflow issues create --project myproject --tracker Bug --subject "Crash on save" --jq '.id'`,
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 			if err := cmdutil.ApplyGlobalFlags(f, cmd); err != nil {
 				return err

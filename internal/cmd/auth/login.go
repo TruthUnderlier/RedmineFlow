@@ -29,8 +29,8 @@ type loginOptions struct {
 
 // loginNeedsTerminalError is returned when values are missing and there is no
 // terminal to prompt on.
-const loginNeedsTerminalError = `redmine auth login needs a terminal to prompt for missing values; pass them as flags instead, e.g.
-  redmine auth login --server https://redmine.example.com --api-key-file -
+const loginNeedsTerminalError = `rdflow auth login needs a terminal to prompt for missing values; pass them as flags instead, e.g.
+  rdflow auth login --server https://redmine.example.com --api-key-file -
 (the API key is read from standard input; --api-key-file also accepts a file path)`
 
 // NewCmdLogin creates the auth login command.
@@ -55,11 +55,11 @@ sub-path such as /redmine is kept.
 
 Headers passed with the global --header flag are used for the connection test
 and saved to the profile, for servers behind a firewall or proxy that require them.`,
-		Example: `  redmine auth login
-  redmine auth login --name work
-  redmine auth login --header "User-Agent: Mozilla/5.0"
-  echo "$KEY" | redmine auth login --server https://redmine.example.com --api-key-file -
-  redmine auth login --server redmine.example.com --api-key-file ~/.redmine-key --default-project web -o json`,
+		Example: `  rdflow auth login
+  rdflow auth login --name work
+  rdflow auth login --header "User-Agent: Mozilla/5.0"
+  echo "$KEY" | rdflow auth login --server https://redmine.example.com --api-key-file -
+  rdflow auth login --server redmine.example.com --api-key-file ~/.redmine-key --default-project web -o json`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			nonInteractive := f.ServerOverride != "" && (f.APIKeyOverride != "" || f.APIKeyFile != "")
 			if !nonInteractive {
@@ -470,7 +470,7 @@ func warnCleartextServer(f *cmdutil.Factory, server string) {
 const loginForbiddenHint = `Redmine permissions are not the cause: every logged-in user may read their own account. Either the REST API is disabled (an administrator must enable Administration > Settings > API > Enable REST web service), or a firewall or proxy in front of Redmine blocks the request; then retry with the headers it expects, e.g. --header "User-Agent: Mozilla/5.0"`
 
 // loginUnauthorizedHint replaces the generic 401 hint, which would point the
-// user at 'redmine auth login' while they are running it.
+// user at 'rdflow auth login' while they are running it.
 const (
 	loginUnauthorizedAPIKeyHint = `Check the API key (My account > API access key) and run the login again; a locked account is rejected the same way.`
 	loginUnauthorizedBasicHint  = `Check the username and password and run the login again; a locked account is rejected the same way.`

@@ -70,7 +70,7 @@ func TestIssueCreate_ValidationErrorHint(t *testing.T) {
 				t.Fatal("expected error")
 			}
 
-			wantCmd := "redmine projects get demo --include trackers,issue_categories,issue_custom_fields"
+			wantCmd := "rdflow projects get demo --include trackers,issue_categories,issue_custom_fields"
 			text := cmdutil.FormatError(err)
 			if !strings.Contains(text, "Category cannot be blank") {
 				t.Errorf("text error lost the server message: %q", text)
@@ -84,8 +84,8 @@ func TestIssueCreate_ValidationErrorHint(t *testing.T) {
 				t.Errorf("code = %q", env.Error.Code)
 			}
 			if !strings.Contains(env.Error.Hint, wantCmd) ||
-				!strings.Contains(env.Error.Hint, "redmine versions list --project demo --open") ||
-				!strings.Contains(env.Error.Hint, "redmine memberships list --project demo") {
+				!strings.Contains(env.Error.Hint, "rdflow versions list --project demo --open") ||
+				!strings.Contains(env.Error.Hint, "rdflow memberships list --project demo") {
 				t.Errorf("JSON hint = %q", env.Error.Hint)
 			}
 			if strings.Contains(env.Error.Message, "Hint:") {
@@ -124,7 +124,7 @@ func TestIssueUpdate_ValidationErrorHint(t *testing.T) {
 		t.Fatal("expected error")
 	}
 	hint := cmdutil.BuildErrorEnvelope(err).Error.Hint
-	for _, want := range []string{"redmine issues get 123 -o json", "project.id", "redmine projects get PROJECT --include trackers,issue_categories,issue_custom_fields"} {
+	for _, want := range []string{"rdflow issues get 123 -o json", "project.id", "rdflow projects get PROJECT --include trackers,issue_categories,issue_custom_fields"} {
 		if !strings.Contains(hint, want) {
 			t.Errorf("hint %q missing %q", hint, want)
 		}

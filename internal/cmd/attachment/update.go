@@ -26,13 +26,13 @@ func newCmdUpdate(f *cmdutil.Factory) *cobra.Command {
 			"changed; an empty --description clears the description. Requires permission to edit the\n" +
 			"object the attachment belongs to.",
 		Example: `  # Rename an attachment
-  redmine attachments update 42 --filename report-final.pdf
+  rdflow attachments update 42 --filename report-final.pdf
 
   # Set a description
-  redmine attachments update 42 --description "Final version"
+  rdflow attachments update 42 --description "Final version"
 
   # Correct the content type
-  redmine attachments update 42 --content-type application/pdf`,
+  rdflow attachments update 42 --content-type application/pdf`,
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			id, err := strconv.Atoi(args[0])

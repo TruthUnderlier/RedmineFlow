@@ -48,36 +48,36 @@ func NewCmdUpdate(f *cmdutil.Factory) *cobra.Command {
 			"with error code status_not_applied, listing the allowed statuses (Redmine " +
 			"5.0+). Other changes in the same request may already have been applied.",
 		Example: `  # Update status and priority by name
-  redmine issues update 123 --status Closed --priority Low
+  rdflow issues update 123 --status Closed --priority Low
 
   # Reassign to yourself with a note
-  redmine issues update 123 --assignee me --note "Taking over this issue"
+  rdflow issues update 123 --assignee me --note "Taking over this issue"
 
   # Assign to a group (or user) by name, or clear the assignee
-  redmine issues update 123 --assignee "Backend Team"
-  redmine issues update 123 --assignee none
+  rdflow issues update 123 --assignee "Backend Team"
+  rdflow issues update 123 --assignee none
 
   # Clear a custom field (also clears every value of a multi-value field)
-  redmine issues update 123 --custom-field Severity=
+  rdflow issues update 123 --custom-field Severity=
 
   # Add a private note (only visible to staff)
-  redmine issues update 123 --note "Internal context" --private-notes
+  rdflow issues update 123 --note "Internal context" --private-notes
 
   # Read a long description or note from a file, or from stdin with "-"
-  redmine issues update 123 --description-file description.textile
-  generate-report | redmine issues update 123 --note-file -
+  rdflow issues update 123 --description-file description.textile
+  generate-report | rdflow issues update 123 --note-file -
 
   # Change category
-  redmine issues update 123 --category "Development"
+  rdflow issues update 123 --category "Development"
 
   # Set version, dates, and estimated hours
-  redmine issues update 123 --version "v2.0" --start-date 2026-05-01 --due-date 2026-05-15 --estimated-hours 4.5
+  rdflow issues update 123 --version "v2.0" --start-date 2026-05-01 --due-date 2026-05-15 --estimated-hours 4.5
 
   # Update a custom field (by name or numeric ID)
-  redmine issues update 123 --custom-field Severity=Critical
+  rdflow issues update 123 --custom-field Severity=Critical
 
   # Numeric IDs still work
-  redmine issues update 123 --tracker 1 --status 5`,
+  rdflow issues update 123 --tracker 1 --status 5`,
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			id, err := strconv.Atoi(args[0])

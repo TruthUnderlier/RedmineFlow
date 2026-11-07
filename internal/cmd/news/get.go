@@ -24,13 +24,13 @@ func newCmdGet(f *cmdutil.Factory) *cobra.Command {
 		Long: "Display a news item. Use --include to add its attachments, comments and " +
 			"reactions (reactions need Redmine 7.1+). News comments are read-only over the API.",
 		Example: `  # View a news item
-  redmine news get 12
+  rdflow news get 12
 
   # Include attachments and comments
-  redmine news get 12 --include attachments,comments
+  rdflow news get 12 --include attachments,comments
 
   # JSON output
-  redmine news get 12 --include comments -o json`,
+  rdflow news get 12 --include comments -o json`,
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			id, err := strconv.Atoi(args[0])

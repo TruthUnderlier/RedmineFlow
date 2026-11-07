@@ -45,45 +45,45 @@ func NewCmdList(f *cmdutil.Factory) *cobra.Command {
 		Short:   "List issues",
 		Long:    "List issues with filters. Combine flags for narrow searches.",
 		Example: `  # List open issues for a project
-  redmine issues list --project myproject
+  rdflow issues list --project myproject
 
   # List ALL issues with no limit
-  redmine issues list --project myproject --limit 0
+  rdflow issues list --project myproject --limit 0
 
   # Filter by author and priority
-  redmine issues list --project myproject --author me --priority High
+  rdflow issues list --project myproject --author me --priority High
 
   # Filter by parent issue and category
-  redmine issues list --project myproject --parent 1234 --category "Backend"
+  rdflow issues list --project myproject --parent 1234 --category "Backend"
 
   # All children of an epic, open and closed, in one call
   # (without --project, a configured default project narrows the results)
-  redmine issues list --parent 1234 --status "*"
+  rdflow issues list --parent 1234 --status "*"
 
   # Issues I created most recently (in the default project, if one is configured)
-  redmine issues list --author me --sort created_on:desc --limit 5
+  rdflow issues list --author me --sort created_on:desc --limit 5
 
   # Exclude subprojects
-  redmine issues list --project myproject --subproject "!*"
+  rdflow issues list --project myproject --subproject "!*"
 
   # Closed issues assigned to me, sorted by update date
-  redmine issues list --status closed --assignee me --sort updated_on:desc
+  rdflow issues list --status closed --assignee me --sort updated_on:desc
 
   # Unassigned issues, or issues assigned to a group (names match project members)
-  redmine issues list --project myproject --assignee none
-  redmine issues list --project myproject --assignee "Backend Team"
+  rdflow issues list --project myproject --assignee none
+  rdflow issues list --project myproject --assignee "Backend Team"
 
   # Raw filter escape hatch: date ranges, custom fields, subject text
-  redmine issues list --project myproject --filter created_on='>=2025-01-01'
-  redmine issues list --project myproject --filter cf_5='Critical'
-  redmine issues list --project myproject --filter subject='~login'
+  rdflow issues list --project myproject --filter created_on='>=2025-01-01'
+  rdflow issues list --project myproject --filter cf_5='Critical'
+  rdflow issues list --project myproject --filter subject='~login'
 
   # Find similar tickets by subject text (~ means "contains")
-  redmine issues list --status "*" --filter subject='~[QA]'
+  rdflow issues list --status "*" --filter subject='~[QA]'
 
   # Run a saved query by name or ID
-  redmine issues list --query "My open issues"
-  redmine issues list --query-id 12`,
+  rdflow issues list --query "My open issues"
+  rdflow issues list --query-id 12`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := validateListIncludes(includes); err != nil {
 				return err

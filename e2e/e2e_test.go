@@ -1,6 +1,6 @@
 //go:build e2e
 
-// Package e2e contains end-to-end tests that drive the built `redmine` CLI
+// Package e2e contains end-to-end tests that drive the built `rdflow` CLI
 // against a real Redmine instance started via docker-compose (see
 // `make e2e-up`). The package is split into topical test files:
 //

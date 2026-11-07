@@ -98,7 +98,7 @@ func TestDeprecatedFlagsNotExpired(t *testing.T) {
 }
 
 func TestDeprecationProblems(t *testing.T) {
-	flag := cmdutil.DeprecatedFlag{Command: "redmine groups get", Name: "include-users", RemoveAfter: "2027-01-31"}
+	flag := cmdutil.DeprecatedFlag{Command: "rdflow groups get", Name: "include-users", RemoveAfter: "2027-01-31"}
 	marker := markerLocation{
 		File: "internal/cmd/group/get.go", Line: 90, Date: "2027-01-31",
 		Text: "// DEPRECATED(remove-after: 2027-01-31): --include-users alias",
@@ -124,7 +124,7 @@ func TestDeprecationProblems(t *testing.T) {
 		if len(got) != 1 {
 			t.Fatalf("problems = %v", got)
 		}
-		for _, want := range []string{"redmine groups get", "--include-users", "2027-01-31", "internal/cmd/group/get.go:90"} {
+		for _, want := range []string{"rdflow groups get", "--include-users", "2027-01-31", "internal/cmd/group/get.go:90"} {
 			if !strings.Contains(got[0], want) {
 				t.Errorf("message %q missing %q", got[0], want)
 			}

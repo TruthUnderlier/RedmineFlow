@@ -80,12 +80,12 @@ func newCmdRelationGet(f *cmdutil.Factory) *cobra.Command {
 		Aliases: []string{"show", "view"},
 		Short:   "Show a single relation by its relation ID",
 		Long: "Show an issue relation by its relation ID. List relations with " +
-			"`redmine issues relations list <issue-id>` to discover the ID.",
+			"`rdflow issues relations list <issue-id>` to discover the ID.",
 		Example: `  # Show relation 42
-  redmine issues relations get 42
+  rdflow issues relations get 42
 
   # As JSON
-  redmine issues relations get 42 -o json`,
+  rdflow issues relations get 42 -o json`,
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			relID, err := strconv.Atoi(args[0])
@@ -134,10 +134,10 @@ func newCmdRelationAdd(f *cmdutil.Factory) *cobra.Command {
 		Long: "Create a relation between two issues. --type controls the kind of " +
 			"relation; --delay (days) is only valid for 'precedes' and 'follows'.",
 		Example: `  # Mark issue 123 as blocking issue 124
-  redmine issues relations add 123 --to 124 --type blocks
+  rdflow issues relations add 123 --to 124 --type blocks
 
   # 123 precedes 124 by 5 days
-  redmine issues relations add 123 --to 124 --type precedes --delay 5`,
+  rdflow issues relations add 123 --to 124 --type precedes --delay 5`,
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			issueID, err := strconv.Atoi(args[0])
@@ -190,7 +190,7 @@ func newCmdRelationRemove(f *cmdutil.Factory) *cobra.Command {
 		Aliases: []string{"rm", "delete"},
 		Short:   "Delete a relation by its relation ID",
 		Long: "Delete an issue relation by its relation ID. List relations with " +
-			"`redmine issues relations list <issue-id>` to discover the ID.",
+			"`rdflow issues relations list <issue-id>` to discover the ID.",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			relID, err := strconv.Atoi(args[0])

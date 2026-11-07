@@ -18,15 +18,15 @@ func NewCmdComment(f *cmdutil.Factory) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "comment <id>",
 		Short: "Add a comment to an issue",
-		Long:  "Add a comment (note) to an existing issue. To change a comment that was already posted, use `redmine issues comment edit <journal-id>`.",
+		Long:  "Add a comment (note) to an existing issue. To change a comment that was already posted, use `rdflow issues comment edit <journal-id>`.",
 		Example: `  # Add a short comment
-  redmine issues comment 123 --message "Deployed to staging"
+  rdflow issues comment 123 --message "Deployed to staging"
 
   # Read a long Textile/Markdown comment from a file
-  redmine issues comment 123 --message-file notes.textile
+  rdflow issues comment 123 --message-file notes.textile
 
   # Read the comment from standard input
-  git log -1 --format=%B | redmine issues comment 123 -F -`,
+  git log -1 --format=%B | rdflow issues comment 123 -F -`,
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			id, err := strconv.Atoi(args[0])

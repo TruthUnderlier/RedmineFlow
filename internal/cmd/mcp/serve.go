@@ -63,7 +63,7 @@ func newCmdServe(f *cmdutil.Factory) *cobra.Command {
 			"To narrow the set of tools exposed to MCP clients, use " +
 			"--enable-groups / --disable-groups (allow- and deny-list of tool " +
 			"groups) and --enable-tools / --disable-tools (per-tool overrides). " +
-			"Run `redmine mcp tools` to see the available groups and tools.",
+			"Run `rdflow mcp tools` to see the available groups and tools.",
 		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			version := cmd.Root().Version
@@ -98,11 +98,11 @@ func newCmdServe(f *cmdutil.Factory) *cobra.Command {
 				if !isSetupProblem(cfg, cfgErr) || httpRequested(cmd, httpAddr, cfg, cfgErr) {
 					return err
 				}
-				fix := "run 'redmine auth login' (or set REDMINE_SERVER and REDMINE_API_KEY)"
+				fix := "run 'rdflow auth login' (or set REDMINE_SERVER and REDMINE_API_KEY)"
 				if config.IsNoActiveProfileError(cfgErr) {
-					fix = "run 'redmine auth switch' (or pass --profile <name>)"
+					fix = "run 'rdflow auth switch' (or pass --profile <name>)"
 				}
-				fmt.Fprintf(cmd.ErrOrStderr(), "redmine mcp: Redmine is not configured (%v). Serving without Redmine tools; %s, then restart the MCP server.\n", err, fix)
+				fmt.Fprintf(cmd.ErrOrStderr(), "rdflow mcp: Redmine is not configured (%v). Serving without Redmine tools; %s, then restart the MCP server.\n", err, fix)
 				srv := mcpserver.BuildSetupServer(err.Error(), mcpserver.Options{Name: name, Version: version})
 				return srv.Run(ctx, newStdioTransport())
 			}
@@ -165,7 +165,7 @@ func newCmdServe(f *cmdutil.Factory) *cobra.Command {
 	cmd.MarkFlagsMutuallyExclusive("auth-token", "auth-token-file")
 	cmd.Flags().BoolVar(&noAuth, "no-auth", false, "Serve a non-loopback --http bind without a bearer token instead of generating one. Only use behind an authenticating proxy.")
 	cmd.Flags().StringVar(&name, "name", "redmine-cli", "Server name advertised to MCP clients")
-	cmd.Flags().StringSliceVar(&enableGroups, "enable-groups", nil, "Comma-separated tool groups to expose (default: all). See redmine mcp tools.")
+	cmd.Flags().StringSliceVar(&enableGroups, "enable-groups", nil, "Comma-separated tool groups to expose (default: all). See rdflow mcp tools.")
 	cmd.Flags().StringSliceVar(&disableGroups, "disable-groups", nil, "Comma-separated tool groups to hide. Applied after --enable-groups.")
 	cmd.Flags().StringSliceVar(&enableTools, "enable-tools", nil, "Allow-list of tool names. Tools outside the list are hidden.")
 	cmd.Flags().StringSliceVar(&disableTools, "disable-tools", nil, "Deny-list of tool names. Applied after --enable-tools.")

@@ -75,7 +75,7 @@ func TestSetupServer_InstructionsAndToolResult(t *testing.T) {
 	cs := connectSetupServer(t, problem)
 
 	want := []string{
-		"redmine auth login",
+		"rdflow auth login",
 		"--api-key-file -",
 		"REDMINE_SERVER",
 		"REDMINE_API_KEY",

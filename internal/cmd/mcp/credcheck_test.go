@@ -50,7 +50,7 @@ func TestCredentialCheck_WarnsOnRejectedCredentials(t *testing.T) {
 		f, stderr := newProbeFactory(t)
 		<-startCredentialCheck(context.Background(), f, cfg, client)
 		out := stderr.String()
-		want := "redmine auth login"
+		want := "rdflow auth login"
 		if status == http.StatusForbidden {
 			want = "Enable REST web service"
 		}
@@ -230,7 +230,7 @@ func TestServeUnconfigured(t *testing.T) {
 		if err != nil && !errors.Is(err, io.EOF) && !strings.Contains(err.Error(), "EOF") {
 			t.Fatalf("err = %v, want a clean stdio shutdown", err)
 		}
-		if !strings.Contains(out, "not configured") || !strings.Contains(out, "redmine auth login") {
+		if !strings.Contains(out, "not configured") || !strings.Contains(out, "rdflow auth login") {
 			t.Errorf("stderr = %q, want the not-configured notice pointing at auth login", out)
 		}
 	})
@@ -241,7 +241,7 @@ func TestServeUnconfigured(t *testing.T) {
 		if err != nil && !errors.Is(err, io.EOF) && !strings.Contains(err.Error(), "EOF") {
 			t.Fatalf("err = %v, want a clean stdio shutdown", err)
 		}
-		if !strings.Contains(out, "not configured") || !strings.Contains(out, "redmine auth switch") || strings.Contains(out, "redmine auth login") {
+		if !strings.Contains(out, "not configured") || !strings.Contains(out, "rdflow auth switch") || strings.Contains(out, "rdflow auth login") {
 			t.Errorf("stderr = %q, want the not-configured notice pointing at auth switch", out)
 		}
 	})

@@ -152,8 +152,8 @@ func shellQuote(s string) string {
 }
 
 func lookupValuesCommands(project string) string {
-	return fmt.Sprintf("`redmine projects get %[1]s --include trackers,issue_categories,issue_custom_fields`, "+
-		"`redmine versions list --project %[1]s --open`, and `redmine memberships list --project %[1]s` (assignable users)", project)
+	return fmt.Sprintf("`rdflow projects get %[1]s --include trackers,issue_categories,issue_custom_fields`, "+
+		"`rdflow versions list --project %[1]s --open`, and `rdflow memberships list --project %[1]s` (assignable users)", project)
 }
 
 func createValidationHint(project string) string {
@@ -163,12 +163,12 @@ func createValidationHint(project string) string {
 
 func updateValidationHint(id string) string {
 	return fmt.Sprintf("Required fields and allowed values depend on the issue's project, tracker, and workflow. "+
-		"Get the project ID from `redmine issues get %s -o json` (field project.id), then look up values with ", id) +
+		"Get the project ID from `rdflow issues get %s -o json` (field project.id), then look up values with ", id) +
 		lookupValuesCommands("PROJECT") + "."
 }
 
 func issueNotFoundHint(id string) string {
-	return fmt.Sprintf("Issue #%s does not exist on this server. To find an issue by text, search all projects with `redmine search KEYWORDS --issues --scope all`.", id)
+	return fmt.Sprintf("Issue #%s does not exist on this server. To find an issue by text, search all projects with `rdflow search KEYWORDS --issues --scope all`.", id)
 }
 
 func issueReadForbiddenHint(id string) string {

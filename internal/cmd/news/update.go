@@ -27,13 +27,13 @@ func newCmdUpdate(f *cmdutil.Factory) *cobra.Command {
 		Short:   "Update a news item",
 		Long:    "Update the title, summary or description of a news item. Only the fields you pass are changed; --summary \"\" clears the summary.",
 		Example: `  # Change the title
-  redmine news update 12 --title "Release 2.0 (final)"
+  rdflow news update 12 --title "Release 2.0 (final)"
 
   # Replace the description from a file
-  redmine news update 12 --description-file news.textile
+  rdflow news update 12 --description-file news.textile
 
   # Clear the summary and attach a file
-  redmine news update 12 --summary "" --attach ./notes.pdf`,
+  rdflow news update 12 --summary "" --attach ./notes.pdf`,
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			id, err := strconv.Atoi(args[0])

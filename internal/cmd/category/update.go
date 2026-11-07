@@ -25,13 +25,13 @@ func newCmdCategoryUpdate(f *cmdutil.Factory) *cobra.Command {
 		Short:   "Update an issue category",
 		Long:    "Rename an issue category or change its default assignee ('none' clears it). Accepts a numeric ID or category name (uses the default project, or pass --project).",
 		Example: `  # Rename a category
-  redmine categories update 12 --name "Back end"
+  rdflow categories update 12 --name "Back end"
 
   # Change the default assignee by name, within the category's project
-  redmine categories update Backend --project myproject --assignee "Backend Team"
+  rdflow categories update Backend --project myproject --assignee "Backend Team"
 
   # Clear the default assignee
-  redmine categories update 12 --assignee none`,
+  rdflow categories update 12 --assignee none`,
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if !cmd.Flags().Changed("name") && !cmd.Flags().Changed("assignee") {

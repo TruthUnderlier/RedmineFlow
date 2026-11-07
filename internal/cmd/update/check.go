@@ -22,7 +22,7 @@ type CheckResult struct {
 
 // updateCheckCache is the on-disk cache for update check results.
 // Version-aware: the cache is invalidated when the binary version changes
-// (e.g. after running `redmine update`).
+// (e.g. after running `rdflow update`).
 type updateCheckCache struct {
 	CheckedAt          time.Time `json:"checked_at"`
 	CheckedFromVersion string    `json:"checked_from_version"` // normalized current version the check was run from
@@ -55,7 +55,7 @@ func ShouldCheck(version string, args []string) bool {
 }
 
 // hasSubcommand returns true if name appears as a non-flag argument in args.
-// This handles invocations like "redmine --verbose update" where flags
+// This handles invocations like "rdflow --verbose update" where flags
 // precede the subcommand.
 func hasSubcommand(args []string, name string) bool {
 	for _, a := range args {
@@ -259,7 +259,7 @@ func CheckForUpdateCached(ctx context.Context, currentVersion string) *CheckResu
 		if time.Since(cache.CheckedAt) > updateCheckCacheAge {
 			cache = nil
 		}
-		// Invalidate if binary version changed (e.g. after running `redmine update`).
+		// Invalidate if binary version changed (e.g. after running `rdflow update`).
 		if cache != nil && cache.CheckedFromVersion != currentClean {
 			cache = nil
 		}

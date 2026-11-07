@@ -98,7 +98,7 @@ func load(configPath string, profileName string, allowNoActiveProfile bool, ov O
 	if name != "" {
 		p, ok := pc.Profiles[name]
 		if !ok {
-			return nil, fmt.Errorf("profile %q not found. Run 'redmine auth list' to see available profiles", name)
+			return nil, fmt.Errorf("profile %q not found. Run 'rdflow auth list' to see available profiles", name)
 		}
 		cfg = p
 		selectedName = name
@@ -117,7 +117,7 @@ func load(configPath string, profileName string, allowNoActiveProfile bool, ov O
 		// profile selection when requested.
 		applyEnvOverrides(&cfg, log)
 		if cfg.Server == "" && !allowNoActiveProfile {
-			return nil, fmt.Errorf("%w. Run 'redmine auth switch' to select one", errNoActiveProfile)
+			return nil, fmt.Errorf("%w. Run 'rdflow auth switch' to select one", errNoActiveProfile)
 		}
 		if cfg.Server != "" || allowNoActiveProfile {
 			log.Printf("Config: proceeding without active profile selection")
@@ -149,7 +149,7 @@ func load(configPath string, profileName string, allowNoActiveProfile bool, ov O
 		if cfg.AuthMethod == "basic" {
 			field = "REDMINE_PASSWORD"
 		}
-		return nil, &keyringSecretError{msg: fmt.Sprintf("profile %q stores credentials in the system keyring, but the secret could not be retrieved. Re-run 'redmine auth login', or supply the secret via %s (add REDMINE_NO_KEYRING=1 to skip keyring lookups entirely)", selectedName, field), mcpHTTP: cfg.MCP.HTTP}
+		return nil, &keyringSecretError{msg: fmt.Sprintf("profile %q stores credentials in the system keyring, but the secret could not be retrieved. Re-run 'rdflow auth login', or supply the secret via %s (add REDMINE_NO_KEYRING=1 to skip keyring lookups entirely)", selectedName, field), mcpHTTP: cfg.MCP.HTTP}
 	}
 
 	if selectedName != "" {

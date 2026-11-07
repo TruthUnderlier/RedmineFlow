@@ -23,7 +23,7 @@ func TestDescribeAPIError(t *testing.T) {
 		{
 			name:      "auth",
 			err:       &api.APIError{StatusCode: http.StatusUnauthorized, URL: "/issues.json"},
-			wantParts: []string{"Authentication", "redmine auth login", "--name <profile>"},
+			wantParts: []string{"Authentication", "rdflow auth login", "--name <profile>"},
 		},
 		{
 			name:      "forbidden",

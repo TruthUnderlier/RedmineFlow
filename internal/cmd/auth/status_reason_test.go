@@ -58,7 +58,7 @@ func TestStatus_ProbeFailureReasons(t *testing.T) {
 			wantAnonymous: true,
 			wantUser:      "authentication failed",
 			wantMessage:   "rejected the configured credentials",
-			wantHint:      "redmine auth login",
+			wantHint:      "rdflow auth login",
 		},
 		{
 			name:          "403 means REST API disabled",

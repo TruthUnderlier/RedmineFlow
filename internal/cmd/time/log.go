@@ -15,7 +15,7 @@ import (
 
 // timeLogValidationHint explains the usual causes of a 422 when logging time.
 const timeLogValidationHint = "The server may require an activity or time entry custom fields: pass --activity and --custom-field name=value " +
-	"(definitions: `redmine custom-fields list`, admin only; values of an existing entry: `redmine time get <id> -o json`)."
+	"(definitions: `redmine custom-fields list`, admin only; values of an existing entry: `rdflow time get <id> -o json`)."
 
 func newCmdTimeLog(f *cmdutil.Factory) *cobra.Command {
 	var (
@@ -36,10 +36,10 @@ func newCmdTimeLog(f *cmdutil.Factory) *cobra.Command {
 		Aliases: []string{"add", "create"},
 		Short:   "Log a time entry",
 		Example: `  # Log time against an issue
-  redmine time log --issue 123 --hours 1.5 --activity Development --comment "Bug fix"
+  rdflow time log --issue 123 --hours 1.5 --activity Development --comment "Bug fix"
 
   # Set time entry custom fields (by name or numeric ID); repeat a field for multi-value fields
-  redmine time log --issue 123 --hours 2 --custom-field "Billing Code=ACME-42" \
+  rdflow time log --issue 123 --hours 2 --custom-field "Billing Code=ACME-42" \
     --custom-field Tags=Onsite --custom-field Tags=Overtime`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			client, err := f.ApiClient()

@@ -29,7 +29,7 @@ const (
 )
 
 // AllGroups returns the canonical list of groups in the order used by
-// `redmine mcp list-groups` and the documentation.
+// `rdflow mcp list-groups` and the documentation.
 func AllGroups() []Group {
 	return []Group{
 		GroupIssues,

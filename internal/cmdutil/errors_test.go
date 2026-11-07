@@ -142,9 +142,9 @@ func TestBuildErrorEnvelope_FailuresWithoutHTTPStatus(t *testing.T) {
 }
 
 func TestFormatError_HintRenderedOnOwnLine(t *testing.T) {
-	err := WithHint(&api.APIError{StatusCode: 422, Errors: []string{"Category cannot be blank"}}, "Look up values with 'redmine projects get demo'.")
+	err := WithHint(&api.APIError{StatusCode: 422, Errors: []string{"Category cannot be blank"}}, "Look up values with 'rdflow projects get demo'.")
 	msg := FormatError(err)
-	want := "Validation error:\n  - Category cannot be blank\nHint: Look up values with 'redmine projects get demo'."
+	want := "Validation error:\n  - Category cannot be blank\nHint: Look up values with 'rdflow projects get demo'."
 	if msg != want {
 		t.Errorf("message = %q, want %q", msg, want)
 	}
@@ -179,14 +179,14 @@ func TestErrorHint_AuthBranches(t *testing.T) {
 			name:        "401 means credentials rejected",
 			err:         &api.APIError{StatusCode: 401, URL: "https://redmine.example.com/users/current.json"},
 			wantMessage: "Authentication failed",
-			wantHint:    []string{"did not accept the credentials", "redmine auth status", "redmine auth login"},
+			wantHint:    []string{"did not accept the credentials", "rdflow auth status", "rdflow auth login"},
 			notHint:     []string{"retry", "REST web service"},
 		},
 		{
 			name:        "403 on users/current points at the REST API",
 			err:         &api.APIError{StatusCode: 403, URL: "https://redmine.example.com/users/current.json"},
 			wantMessage: "REST API",
-			wantHint:    []string{"REST API is probably disabled", "Enable REST web service", "redmine auth status", "proxy"},
+			wantHint:    []string{"REST API is probably disabled", "Enable REST web service", "rdflow auth status", "proxy"},
 			notHint:     []string{"retry"},
 		},
 		{

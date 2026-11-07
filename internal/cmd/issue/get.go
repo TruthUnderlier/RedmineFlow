@@ -35,7 +35,7 @@ func NewCmdGet(f *cmdutil.Factory) *cobra.Command {
 		Short:   "Get issue details",
 		Long: "Display detailed information about a specific issue.\n\n" +
 			"Use --attachments to list the issue's attachments (with their IDs, so you can\n" +
-			"download one via `redmine attachments download <id>`), or --download-attachments\n" +
+			"download one via `rdflow attachments download <id>`), or --download-attachments\n" +
 			"<dir> to download every attachment of the issue into <dir> in one step.\n\n" +
 			"Existing files in <dir> are never overwritten unless --clobber is given, and\n" +
 			"attachments whose filename starts with \".\" (such as .bashrc) are refused\n" +
@@ -45,26 +45,26 @@ func NewCmdGet(f *cmdutil.Factory) *cobra.Command {
 			"are all kept: the newest (highest attachment ID) keeps its name and older\n" +
 			"ones are saved as \"<name> (attachment-<id>).<ext>\".",
 		Example: `  # Show an issue
-  redmine issues get 123
+  rdflow issues get 123
 
   # Include comments/history
-  redmine issues get 123 --journals
+  rdflow issues get 123 --journals
 
   # List the issue's attachments (id, filename, size, type)
-  redmine issues get 123 --attachments
+  rdflow issues get 123 --attachments
 
   # Download every attachment into ./issue-123
-  redmine issues get 123 --download-attachments ./issue-123
+  rdflow issues get 123 --download-attachments ./issue-123
 
   # Re-download into the same directory, replacing earlier copies
-  redmine issues get 123 --download-attachments ./issue-123 --clobber
+  rdflow issues get 123 --download-attachments ./issue-123 --clobber
 
   # Read a ticket fully before investigating: history, files, children, relations
-  redmine issues get 123 --journals --children --relations --download-attachments ./issue-123
-  redmine issues get 123 --include journals,attachments,children,relations -o json
+  rdflow issues get 123 --journals --children --relations --download-attachments ./issue-123
+  rdflow issues get 123 --include journals,attachments,children,relations -o json
 
   # Which statuses may the current user move the issue to?
-  redmine issues get 123 --include allowed_statuses -o json`,
+  rdflow issues get 123 --include allowed_statuses -o json`,
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmdutil.Context(cmd)

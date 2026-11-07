@@ -59,9 +59,9 @@ func credentialWarning(cfg *config.Config, err error) string {
 	if cfg != nil && cfg.AuthMethod == "basic" {
 		secretVar, secret, missing = "REDMINE_PASSWORD", "password", cfg.Password == ""
 	}
-	fix := fmt.Sprintf("Run 'redmine auth login' to update the credentials, or fix %s in the MCP host config, then restart the MCP server.", secretVar)
+	fix := fmt.Sprintf("Run 'rdflow auth login' to update the credentials, or fix %s in the MCP host config, then restart the MCP server.", secretVar)
 	if ae.IsForbidden() {
-		return fmt.Sprintf("Redmine at %s refused the credentials check (HTTP 403), which it answers for every request while the REST API is disabled: an administrator must enable Administration > Settings > API > Enable REST web service (or a proxy in front of Redmine blocks the request). Run 'redmine auth status' to check.", target)
+		return fmt.Sprintf("Redmine at %s refused the credentials check (HTTP 403), which it answers for every request while the REST API is disabled: an administrator must enable Administration > Settings > API > Enable REST web service (or a proxy in front of Redmine blocks the request). Run 'rdflow auth status' to check.", target)
 	}
 	if missing {
 		return fmt.Sprintf("Redmine at %s requires authentication (HTTP 401) but no %s is configured. %s", target, secret, fix)

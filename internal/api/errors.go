@@ -23,7 +23,7 @@ type APIError struct {
 // the messages in its body. Server-provided messages are sanitized for the
 // terminal (see textsafe.Terminal) and rawURL is scrubbed of credentials.
 // parseErrorResponse uses it, and so should any caller that builds an
-// APIError from a raw response (such as `redmine api`).
+// APIError from a raw response (such as `rdflow api`).
 func NewAPIError(statusCode int, rawURL string, messages []string) *APIError {
 	apiErr := &APIError{StatusCode: statusCode, URL: debug.ScrubURL(rawURL)}
 	for _, msg := range messages {

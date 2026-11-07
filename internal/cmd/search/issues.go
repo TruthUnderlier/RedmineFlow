@@ -30,10 +30,10 @@ func newCmdSearchIssues(f *cmdutil.Factory) *cobra.Command {
 		Short: "Search issues",
 		Long:  "Search for issues in Redmine.\n\n" + defaultProjectHelp,
 		Example: `  # Search open issues across all projects
-  redmine search issues "login timeout" --scope all --open-issues
+  rdflow search issues "login timeout" --scope all --open-issues
 
   # Match titles only within one project
-  redmine search issues "release checklist" --project myproject --titles-only`,
+  rdflow search issues "release checklist" --project myproject --titles-only`,
 		Args: cobra.MinimumNArgs(1),
 		// Stays on direct client.Search.Search: --attachments has no field on
 		// ops.SearchInput, and migrating would silently drop user-visible

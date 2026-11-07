@@ -43,10 +43,10 @@ func newCmdCategoryList(f *cmdutil.Factory) *cobra.Command {
 		Short:   "List issue categories for a project",
 		Aliases: []string{"ls"},
 		Example: `  # List categories for a project
-  redmine categories list --project myproject
+  rdflow categories list --project myproject
 
   # JSON output
-  redmine categories list --project myproject -o json`,
+  rdflow categories list --project myproject -o json`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			client, err := f.ApiClient()
 			if err != nil {

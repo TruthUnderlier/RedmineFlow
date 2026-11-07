@@ -164,7 +164,7 @@ func TestParseErrorResponse_SanitizesAndScrubs(t *testing.T) {
 }
 
 // TestNewAPIError covers APIErrors built outside parseErrorResponse, such as
-// the one `redmine api` derives from a raw response: messages get the same
+// the one `rdflow api` derives from a raw response: messages get the same
 // terminal sanitization as everywhere else (ESC shown as ^[) and the URL is
 // scrubbed.
 func TestNewAPIError(t *testing.T) {

@@ -23,9 +23,9 @@ func newCmdMyAccountUpdate(f *cmdutil.Factory) *cobra.Command {
 		Short: "Update your own account",
 		Long: "Update the authenticated user's own account. Works without admin privileges.\n\n" +
 			"Custom fields: only fields the administrator made editable for users are applied; names need admin rights to resolve, " +
-			"otherwise use the IDs from `redmine my-account get --jq '.custom_fields'`.",
+			"otherwise use the IDs from `rdflow my-account get --jq '.custom_fields'`.",
 		Example: `  # Set a multi-value custom field on your own account
-  redmine my-account update --custom-field Skills=Go --custom-field Skills=Ruby`,
+  rdflow my-account update --custom-field Skills=Go --custom-field Skills=Ruby`,
 		Aliases: []string{"edit"},
 		Args:    cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {

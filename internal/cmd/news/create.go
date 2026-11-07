@@ -29,14 +29,14 @@ func newCmdCreate(f *cmdutil.Factory) *cobra.Command {
 			"looked up afterwards (newest matching item by you); when it cannot be determined, " +
 			"the command still succeeds, omits the ID and warns.",
 		Example: `  # Create a news item
-  redmine news create --project myproject --title "Release 2.0" \
+  rdflow news create --project myproject --title "Release 2.0" \
     --summary "Now available" --description "We shipped 2.0 today."
 
   # Read the description from a file (or from stdin with "-")
-  redmine news create --project myproject --title "Release 2.0" --description-file news.textile
+  rdflow news create --project myproject --title "Release 2.0" --description-file news.textile
 
   # Attach a file
-  redmine news create --project myproject --title "Roadmap" \
+  rdflow news create --project myproject --title "Roadmap" \
     --description "See the attached roadmap." --attach ./roadmap.pdf`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmdutil.Context(cmd)

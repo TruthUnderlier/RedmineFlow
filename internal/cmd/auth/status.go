@@ -172,11 +172,11 @@ const (
 //
 // authMethod picks the credential the 401 hint talks about.
 func classifyStatusError(err error, authMethod string) *statusFailure {
-	credentialsHint := "Check the API key (My account > API access key) and run 'redmine auth login' to configure a valid one."
+	credentialsHint := "Check the API key (My account > API access key) and run 'rdflow auth login' to configure a valid one."
 	if authMethod == "basic" {
 		// Redmine also answers basic auth with 401 while two-factor
 		// authentication is active for the account.
-		credentialsHint = "Check the username and password and run 'redmine auth login' to update them. Accounts with two-factor authentication must use an API key (My account > API access key) instead."
+		credentialsHint = "Check the username and password and run 'rdflow auth login' to update them. Accounts with two-factor authentication must use an API key (My account > API access key) instead."
 	}
 	var apiErr *api.APIError
 	switch {
@@ -201,7 +201,7 @@ func classifyStatusError(err error, authMethod string) *statusFailure {
 			user:    fmt.Sprintf("unavailable: %s", err),
 			reason:  reasonRequestFailed,
 			message: "Could not verify the credentials; the request to Redmine failed.",
-			hint:    "Check the server URL and your network connection, then run 'redmine auth status' again.",
+			hint:    "Check the server URL and your network connection, then run 'rdflow auth status' again.",
 		}
 	}
 }

@@ -29,14 +29,14 @@ func newCmdUpload(f *cmdutil.Factory) *cobra.Command {
 		Short:   "Upload a file to a project",
 		Long:    "Upload a file from disk and attach it to a Redmine project. Optionally pin it to a version (milestone).",
 		Example: `  # Upload a release artifact
-  redmine files upload ./release.tar.gz --project myproject
+  rdflow files upload ./release.tar.gz --project myproject
 
   # Attach the upload to a version (milestone) and add a description
-  redmine files upload ./changelog.md --project myproject \
+  rdflow files upload ./changelog.md --project myproject \
     --version 1.2.0 --description "Release notes"
 
   # Override the displayed filename
-  redmine files upload ./build.zip --project myproject --filename "build-1.2.0.zip"`,
+  rdflow files upload ./build.zip --project myproject --filename "build-1.2.0.zip"`,
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmdutil.Context(cmd)

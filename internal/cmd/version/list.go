@@ -47,17 +47,17 @@ func newCmdVersionList(f *cmdutil.Factory) *cobra.Command {
 		Short:   "List project versions",
 		Long:    "List all versions for a project, optionally filtered by status.",
 		Example: `  # List all versions
-  redmine versions list --project myproject
+  rdflow versions list --project myproject
 
   # List ALL versions with no limit
-  redmine versions list --project myproject --limit 0
+  rdflow versions list --project myproject --limit 0
 
   # Page through versions
-  redmine versions list --project myproject --limit 25 --offset 0
-  redmine versions list --project myproject --limit 25 --offset 25
+  rdflow versions list --project myproject --limit 25 --offset 0
+  rdflow versions list --project myproject --limit 25 --offset 25
 
   # Filter by status and output as JSON
-  redmine versions list --project myproject --open -o json`,
+  rdflow versions list --project myproject --open -o json`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			client, err := f.ApiClient()
 			if err != nil {

@@ -57,7 +57,7 @@ func (c *Config) ProfileServer() (profile, server string, ok bool) {
 	return c.profileName, c.profileServer, true
 }
 
-// MCPConfig holds per-profile defaults for the `redmine mcp serve` command.
+// MCPConfig holds per-profile defaults for the `rdflow mcp serve` command.
 // Empty slices and a nil EnableWrites mean "no preference"; the CLI flags and
 // environment variables take precedence over these values.
 type MCPConfig struct {

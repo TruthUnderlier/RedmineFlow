@@ -26,13 +26,13 @@ func newCmdMembershipCreate(f *cmdutil.Factory) *cobra.Command {
 		Short:   "Add a member to a project",
 		Long:    "Create a new membership, adding a user or group to a project with specified roles.",
 		Example: `  # Add a user with roles
-  redmine memberships create --project myproject --user-id 5 --role-ids 1,2
+  rdflow memberships create --project myproject --user-id 5 --role-ids 1,2
 
   # Add a user with roles resolved by name
-  redmine memberships create --project myproject --user-id 5 --roles Manager,Developer
+  rdflow memberships create --project myproject --user-id 5 --roles Manager,Developer
 
   # Add a group with a role
-  redmine memberships create --project myproject --group-id 10 --role-ids 3`,
+  rdflow memberships create --project myproject --group-id 10 --role-ids 3`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			hasUser := cmd.Flags().Changed("user-id")
 			hasGroup := cmd.Flags().Changed("group-id")

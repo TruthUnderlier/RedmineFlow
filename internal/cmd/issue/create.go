@@ -43,43 +43,43 @@ func NewCmdCreate(f *cmdutil.Factory) *cobra.Command {
 		Short:   "Create a new issue",
 		Long:    "Create a new issue in the specified project.",
 		Example: `  # Create an issue using names instead of IDs
-  redmine issues create --project myproject --tracker Bug --priority High --subject "Fix login"
+  rdflow issues create --project myproject --tracker Bug --priority High --subject "Fix login"
 
   # Assign to yourself, watch yourself
-  redmine issues create --project myproject --subject "My task" --assignee me --watcher me
+  rdflow issues create --project myproject --subject "My task" --assignee me --watcher me
 
   # Create with all fields
-  redmine issues create --project myproject --tracker Feature --priority Normal \
+  rdflow issues create --project myproject --tracker Feature --priority Normal \
     --subject "Add search" --description "Full-text search" \
     --assignee "John Smith" --category "Development" --version "v2.0" \
     --start-date 2026-05-01 --due-date 2026-05-15 --estimated-hours 8 --private
 
   # Create a child issue under an epic, with a category
-  redmine issues create --project myproject --parent 1234 --tracker Task \
+  rdflow issues create --project myproject --parent 1234 --tracker Task \
     --category "Backend" --subject "Implement API endpoint"
 
   # Multi-value custom field: repeat the flag once per value
-  redmine issues create --project myproject --subject "Bug" \
+  rdflow issues create --project myproject --subject "Bug" \
     --custom-field Platforms=Linux --custom-field Platforms=macOS
 
   # Attach a screenshot and embed it inline in a Textile description (!filename!);
   # on servers using Markdown/CommonMark formatting write ![](screenshot.png) instead
-  redmine issues create --project myproject --subject "Broken layout" \
+  rdflow issues create --project myproject --subject "Broken layout" \
     --attach ./screenshot.png --description 'Layout breaks on resize: !screenshot.png!'
 
   # Read a long description from a file (or from stdin with "-")
-  redmine issues create --project myproject --subject "Spec" --description-file spec.textile
+  rdflow issues create --project myproject --subject "Spec" --description-file spec.textile
 
   # Set custom field values (by name or numeric ID, repeatable)
-  redmine issues create --project myproject --subject "Bug" \
+  rdflow issues create --project myproject --subject "Bug" \
     --custom-field Severity=High --custom-field 7=urgent
 
   # Values with spaces: quote the whole pair and repeat the flag per field
-  redmine issues create --project myproject --subject "Bug" \
+  rdflow issues create --project myproject --subject "Bug" \
     --custom-field "2=Value for field 2" --custom-field "61=Value for 61"
 
   # Numeric IDs still work
-  redmine issues create --project 1 --tracker 1 --priority 2 --subject "Test"`,
+  rdflow issues create --project 1 --tracker 1 --priority 2 --subject "Test"`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if _, err := cmdutil.ReadTextFileFlag(cmd, f.IOStreams.In, "description", "description-file", &description); err != nil {
 				return err

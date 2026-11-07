@@ -4,7 +4,7 @@
   "description": "Drive Redmine from Gemini CLI: bundled agent skill plus MCP server.",
   "mcpServers": {
     "redmine": {
-      "command": "redmine",
+      "command": "rdflow",
       "args": ["mcp", "serve"]
     }
   }

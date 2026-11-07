@@ -5,8 +5,8 @@
   "author": {
     "name": "Aaron Doeppner"
   },
-  "homepage": "https://redmine-cli.dev",
-  "repository": "https://github.com/aarondpn/redmine-cli",
+  "homepage": "https://github.com/TruthUnderlier/RedmineFlow",
+  "repository": "https://github.com/TruthUnderlier/RedmineFlow",
   "license": "MIT",
   "keywords": [
     "redmine",
@@ -18,7 +18,7 @@
   "skills": "./skills",
   "mcpServers": {
     "redmine": {
-      "command": "redmine",
+      "command": "rdflow",
       "args": ["mcp", "serve"]
     }
   }

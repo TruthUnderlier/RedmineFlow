@@ -215,17 +215,17 @@ func customFieldIDLookupHint(customizedType string) string {
 	const lead = "Custom field definitions are admin-only. "
 	switch customizedType {
 	case models.CustomizedTypeIssue:
-		return lead + "An issue lists its fields with IDs: `redmine issues get <id> --jq '.custom_fields'`."
+		return lead + "An issue lists its fields with IDs: `rdflow issues get <id> --jq '.custom_fields'`."
 	case models.CustomizedTypeProject:
-		return lead + "A project lists its fields with IDs: `redmine projects get <identifier> --jq '.custom_fields'`."
+		return lead + "A project lists its fields with IDs: `rdflow projects get <identifier> --jq '.custom_fields'`."
 	case models.CustomizedTypeTimeEntry:
-		return lead + "A time entry lists its fields with IDs: `redmine time list --limit 1 --jq '.[0].custom_fields'`."
+		return lead + "A time entry lists its fields with IDs: `rdflow time list --limit 1 --jq '.[0].custom_fields'`."
 	case models.CustomizedTypeVersion:
-		return lead + "A version lists its fields with IDs: `redmine versions get <id> --jq '.custom_fields'`."
+		return lead + "A version lists its fields with IDs: `rdflow versions get <id> --jq '.custom_fields'`."
 	case models.CustomizedTypeUser:
-		return lead + "Your account lists its fields with IDs: `redmine my-account get --jq '.custom_fields'`."
+		return lead + "Your account lists its fields with IDs: `rdflow my-account get --jq '.custom_fields'`."
 	case models.CustomizedTypeGroup:
-		return lead + "A group lists its fields with IDs: `redmine groups get <id> --jq '.custom_fields'`."
+		return lead + "A group lists its fields with IDs: `rdflow groups get <id> --jq '.custom_fields'`."
 	}
 	return lead + "Use the numeric ID instead."
 }

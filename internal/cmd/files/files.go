@@ -1,6 +1,6 @@
-// Package files implements the `redmine files` command group, which surfaces
+// Package files implements the `rdflow files` command group, which surfaces
 // the Redmine REST Files API so users can list and upload project-level
-// artifacts without dropping down to `redmine api`.
+// artifacts without dropping down to `rdflow api`.
 package files
 
 import (

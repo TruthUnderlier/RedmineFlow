@@ -25,10 +25,10 @@ func newCmdQueryList(f *cmdutil.Factory) *cobra.Command {
 		Short:   "List saved queries",
 		Long:    "List saved queries (custom filters) visible to the authenticated user. The list includes both global queries and queries scoped to a project.",
 		Example: `  # All saved queries you can see
-  redmine queries list
+  rdflow queries list
 
   # JSON output for piping into jq or another tool
-  redmine queries list -o json`,
+  rdflow queries list -o json`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			client, err := f.ApiClient()
 			if err != nil {

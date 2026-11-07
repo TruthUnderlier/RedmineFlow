@@ -26,16 +26,16 @@ func newCmdList(f *cmdutil.Factory) *cobra.Command {
 		Short:   "List news",
 		Long:    "List news, newest first. Without --project (and without a default project) the news of all visible projects is listed.",
 		Example: `  # News of one project
-  redmine news list --project myproject
+  rdflow news list --project myproject
 
   # News across all visible projects
-  redmine news list
+  rdflow news list
 
   # Page through the news
-  redmine news list --project myproject --limit 10 --offset 10
+  rdflow news list --project myproject --limit 10 --offset 10
 
   # Titles only
-  redmine news list --project myproject --jq '.[].title'`,
+  rdflow news list --project myproject --jq '.[].title'`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmdutil.Context(cmd)
 			client, err := f.ApiClient()

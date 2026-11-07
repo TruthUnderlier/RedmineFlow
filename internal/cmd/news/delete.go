@@ -20,10 +20,10 @@ func newCmdDelete(f *cmdutil.Factory) *cobra.Command {
 		Short:   "Delete a news item",
 		Long:    "Permanently delete a news item together with its comments. This action cannot be undone.",
 		Example: `  # Delete after confirmation
-  redmine news delete 12
+  rdflow news delete 12
 
   # Skip the confirmation
-  redmine news delete 12 --force`,
+  rdflow news delete 12 --force`,
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			id, err := strconv.Atoi(args[0])

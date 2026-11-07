@@ -32,7 +32,7 @@ func newCmdUserCreate(f *cmdutil.Factory) *cobra.Command {
 		Short:   "Create a new user",
 		Aliases: []string{"new"},
 		Example: `  # Create a user with a custom field
-  redmine users create --login jdoe --firstname Jane --lastname Doe --mail jdoe@example.com --generate-password --custom-field Department=QA`,
+  rdflow users create --login jdoe --firstname Jane --lastname Doe --mail jdoe@example.com --generate-password --custom-field Department=QA`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := ValidateMailNotification(mailNotification); err != nil {
 				return err

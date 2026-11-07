@@ -38,7 +38,7 @@ func isRemovedFormat(format string) bool {
 }
 
 // csvReplacementHint tells users of the removed CSV format how to get CSV.
-const csvReplacementHint = "use -o json with --jq and jq's @csv instead, e.g. redmine issues list -o json --jq '.[] | [.id, .subject] | @csv'"
+const csvReplacementHint = "use -o json with --jq and jq's @csv instead, e.g. rdflow issues list -o json --jq '.[] | [.id, .subject] | @csv'"
 
 // csvFallbackWarning is printed when a command renders with the table format
 // because output_format still names the removed CSV format.

@@ -24,7 +24,7 @@ func newCmdGroupUpdate(f *cmdutil.Factory) *cobra.Command {
 		Long:    "Update a group. Accepts a numeric ID or group name.",
 		Aliases: []string{"edit"},
 		Example: `  # Set a group custom field
-  redmine groups update Backend --custom-field "Cost Center=CC-43"`,
+  rdflow groups update Backend --custom-field "Cost Center=CC-43"`,
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			client, err := f.ApiClient()

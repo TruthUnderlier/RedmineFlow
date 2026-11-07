@@ -29,7 +29,7 @@ func newCmdVersionUpdate(f *cmdutil.Factory) *cobra.Command {
 		Short:   "Update a project version",
 		Long:    "Update an existing Redmine project version. Accepts a numeric ID or version name (uses the default project, or pass --project).",
 		Example: `  # Set a version custom field
-  redmine versions update 1.3.0 --project myproject --custom-field "Release Manager=John Roe"`,
+  rdflow versions update 1.3.0 --project myproject --custom-field "Release Manager=John Roe"`,
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			client, err := f.ApiClient()

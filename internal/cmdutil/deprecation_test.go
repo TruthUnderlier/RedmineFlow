@@ -50,7 +50,7 @@ func TestDeprecateFlag_InvalidDatePanics(t *testing.T) {
 }
 
 func TestDeprecatedFlags_WalksSubcommands(t *testing.T) {
-	root := &cobra.Command{Use: "redmine"}
+	root := &cobra.Command{Use: "rdflow"}
 	group := &cobra.Command{Use: "groups"}
 	get := &cobra.Command{Use: "get"}
 	get.Flags().Bool("old", false, "")
@@ -60,7 +60,7 @@ func TestDeprecatedFlags_WalksSubcommands(t *testing.T) {
 	root.AddCommand(group)
 
 	got := DeprecatedFlags(root)
-	want := []DeprecatedFlag{{Command: "redmine groups get", Name: "old", RemoveAfter: "2027-01-31"}}
+	want := []DeprecatedFlag{{Command: "rdflow groups get", Name: "old", RemoveAfter: "2027-01-31"}}
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("DeprecatedFlags = %+v, want %+v", got, want)
 	}

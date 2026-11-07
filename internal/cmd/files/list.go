@@ -29,13 +29,13 @@ func newCmdList(f *cmdutil.Factory) *cobra.Command {
 			"The Redmine endpoint returns the full file list in a single response and " +
 			"ignores server-side pagination, so --limit and --offset are applied client-side.",
 		Example: `  # List files in a project
-  redmine files list --project myproject
+  rdflow files list --project myproject
 
   # JSON output
-  redmine files list --project myproject -o json
+  rdflow files list --project myproject -o json
 
   # Paginate
-  redmine files list --project myproject --limit 10 --offset 20`,
+  rdflow files list --project myproject --limit 10 --offset 20`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmdutil.Context(cmd)
 

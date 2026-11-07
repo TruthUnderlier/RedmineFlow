@@ -16,16 +16,16 @@ func NewCmdCompletion() *cobra.Command {
 To load completions:
 
 Bash:
-  $ source <(redmine completion bash)
+  $ source <(rdflow completion bash)
 
 Zsh:
-  $ source <(redmine completion zsh)
+  $ source <(rdflow completion zsh)
 
 Fish:
-  $ redmine completion fish | source
+  $ rdflow completion fish | source
 
 PowerShell:
-  PS> redmine completion powershell | Out-String | Invoke-Expression`,
+  PS> rdflow completion powershell | Out-String | Invoke-Expression`,
 		ValidArgs:             []string{"bash", "zsh", "fish", "powershell"},
 		Args:                  cobra.MatchAll(cobra.ExactArgs(1), cobra.OnlyValidArgs),
 		DisableFlagsInUseLine: true,
