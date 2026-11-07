@@ -42,7 +42,7 @@ type Overrides struct {
 
 func DefaultConfigPath() string {
 	home, _ := os.UserHomeDir()
-	return filepath.Join(home, ".redmine-cli.yaml")
+	return filepath.Join(home, ".redmine-flow.yaml")
 }
 
 // Load reads configuration and returns the active profile's Config.

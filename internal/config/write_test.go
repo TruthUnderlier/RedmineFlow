@@ -63,12 +63,12 @@ func TestSaveProfilePlainFileIsPrivate(t *testing.T) {
 func TestSaveProfileThroughSymlinkKeepsLink(t *testing.T) {
 	skipWithoutUnixPermissions(t)
 	dotfiles := t.TempDir()
-	target := filepath.Join(dotfiles, "redmine-cli.yaml")
+	target := filepath.Join(dotfiles, "redmine-flow.yaml")
 	if err := os.WriteFile(target, []byte("active_profile: old\nprofiles:\n  old:\n    server: https://old.example.com\n"), 0o644); err != nil {
 		t.Fatal(err)
 	}
 	home := t.TempDir()
-	link := filepath.Join(home, ".redmine-cli.yaml")
+	link := filepath.Join(home, ".redmine-flow.yaml")
 	if err := os.Symlink(target, link); err != nil {
 		t.Fatal(err)
 	}
@@ -102,8 +102,8 @@ func TestSaveProfileThroughRelativeDanglingSymlinkCreatesTarget(t *testing.T) {
 	if err := os.Mkdir(filepath.Join(dir, "dotfiles"), 0o700); err != nil {
 		t.Fatal(err)
 	}
-	link := filepath.Join(dir, ".redmine-cli.yaml")
-	if err := os.Symlink(filepath.Join("dotfiles", "redmine-cli.yaml"), link); err != nil {
+	link := filepath.Join(dir, ".redmine-flow.yaml")
+	if err := os.Symlink(filepath.Join("dotfiles", "redmine-flow.yaml"), link); err != nil {
 		t.Fatal(err)
 	}
 
@@ -118,7 +118,7 @@ func TestSaveProfileThroughRelativeDanglingSymlinkCreatesTarget(t *testing.T) {
 	if info.Mode()&os.ModeSymlink == 0 {
 		t.Fatal("dangling config symlink was replaced by a regular file")
 	}
-	assertMode(t, filepath.Join(dir, "dotfiles", "redmine-cli.yaml"), 0o600)
+	assertMode(t, filepath.Join(dir, "dotfiles", "redmine-flow.yaml"), 0o600)
 }
 
 func TestSaveProfileCreatesPrivateConfigDir(t *testing.T) {
@@ -245,8 +245,8 @@ func TestSaveKeyringFailureRestoresSymlinkedConfig(t *testing.T) {
 	skipWithoutUnixPermissions(t)
 	keyring.MockInitWithError(errors.New("keychain locked"))
 	dotfiles := t.TempDir()
-	target := filepath.Join(dotfiles, "redmine-cli.yaml")
-	link := filepath.Join(t.TempDir(), ".redmine-cli.yaml")
+	target := filepath.Join(dotfiles, "redmine-flow.yaml")
+	link := filepath.Join(t.TempDir(), ".redmine-flow.yaml")
 	if err := os.Symlink(target, link); err != nil {
 		t.Fatal(err)
 	}

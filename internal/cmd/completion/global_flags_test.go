@@ -32,7 +32,7 @@ func trackerServer(t *testing.T, name string) (*httptest.Server, *bool) {
 
 // isolateEnv points HOME at an empty directory and clears the REDMINE_*
 // variables that select a server, so a test never reads the user's real
-// ~/.redmine-cli.yaml. It returns the temporary home directory.
+// ~/.redmine-flow.yaml. It returns the temporary home directory.
 func isolateEnv(t *testing.T) string {
 	t.Helper()
 	for _, env := range []string{"REDMINE_SERVER", "REDMINE_API_KEY", "REDMINE_PROFILE"} {
@@ -67,12 +67,12 @@ func complete(t *testing.T, args ...string) string {
 
 // Cobra parses the root command's persistent flags for `__complete` but does
 // not run its PersistentPreRunE, so completion used to ignore --config,
-// --profile and --server and always read ~/.redmine-cli.yaml.
+// --profile and --server and always read ~/.redmine-flow.yaml.
 func TestCompletion_HonorsGlobalFlags(t *testing.T) {
 	home := isolateEnv(t)
 
 	homeSrv, homeCalled := trackerServer(t, "FromHomeConfig")
-	writeConfig(t, filepath.Join(home, ".redmine-cli.yaml"),
+	writeConfig(t, filepath.Join(home, ".redmine-flow.yaml"),
 		"server: "+homeSrv.URL+"\napi_key: home\nauth_method: apikey\n")
 
 	flagSrv, flagCalled := trackerServer(t, "FromFlagConfig")
@@ -107,7 +107,7 @@ func TestCompletion_HonorsGlobalFlags(t *testing.T) {
 				t.Error("the server selected by the flags was not asked")
 			}
 			if *homeCalled {
-				t.Error("completion used ~/.redmine-cli.yaml despite the flags")
+				t.Error("completion used ~/.redmine-flow.yaml despite the flags")
 			}
 		})
 	}
@@ -132,7 +132,7 @@ func TestCompletion_APIKeyFileStdinSkipsServer(t *testing.T) {
 	home := isolateEnv(t)
 	srv, called := trackerServer(t, "FromServer")
 	// Without the flags, the default config points at the server too.
-	writeConfig(t, filepath.Join(home, ".redmine-cli.yaml"), "server: "+srv.URL+"\napi_key: home\nauth_method: apikey\n")
+	writeConfig(t, filepath.Join(home, ".redmine-flow.yaml"), "server: "+srv.URL+"\napi_key: home\nauth_method: apikey\n")
 	cfgPath := filepath.Join(t.TempDir(), "config.yaml")
 	writeConfig(t, cfgPath, "server: "+srv.URL+"\nauth_method: apikey\n")
 
