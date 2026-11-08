@@ -23,7 +23,7 @@ on:
   workflow_dispatch:
     inputs:
       ref:
-        description: Tag, branch or commit to deploy to redmine-cli.dev
+        description: Tag, branch or commit to deploy to the docs site
         required: true
 
 permissions: {}
@@ -85,7 +85,7 @@ jobs:
       contents: read
     environment:
       name: docs-production
-      url: https://redmine-cli.dev
+      url: https://rdflow.sun-yun-fei.workers.dev
     concurrency:
       group: docs-production
       cancel-in-progress: false

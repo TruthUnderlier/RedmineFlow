@@ -6,7 +6,7 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://redmine-cli.dev',
+	site: 'https://rdflow.sun-yun-fei.workers.dev',
 	integrations: [
 		// Replaces Starlight's built-in sitemap to leave out the untranslated
 		// /zh-cn/blog/ fallback pages, which canonicalize to the English blog.
@@ -30,7 +30,7 @@ export default defineConfig({
 				}),
 			],
 			social: [
-				{ icon: 'github', label: 'GitHub', href: 'https://github.com/aarondpn/redmine-cli' },
+				{ icon: 'github', label: 'GitHub', href: 'https://github.com/TruthUnderlier/RedmineFlow' },
 				// Relative, so the link also works locally. starlight-blog would add an
 				// absolute one pointing at the production site.
 				{ icon: 'rss', label: 'RSS', href: '/blog/rss.xml' },

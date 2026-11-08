@@ -1,4 +1,4 @@
 User-agent: *
 Disallow:
 
-Sitemap: https://redmine-cli.dev/sitemap-index.xml
+Sitemap: https://rdflow.sun-yun-fei.workers.dev/sitemap-index.xml
