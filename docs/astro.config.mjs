@@ -15,7 +15,7 @@ export default defineConfig({
 			filter: (page) => !new URL(page).pathname.startsWith('/zh-cn/blog/'),
 		}),
 		starlight({
-			title: 'redmine-cli',
+			title: 'RedmineFlow',
 			plugins: [
 				starlightBlog({
 					title: { en: 'Blog', 'zh-CN': '博客' },
