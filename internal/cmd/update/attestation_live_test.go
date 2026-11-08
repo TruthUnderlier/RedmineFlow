@@ -24,7 +24,7 @@ func TestReleaseAttestationLive(t *testing.T) {
 	if tag == "" || dir == "" {
 		t.Fatal("REDMINE_RELEASE_TAG and REDMINE_RELEASE_ASSETS must be set")
 	}
-	archives, err := filepath.Glob(filepath.Join(dir, RepoName+"-*"))
+	archives, err := filepath.Glob(filepath.Join(dir, assetPrefix+"-*"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -49,6 +49,6 @@ func TestReleaseAttestationLive(t *testing.T) {
 		checked++
 	}
 	if checked == 0 && !t.Failed() {
-		t.Fatalf("no %s-* archives found in %s", RepoName, dir)
+		t.Fatalf("no %s-* archives found in %s", assetPrefix, dir)
 	}
 }

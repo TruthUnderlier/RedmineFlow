@@ -1,9 +1,9 @@
 name: Release
 
-# Installed updaters (v2.15.0+) only install a release whose archives carry a
+# Installed updaters only install a release whose archives carry a
 # GitHub artifact attestation signed by THIS workflow file running for the
 # release tag: the certificate identity is pinned to
-#   https://github.com/aarondpn/redmine-cli/.github/workflows/release.yml@refs/tags/<tag>
+#   https://github.com/TruthUnderlier/RedmineFlow/.github/workflows/release.yml@refs/tags/<tag>
 # (internal/cmd/update/attestation.go). Renaming or moving this file,
 # transferring the repository, or releasing from anything but a v* tag push
 # makes every installed updater refuse new releases, short of
@@ -23,7 +23,6 @@ jobs:
       contents: write
       id-token: write
       attestations: write
-      packages: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
@@ -31,7 +30,7 @@ jobs:
           persist-credentials: false
 
       # No build cache: a poisoned cache entry would end up in the published
-      # binaries and image.
+      # binaries.
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7
         with:
           go-version: "1.27.3"
@@ -41,37 +40,6 @@ jobs:
         uses: anchore/sbom-action/download-syft@66cbf4bc1f1c0d2edc94016e65bc221b6bb0ad6c # v0.24.3
         with:
           syft-version: v1.50.0
-
-      - name: Verify module path matches tag major version
-        run: |
-          set -euo pipefail
-          tag="${GITHUB_REF_NAME}"
-          major="${tag#v}"
-          major="${major%%.*}"
-          module=$(awk '/^module /{print $2}' go.mod)
-          base="${module%/v[0-9]*}"
-          if [ "$major" -ge 2 ]; then
-            expected="${base}/v${major}"
-          else
-            expected="${base}"
-          fi
-          if [ "$module" != "$expected" ]; then
-            echo "::error::go.mod module path '$module' does not match tag '$tag' (expected '$expected')"
-            echo "For v2+ tags, bump go.mod module to end with /vN and rewrite imports accordingly."
-            exit 1
-          fi
-
-      # The MCP image Dockerfile only copies prebuilt binaries (no RUN steps),
-      # so buildx can assemble the arm64 image without QEMU.
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
-
-      - name: Log in to GHCR
-        uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@a4f02ab5355a589de60d917a659ce617ed19b3de # v7.3.0
@@ -84,14 +52,13 @@ jobs:
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          HOMEBREW_TAP_GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_GITHUB_TOKEN }}
 
       - name: Locate release checksums
         id: checksums
         shell: bash
         run: |
           set -euo pipefail
-          mapfile -t files < <(find dist -maxdepth 1 -type f -name 'redmine-cli_*_checksums.txt' -print)
+          mapfile -t files < <(find dist -maxdepth 1 -type f -name 'rdflow_*_checksums.txt' -print)
           if [ "${#files[@]}" -ne 1 ]; then
             echo "::error::expected exactly one release checksum file, found ${#files[@]}"
             exit 1
@@ -103,31 +70,13 @@ jobs:
         with:
           subject-checksums: ${{ steps.checksums.outputs.path }}
 
-      - name: Locate MCP image digest
-        id: image
-        shell: bash
-        run: |
-          set -euo pipefail
-          digest=$(jq -r '[.[] | select(.type == "Docker Image" and (.name | startswith("ghcr.io/aarondpn/redmine-mcp:"))) | .extra.Digest] | unique | .[]' dist/artifacts.json)
-          if [ "$(printf '%s\n' "$digest" | grep -c '^sha256:')" -ne 1 ]; then
-            echo "::error::expected exactly one MCP image digest, got: ${digest:-<none>}"
-            exit 1
-          fi
-          echo "digest=$digest" >> "$GITHUB_OUTPUT"
-
-      - name: Attest MCP image
-        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
-        with:
-          subject-name: ghcr.io/aarondpn/redmine-mcp
-          subject-digest: ${{ steps.image.outputs.digest }}
-
   # Proves that installed updaters accept the release just published: the
   # archives are downloaded back from the release, checked against its
   # checksums, verified with gh against the exact identity the updater pins,
   # and finally verified by the updater's own Go verifier.
   #
   # If this job fails, the release is public without a usable attestation and
-  # `redmine update` (v2.15.0+) refuses it. If it is a transient API error,
+  # `rdflow update` refuses it. If it is a transient API error,
   # re-run this job. Otherwise delete the release but keep the tag
   # (gh release delete <tag> --yes) and re-run all jobs of this workflow run,
   # which rebuilds, re-uploads and re-attests it.
@@ -153,11 +102,11 @@ jobs:
         run: |
           set -euo pipefail
           dir="${RUNNER_TEMP}/release-assets"
-          gh release download "${GITHUB_REF_NAME}" --repo "${GITHUB_REPOSITORY}" --pattern 'redmine-cli*' --dir "$dir"
+          gh release download "${GITHUB_REF_NAME}" --repo "${GITHUB_REPOSITORY}" --pattern 'rdflow*' --dir "$dir"
           cd "$dir"
-          sha256sum -c --ignore-missing "redmine-cli_${GITHUB_REF_NAME#v}_checksums.txt"
-          for f in redmine-cli-*.tar.gz redmine-cli-*.zip; do
-            grep -q "  ${f}\$" "redmine-cli_${GITHUB_REF_NAME#v}_checksums.txt" || { echo "::error::${f} is missing from the checksums file"; exit 1; }
+          sha256sum -c --ignore-missing "rdflow_${GITHUB_REF_NAME#v}_checksums.txt"
+          for f in rdflow-*.tar.gz rdflow-*.zip; do
+            grep -q "  ${f}\$" "rdflow_${GITHUB_REF_NAME#v}_checksums.txt" || { echo "::error::${f} is missing from the checksums file"; exit 1; }
           done
 
       - name: Verify attestations with gh
@@ -166,7 +115,7 @@ jobs:
         run: |
           set -euo pipefail
           identity="https://github.com/${GITHUB_REPOSITORY}/.github/workflows/release.yml@refs/tags/${GITHUB_REF_NAME}"
-          for f in "${RUNNER_TEMP}"/release-assets/redmine-cli-*.tar.gz "${RUNNER_TEMP}"/release-assets/redmine-cli-*.zip; do
+          for f in "${RUNNER_TEMP}"/release-assets/rdflow-*.tar.gz "${RUNNER_TEMP}"/release-assets/rdflow-*.zip; do
             gh attestation verify "$f" --repo "${GITHUB_REPOSITORY}" \
               --cert-identity "$identity" \
               --cert-oidc-issuer https://token.actions.githubusercontent.com \
@@ -182,72 +131,6 @@ jobs:
           REDMINE_RELEASE_TAG="${GITHUB_REF_NAME}" \
           REDMINE_RELEASE_ASSETS="${RUNNER_TEMP}/release-assets" \
             go test -tags releaselive ./internal/cmd/update -run TestReleaseAttestationLive -count=1 -v
-
-  # Publishes server.json to the official MCP Registry so registry-aware hosts
-  # can install the Docker image. Stable releases only: the registry entry
-  # points at the exact version tag, which prereleases also push, but `latest`
-  # in the registry should not move to a prerelease.
-  mcp-registry:
-    needs: release
-    if: ${{ !contains(github.ref_name, '-') }}
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write
-    env:
-      # Bump version and hash together: the hash is the sha256 of
-      # mcp-publisher_linux_amd64.tar.gz from that release's checksums file.
-      # renovate: datasource=github-releases depName=modelcontextprotocol/registry
-      MCP_PUBLISHER_VERSION: v1.8.6
-      MCP_PUBLISHER_SHA256: a06c9096dcb9727c13555b6be26c7effa707b01f06a4c561ba7a3635443cf2cc
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-        with:
-          persist-credentials: false
-
-      # The registry pulls the image anonymously to verify its
-      # io.modelcontextprotocol.server.name label. New GHCR packages start out
-      # private and visibility can only be changed in the package settings,
-      # so fail early with instructions instead of an opaque publish error.
-      - name: Check MCP image is publicly pullable
-        run: |
-          set -euo pipefail
-          version="${GITHUB_REF_NAME#v}"
-          token=$(curl -fsS "https://ghcr.io/token?scope=repository:aarondpn/redmine-mcp:pull" | jq -r '.token // empty' || true)
-          status=$(curl -s -o /dev/null -w '%{http_code}' \
-            -H "Authorization: Bearer ${token}" \
-            -H "Accept: application/vnd.oci.image.index.v1+json, application/vnd.docker.distribution.manifest.list.v2+json, application/vnd.oci.image.manifest.v1+json" \
-            "https://ghcr.io/v2/aarondpn/redmine-mcp/manifests/${version}")
-          if [ "$status" != "200" ]; then
-            echo "::error::ghcr.io/aarondpn/redmine-mcp:${version} is not publicly pullable (HTTP ${status}). Set the package visibility to Public at https://github.com/users/aarondpn/packages/container/redmine-mcp/settings, then re-run this job."
-            exit 1
-          fi
-
-      - name: Set server.json version
-        run: |
-          set -euo pipefail
-          version="${GITHUB_REF_NAME#v}"
-          jq --arg v "$version" \
-            '.version = $v | .packages[0].identifier = "ghcr.io/aarondpn/redmine-mcp:\($v)"' \
-            server.json > server.tmp
-          mv server.tmp server.json
-          cat server.json
-
-      # The tarball is checked against the pinned hash before extraction, so a
-      # replaced release asset cannot run with this job's OIDC token.
-      - name: Install mcp-publisher
-        run: |
-          set -euo pipefail
-          archive="${RUNNER_TEMP}/mcp-publisher_linux_amd64.tar.gz"
-          curl -fsSL -o "$archive" "https://github.com/modelcontextprotocol/registry/releases/download/${MCP_PUBLISHER_VERSION}/mcp-publisher_linux_amd64.tar.gz"
-          echo "${MCP_PUBLISHER_SHA256}  ${archive}" | sha256sum -c -
-          tar xzf "$archive" mcp-publisher
-
-      - name: Publish to MCP Registry
-        run: |
-          set -euo pipefail
-          ./mcp-publisher login github-oidc
-          ./mcp-publisher publish
 
   # Comments on every issue that a PR in this release closed, linking the
   # version that ships the fix. Stable releases only, counted from the previous
@@ -333,7 +216,7 @@ jobs:
               echo "#${issue}: already notified"
               continue
             fi
-            body="This is now available in [${tag}](${url}) via ${prs}. To update, run \`redmine update\` or see the [update instructions](https://redmine-cli.dev/getting-started/installation/#update).
+            body="This is now available in [${tag}](${url}) via ${prs}. To update, run \`rdflow update\`.
 
           ${marker}"
             # A locked or deleted issue must not stop the others from being notified.
