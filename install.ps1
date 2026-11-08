@@ -249,14 +249,14 @@
     # install removes it then.
     Remove-Item -LiteralPath $Old -Force -ErrorAction SilentlyContinue
 
-    Write-Info "Installed redmine $Tag to $Target"
+    Write-Info "Installed rdflow $Tag to $Target"
   } finally {
     Remove-Item -LiteralPath $TmpDir -Recurse -Force -ErrorAction SilentlyContinue
   }
 
   # Add the install directory to the user PATH. The registry value is read and
   # written unexpanded so that entries such as %USERPROFILE%\bin survive.
-  $RedmineCmd = 'redmine'
+  $RedmineCmd = 'rdflow'
   $Normalized = $InstallDir.TrimEnd('\')
   $ModifyPath = -not (Test-Truthy $env:REDMINE_CLI_NO_MODIFY_PATH)
   $EnvKey = [Microsoft.Win32.Registry]::CurrentUser.OpenSubKey('Environment', $ModifyPath)
@@ -284,14 +284,14 @@
   } finally {
     $EnvKey.Close()
   }
-  if (@($env:Path -split ';' | Where-Object { $_.TrimEnd('\') -eq $Normalized }).Count -eq 0 -and $RedmineCmd -eq 'redmine') {
+  if (@($env:Path -split ';' | Where-Object { $_.TrimEnd('\') -eq $Normalized }).Count -eq 0 -and $RedmineCmd -eq 'rdflow') {
     # Usable in this session right away.
     $env:Path = "$env:Path;$InstallDir"
   }
 
   Write-Info 'Next: connect to your Redmine server with'
   Write-Host "      $RedmineCmd auth login"
-  Write-Info 'Docs: https://redmine-cli.dev/getting-started/configuration/'
+  Write-Info 'Docs: https://rdflow.sun-yun-fei.workers.dev/getting-started/configuration/'
 
   if ($CallerHadExitCode) {
     $global:LASTEXITCODE = $CallerExitCode

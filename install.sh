@@ -159,4 +159,4 @@ case ":$PATH:" in
 esac
 
 info "Next: run '${REDMINE_CMD} auth login' to connect to your Redmine server"
-info "Docs: https://redmine-cli.dev/getting-started/configuration/"
+info "Docs: https://rdflow.sun-yun-fei.workers.dev/getting-started/configuration/"

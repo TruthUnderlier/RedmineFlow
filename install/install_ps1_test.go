@@ -264,7 +264,7 @@ func TestInstallPowerShellScript(t *testing.T) {
 			wantOutput: []string{
 				"Latest version: " + scriptFixtureTag, "Checksum verified.", "Attestation verified.",
 				"is not in your PATH (REDMINE_CLI_NO_MODIFY_PATH is set)", "rdflow.exe' auth login",
-				"https://redmine-cli.dev/getting-started/configuration/",
+				"https://rdflow.sun-yun-fei.workers.dev/getting-started/configuration/",
 				"caller LASTEXITCODE: unset",
 			},
 			wantLog: []string{"/releases/latest", "/releases/download/" + scriptFixtureTag + "/" + psArchive, verifyArgs},
@@ -479,7 +479,7 @@ func TestInstallPowerShellScript_RelativeInstallDir(t *testing.T) {
 			}
 			// Compared as files: the runner's TEMP may use the 8.3 short name
 			// (RUNNER~1) while PowerShell prints the long one.
-			m := regexp.MustCompile(`Installed redmine \S+ to (.+redmine\.exe)`).FindStringSubmatch(out)
+			m := regexp.MustCompile(`Installed rdflow \S+ to (.+rdflow\.exe)`).FindStringSubmatch(out)
 			if m == nil || !filepath.IsAbs(m[1]) {
 				t.Fatalf("expected an absolute install path in the output, got:\n%s", out)
 			}
