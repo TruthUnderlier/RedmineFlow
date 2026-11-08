@@ -3,7 +3,7 @@ name: Docs
 # redmine-cli.dev only moves with stable releases, so it never documents
 # features that `redmine update` cannot install yet. Pushes to main upload a
 # preview version instead, served under the `main` preview alias
-# (https://main-redmine-cli.<subdomain>.workers.dev).
+# (https://main-rdflow.<subdomain>.workers.dev).
 #
 # The Cloudflare Workers Builds production deployment for main must stay off,
 # or it would publish unreleased docs again.

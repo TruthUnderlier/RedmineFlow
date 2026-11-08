@@ -1,6 +1,6 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "redmine-cli",
+	"name": "rdflow",
 	"compatibility_date": "2026-06-13",
 	// Keeps the `main` preview alias that .github/workflows/docs.yml uploads
 	// reachable instead of depending on the Worker's dashboard setting.
